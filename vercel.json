@@ -1,4 +1,6 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
   "buildCommand": "npm run build",
   "outputDirectory": "public",
   "cleanUrls": true,
@@ -9,8 +11,8 @@
       "destination": "/styles.css"
     },
     {
-      "source": "/app.js",
-      "destination": "/app.js"
+      "source": "/dashboard.js",
+      "destination": "/dashboard.js"
     },
     {
       "source": "/(.*)",

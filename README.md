@@ -31,16 +31,16 @@ http://127.0.0.1:8080
 
 ## Deploy en Vercel
 
-Este proyecto NO tiene backend en produccion y NO debe ejecutar `server.js`, `dev-server.js`, `npm start` ni funciones serverless.
+Este proyecto NO tiene backend en produccion y NO debe ejecutar `server.js`, `dev-server.js`, `app.js`, `npm start` ni funciones serverless.
 
 Vercel debe servir solo la build estatica:
 
 - Build Command: `npm run build`
 - Output Directory: `public`
 
-La configuracion vive en `vercel.json` y fuerza fallback SPA a `index.html`.
+La configuracion vive en `vercel.json`, fuerza el preset `Other` con `"framework": null` y aplica fallback SPA a `index.html`.
 
-Si Vercel muestra `This Serverless Function has crashed`, esta usando una configuracion antigua o un deployment viejo. Haz redeploy con `Clear build cache` activado y confirma que el commit contiene `vercel.json` y que ya no existe `server.js`.
+Si Vercel muestra `This Serverless Function has crashed`, esta usando una configuracion antigua o un deployment viejo. Haz redeploy con `Clear build cache` activado y confirma que el commit contiene `vercel.json`, que ya no existe `server.js` y que el JavaScript de navegador no se llama `app.js` en la raiz.
 
 ## Incluye
 
