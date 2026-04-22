@@ -108,8 +108,17 @@
           <section class="mobile-section">
             <div class="section-label">Staff Control</div>
             <div class="mobile-hero-row compact"><h2>46</h2><div class="trend-pill neutral">fichados</div></div>
-            <p>Coste vivo €812/h · permisos, zonas y auditoría por empleado.</p>
-            <div class="staff-group"><div class="group-title"><span>Rendimiento</span><b>LIVE</b><i></i></div><article class="staff-card"><div class="staff-person"><div class="avatar-initials">CR</div><div><strong>Carlos R.</strong><span>€1.840/h · 18 seg/ticket</span></div></div><b>Top</b></article><article class="staff-card"><div class="staff-person"><div class="avatar-initials">EM</div><div><strong>Elena M.</strong><span>VIP upsell +14%</span></div></div><b>OK</b></article></div>
+            <p>Coste vivo €812/h · perfiles ampliables con permisos, ventas, auditoría y rendimiento.</p>
+            <div class="staff-group"><div class="group-title"><span>Perfiles activos</span><b>LIVE</b><i></i></div>
+              <article class="staff-card"><div class="staff-person"><div class="avatar-initials">CR</div><div><strong>Carlos R.</strong><span>Barra Central · €1.840/h</span></div></div><button class="mini-profile-button" type="button" data-staff="carlos">Ver</button></article>
+              <article class="staff-card"><div class="staff-person"><div class="avatar-initials">EM</div><div><strong>Elena M.</strong><span>VIP V1-V6 · €2.120/h</span></div></div><button class="mini-profile-button" type="button" data-staff="elena">Ver</button></article>
+              <article class="staff-card"><div class="staff-person"><div class="avatar-initials">JG</div><div><strong>Juan G.</strong><span>Runner VIP · 18 entregas</span></div></div><button class="mini-profile-button" type="button" data-staff="juan">Ver</button></article>
+              <article class="staff-card"><div class="staff-person"><div class="avatar-initials">SL</div><div><strong>Sofia L.</strong><span>Office · 2 OCR</span></div></div><button class="mini-profile-button" type="button" data-staff="sofia">Ver</button></article>
+            </div>
+            <div class="mobile-list staff-mobile-detail active" data-staff-mobile-detail="carlos"><article class="mobile-row-card"><div><strong>Carlos R.</strong><span>Permisos: POS + caja · 12 voids · ticket medio €18.40</span></div><b>Top</b></article></div>
+            <div class="mobile-list staff-mobile-detail" data-staff-mobile-detail="elena"><article class="mobile-row-card"><div><strong>Elena M.</strong><span>VIP upsell +14% · mínimos recuperados €2.840</span></div><b>VIP</b></article></div>
+            <div class="mobile-list staff-mobile-detail" data-staff-mobile-detail="juan"><article class="mobile-row-card"><div><strong>Juan G.</strong><span>18 entregas · tiempo medio BDS 03:12</span></div><b>Runner</b></article></div>
+            <div class="mobile-list staff-mobile-detail" data-staff-mobile-detail="sofia"><article class="mobile-row-card"><div><strong>Sofia L.</strong><span>2 OCR · 4 ajustes coste · 0 riesgos</span></div><b>Office</b></article></div>
           </section>
         </section>
 
@@ -164,57 +173,63 @@
         </section>
 
         <section class="desktop-page" data-page="locales">
-          <div class="page-heading">
-            <div><p class="desktop-label">Operativa multi-local</p><h1>Locales</h1></div>
-            <button class="outline-action js-action" type="button">Registrar local nuevo</button>
+          <div class="venue-list-screen active" id="venueListScreen">
+            <div class="page-heading">
+              <div><p class="desktop-label">Operativa multi-local</p><h1>Locales</h1></div>
+              <button class="outline-action js-action" type="button">Registrar local nuevo</button>
+            </div>
+
+            <section class="desktop-grid page-metrics venue-summary-grid">
+              <article class="metric-card wide"><span>Facturación live portfolio</span><strong>€395,520.00</strong><p>Suma en directo de todas las salas: anticipadas, taquilla, barras, VIP, QR y cashless.</p></article>
+              <article class="metric-card"><span>Aforo legal total</span><strong>5,900</strong><p>Capacidad autorizada agregada.</p></article>
+              <article class="metric-card"><span>Aforo real total</span><strong>4,928</strong><p>83.5% dentro ahora mismo.</p></article>
+            </section>
+
+            <section class="desktop-card venue-dashboard-card">
+              <div class="desktop-section-head"><h2>Dashboard de Locales</h2><span>Live Sync</span></div>
+              <div class="venue-control-list">
+                <article class="venue-control-row" data-venue-row="kapital"><div><strong>Kapital Madrid</strong><span>Madrid · Sala principal · cola puerta 14 min</span></div><b>€142,890.00</b><em><span>Aforo legal</span>2,100</em><em><span>Aforo real</span>1,842</em><button class="outline-action venue-detail-button" type="button" data-venue="kapital">Ampliar información</button></article>
+                <article class="venue-control-row" data-venue-row="pacha"><div><strong>Pacha Ibiza</strong><span>Ibiza · Sesión residencia · riesgo stock alto</span></div><b>€188,420.00</b><em><span>Aforo legal</span>2,800</em><em><span>Aforo real</span>2,320</em><button class="outline-action venue-detail-button" type="button" data-venue="pacha">Ampliar información</button></article>
+                <article class="venue-control-row" data-venue-row="opium"><div><strong>Opium Barcelona</strong><span>Barcelona · Evento privado · VIP 62%</span></div><b>€64,210.00</b><em><span>Aforo legal</span>1,000</em><em><span>Aforo real</span>766</em><button class="outline-action venue-detail-button" type="button" data-venue="opium">Ampliar información</button></article>
+              </div>
+            </section>
+
+            <section class="activity-card portfolio-footer"><div class="activity-title"><h3>Total portfolio esta noche</h3><i></i></div><div class="portfolio-total-grid"><article><span>Facturación todas las salas</span><strong>€395,520.00</strong></article><article><span>Aforo total legal</span><strong>5,900</strong></article><article><span>Aforo total real</span><strong>4,928</strong></article><article><span>Rentabilidad media sesión</span><strong>32.1%</strong></article></div></section>
           </div>
 
-          <section class="desktop-grid page-metrics venue-summary-grid">
-            <article class="metric-card wide"><span>Facturación live portfolio</span><strong>€395,520.00</strong><p>Suma en directo de todas las salas: anticipadas, taquilla, barras, VIP, QR y cashless.</p></article>
-            <article class="metric-card"><span>Aforo legal total</span><strong>5,900</strong><p>Capacidad autorizada agregada.</p></article>
-            <article class="metric-card"><span>Aforo real total</span><strong>4,928</strong><p>83.5% dentro ahora mismo.</p></article>
-          </section>
-
-          <section class="desktop-card venue-dashboard-card">
-            <div class="desktop-section-head"><h2>Dashboard de Locales</h2><span>Live Sync</span></div>
-            <div class="venue-control-list">
-              <article class="venue-control-row active" data-venue-row="kapital">
-                <div><strong>Kapital Madrid</strong><span>Madrid · Sala principal · cola puerta 14 min</span></div>
-                <b>€142,890.00</b><em><span>Aforo legal</span>2,100</em><em><span>Aforo real</span>1,842</em>
-                <button class="outline-action venue-detail-button" type="button" data-venue="kapital">Ampliar información</button>
-              </article>
-              <article class="venue-control-row" data-venue-row="pacha">
-                <div><strong>Pacha Ibiza</strong><span>Ibiza · Sesión residencia · riesgo stock alto</span></div>
-                <b>€188,420.00</b><em><span>Aforo legal</span>2,800</em><em><span>Aforo real</span>2,320</em>
-                <button class="outline-action venue-detail-button" type="button" data-venue="pacha">Ampliar información</button>
-              </article>
-              <article class="venue-control-row" data-venue-row="opium">
-                <div><strong>Opium Barcelona</strong><span>Barcelona · Evento privado · VIP 62%</span></div>
-                <b>€64,210.00</b><em><span>Aforo legal</span>1,000</em><em><span>Aforo real</span>766</em>
-                <button class="outline-action venue-detail-button" type="button" data-venue="opium">Ampliar información</button>
-              </article>
+          <div class="local-detail-screen" id="localDetailScreen" hidden>
+            <div class="detail-topline"><button class="back-link" id="backToVenues" type="button"><span class="material-symbols-outlined">arrow_back</span>Volver a locales</button><span class="desktop-label">Screen detalle local</span></div>
+            <div class="page-heading">
+              <div><p class="desktop-label" id="localDetailSubtitle">Kapital Madrid · Madrid</p><h1 id="localDetailTitle">Kapital Madrid</h1></div>
+              <button class="outline-action js-action" type="button">Enviar cierre de prueba</button>
             </div>
-          </section>
 
-          <section class="venue-detail-panel active" data-venue-detail="kapital">
-            <div class="page-heading compact"><div><p class="desktop-label">Detalle local</p><h1>Kapital Madrid</h1></div><button class="outline-action js-action" type="button">Enviar cierre de prueba</button></div>
-            <section class="desktop-grid page-metrics"><article class="metric-card wide"><span>Facturación en directo</span><strong>€142,890.00</strong><p>Anticipadas €18,420 · Taquilla €8,150 · VIP €12,320 · Barras €98,420.</p></article><article class="metric-card"><span>Ticket medio/persona</span><strong>€77.57</strong><p>Live sobre aforo real.</p></article><article class="metric-card"><span>Coste botellas</span><strong>€32,570</strong><p>COGS 22.8% · margen sesión 34.2%.</p></article></section>
-            <section class="desktop-grid ops-grid"><article class="desktop-card human-card"><div class="desktop-section-head"><h2>Permisos, Conectados y Auditoría</h2><span>Security Log</span></div><table class="staff-cost-table"><thead><tr><th>Área</th><th>Dato</th><th>Estado</th></tr></thead><tbody><tr><td>Permisos dirección</td><td>Owner ve P&L, stock y auditoría</td><td>Editable</td></tr><tr><td>Usuarios conectados</td><td>8 activos · 3 POS · 2 puerta · 2 BDS · 1 office</td><td>Live</td></tr><tr><td>Última edición</td><td>Sofia L. cambió precio Tanqueray · 02:11</td><td>Auditado</td></tr><tr><td>Personal contratado hoy</td><td>46 fichados · coste €812/h</td><td>OK</td></tr></tbody></table></article><article class="desktop-card warehouse-card"><div class="desktop-section-head"><h2>Cierre automático nocturno</h2><button class="js-action" type="button">Configurar Email</button></div><div class="risk-list"><article><strong>Destinatarios</strong><span>owner@opsnight.local · direccion@kapital.local</span><b>2</b></article><article><strong>Hora estimada</strong><span>Al cierre de caja + reconciliación de pagos</span><b>06:30</b></article><article><strong>Informe tochísimo</strong><span>P&L, rentabilidad sesión, costes, staff, stock, fraude, aforo, tickets, márgenes y OCR.</span><b>PDF</b></article></div></article></section>
-          </section>
+            <section class="desktop-grid page-metrics">
+              <article class="metric-card wide"><span>Facturación en directo</span><strong id="localRevenue">€142,890.00</strong><p id="localRevenueBreakdown">Anticipadas €18,420 · Taquilla €8,150 · VIP €12,320 · Barras €98,420.</p></article>
+              <article class="metric-card"><span>Barra live</span><strong id="localBarRevenue">€98,420</strong><p>POS sync local-first.</p></article>
+              <article class="metric-card"><span>Aforo total</span><strong id="localCapacity">1,842</strong><p id="localCapacityLegal">Legal 2,100 · 87.7% dentro.</p></article>
+              <article class="metric-card"><span>Ticket medio/persona</span><strong id="localAvgTicket">€77.57</strong><p>Calculado sobre aforo real.</p></article>
+              <article class="metric-card"><span>Coste botellas</span><strong id="localBottleCost">€32,570</strong><p id="localMargin">COGS 22.8% · margen 34.2%.</p></article>
+            </section>
 
-          <section class="venue-detail-panel" data-venue-detail="pacha">
-            <div class="page-heading compact"><div><p class="desktop-label">Detalle local</p><h1>Pacha Ibiza</h1></div><button class="outline-action js-action" type="button">Enviar cierre de prueba</button></div>
-            <section class="desktop-grid page-metrics"><article class="metric-card wide"><span>Facturación en directo</span><strong>€188,420.00</strong><p>Anticipadas €42,100 · Taquilla €21,800 · VIP €38,400 · Barras €86,120.</p></article><article class="metric-card"><span>Ticket medio/persona</span><strong>€81.22</strong><p>Live sobre 2.320 personas dentro.</p></article><article class="metric-card"><span>Coste botellas</span><strong>€48,920</strong><p>COGS 25.9% · margen sesión 31.8%.</p></article></section>
-            <section class="desktop-grid ops-grid"><article class="desktop-card human-card"><div class="desktop-section-head"><h2>Permisos, Conectados y Auditoría</h2><span>Security Log</span></div><table class="staff-cost-table"><tbody><tr><td>Permisos dirección</td><td>Manager ve ventas y staff, no P&L global</td><td>Editable</td></tr><tr><td>Usuarios conectados</td><td>11 activos · 5 POS · 2 puerta · 3 BDS · 1 office</td><td>Live</td></tr><tr><td>Última edición</td><td>Marc P. ajustó mínimo VIP V8 · 01:58</td><td>Auditado</td></tr><tr><td>Personal contratado hoy</td><td>62 fichados · coste €1,180/h</td><td>OK</td></tr></tbody></table></article><article class="desktop-card warehouse-card"><div class="desktop-section-head"><h2>Cierre automático nocturno</h2><button class="js-action" type="button">Configurar Email</button></div><div class="risk-list"><article><strong>Destinatarios</strong><span>owner@opsnight.local · direccion@pacha.local</span><b>2</b></article><article><strong>Hora estimada</strong><span>Al cierre de caja + conciliación cashless</span><b>07:00</b></article><article><strong>Informe final</strong><span>Rentabilidad DJ set, VIP, barras, puerta, stock crítico, pagos y no-shows.</span><b>PDF</b></article></div></article></section>
-          </section>
+            <section class="desktop-card permissions-editor-card">
+              <div class="desktop-section-head"><h2>Editar permisos de visibilidad</h2><span>Security Log</span></div>
+              <div class="permission-matrix">
+                <div class="permission-head"><span>Rol</span><span>P&L</span><span>Stock</span><span>Staff</span><span>Auditoría</span><span>Permisos</span></div>
+                <label class="permission-row"><strong>Owner</strong><input type="checkbox" checked /><input type="checkbox" checked /><input type="checkbox" checked /><input type="checkbox" checked /><input type="checkbox" checked /></label>
+                <label class="permission-row"><strong>Director local</strong><input type="checkbox" checked /><input type="checkbox" checked /><input type="checkbox" checked /><input type="checkbox" checked /><input type="checkbox" /></label>
+                <label class="permission-row"><strong>Jefe barra</strong><input type="checkbox" /><input type="checkbox" checked /><input type="checkbox" checked /><input type="checkbox" /><input type="checkbox" /></label>
+                <label class="permission-row"><strong>Office / Finanzas</strong><input type="checkbox" checked /><input type="checkbox" checked /><input type="checkbox" /><input type="checkbox" checked /><input type="checkbox" /></label>
+                <label class="permission-row"><strong>Staff operativo</strong><input type="checkbox" /><input type="checkbox" /><input type="checkbox" /><input type="checkbox" /><input type="checkbox" /></label>
+              </div>
+              <div class="permission-actions"><button class="outline-action js-action" type="button">Restaurar plantilla</button><button class="settings-save permission-save" type="button">Guardar permisos</button></div>
+            </section>
 
-          <section class="venue-detail-panel" data-venue-detail="opium">
-            <div class="page-heading compact"><div><p class="desktop-label">Detalle local</p><h1>Opium Barcelona</h1></div><button class="outline-action js-action" type="button">Enviar cierre de prueba</button></div>
-            <section class="desktop-grid page-metrics"><article class="metric-card wide"><span>Facturación en directo</span><strong>€64,210.00</strong><p>Anticipadas €14,200 · Taquilla €6,900 · VIP €18,400 · Barras €24,710.</p></article><article class="metric-card"><span>Ticket medio/persona</span><strong>€83.82</strong><p>Live sobre 766 personas dentro.</p></article><article class="metric-card"><span>Coste botellas</span><strong>€18,680</strong><p>COGS 29.1% · evento privado con margen controlado.</p></article></section>
-            <section class="desktop-grid ops-grid"><article class="desktop-card human-card"><div class="desktop-section-head"><h2>Permisos, Conectados y Auditoría</h2><span>Security Log</span></div><table class="staff-cost-table"><tbody><tr><td>Permisos evento</td><td>Cliente ve consumo VIP, no staff ni auditoría</td><td>Editable</td></tr><tr><td>Usuarios conectados</td><td>5 activos · 2 POS · 1 puerta · 1 BDS · 1 office</td><td>Live</td></tr><tr><td>Última edición</td><td>Laura B. añadió lista privada · 00:42</td><td>Auditado</td></tr><tr><td>Personal contratado hoy</td><td>28 fichados · coste €520/h</td><td>OK</td></tr></tbody></table></article><article class="desktop-card warehouse-card"><div class="desktop-section-head"><h2>Cierre automático nocturno</h2><button class="js-action" type="button">Configurar Email</button></div><div class="risk-list"><article><strong>Destinatarios</strong><span>owner@opsnight.local · eventos@opium.local</span><b>2</b></article><article><strong>Hora estimada</strong><span>Tras cierre parcial de barra y consumo VIP</span><b>05:45</b></article><article><strong>Informe final</strong><span>Consumo mínimo, rentabilidad por mesa, barras, coste staff y desviación stock.</span><b>PDF</b></article></div></article></section>
-          </section>
-
-          <section class="activity-card portfolio-footer"><div class="activity-title"><h3>Total portfolio esta noche</h3><i></i></div><div class="portfolio-total-grid"><article><span>Facturación todas las salas</span><strong>€395,520.00</strong></article><article><span>Aforo total legal</span><strong>5,900</strong></article><article><span>Aforo total real</span><strong>4,928</strong></article><article><span>Rentabilidad media sesión</span><strong>32.1%</strong></article></div></section>
+            <section class="desktop-grid ops-grid">
+              <article class="desktop-card human-card"><div class="desktop-section-head"><h2>Conectados, Auditoría y Personal</h2><span>Live</span></div><table class="staff-cost-table local-audit-table"><thead><tr><th>Área</th><th>Dato</th><th>Estado</th></tr></thead><tbody id="localAuditRows"></tbody></table></article>
+              <article class="desktop-card warehouse-card"><div class="desktop-section-head"><h2>Cierre automático nocturno</h2><button class="js-action" type="button">Configurar Email</button></div><div class="risk-list" id="localClosingRows"></div></article>
+            </section>
+          </div>
         </section>
 
         <section class="desktop-page" data-page="finanzas">
@@ -225,8 +240,43 @@
 
         <section class="desktop-page" data-page="personal">
           <div class="page-heading"><div><p class="desktop-label">Staff operations & control</p><h1>Personal</h1></div><button class="outline-action js-action" type="button">Crear turno</button></div>
-          <section class="desktop-grid page-metrics"><article class="metric-card wide"><span>Coste laboral vivo</span><strong>€812/h</strong><p>46 personas fichadas con PIN/NFC y zona asignada.</p></article><article class="metric-card"><span>Ticket medio staff</span><strong>€18.40</strong><p>Barra & sala.</p></article><article class="metric-card"><span>Velocidad servicio</span><strong>21s</strong><p>Pedido a cobro.</p></article></section>
-          <section class="desktop-grid ops-grid"><article class="desktop-card human-card"><div class="desktop-section-head"><h2>Rendimiento por Empleado</h2><span>Live Update</span></div><table class="staff-cost-table"><thead><tr><th>Empleado</th><th>Zona</th><th>Fact/Hora</th></tr></thead><tbody><tr><td>Carlos R.</td><td>Barra Central</td><td>€1,840</td></tr><tr><td>Elena M.</td><td>VIP V1-V6</td><td>€2,120</td></tr><tr><td>Juan G.</td><td>Runner VIP</td><td>18 entregas</td></tr><tr><td>Sofia L.</td><td>Office</td><td>2 OCR</td></tr></tbody></table></article><article class="desktop-card warehouse-card"><div class="desktop-section-head"><h2>Permisos & Fraude</h2><button class="js-action" type="button">Revisar</button></div><div class="risk-list"><article><strong>Override manager</strong><span>7 aprobaciones · 0 rechazadas</span><b>OK</b></article><article><strong>Cancelación ticket</strong><span>Requiere motivo obligatorio</span><b>Activo</b></article><article><strong>Geofence fichaje</strong><span>46/46 dentro del local</span><b>OK</b></article></div></article></section>
+          <section class="desktop-grid page-metrics"><article class="metric-card wide"><span>Coste laboral vivo</span><strong>€812/h</strong><p>46 personas fichadas con PIN/NFC, permisos por rol y zona asignada en tiempo real.</p></article><article class="metric-card"><span>Ticket medio staff</span><strong>€18.40</strong><p>Barra & sala.</p></article><article class="metric-card"><span>Velocidad servicio</span><strong>21s</strong><p>Pedido a cobro.</p></article></section>
+
+          <section class="desktop-card employee-performance-card">
+            <div class="desktop-section-head"><h2>Rendimiento por Empleado</h2><span>Live Update</span></div>
+            <div class="employee-table">
+              <div class="employee-table-head"><span>Empleado</span><span>Zona</span><span>Fact/Hora</span><span></span></div>
+              <button class="employee-row active" type="button" data-staff="carlos"><strong>Carlos R.</strong><span>Barra Central</span><b>€1,840</b><em>Ampliar perfil</em></button>
+              <button class="employee-row" type="button" data-staff="elena"><strong>Elena M.</strong><span>VIP V1-V6</span><b>€2,120</b><em>Ampliar perfil</em></button>
+              <button class="employee-row" type="button" data-staff="juan"><strong>Juan G.</strong><span>Runner VIP</span><b>18 entregas</b><em>Ampliar perfil</em></button>
+              <button class="employee-row" type="button" data-staff="sofia"><strong>Sofia L.</strong><span>Office</span><b>2 OCR</b><em>Ampliar perfil</em></button>
+            </div>
+          </section>
+
+          <section class="employee-detail-panel active" data-staff-detail="carlos">
+            <div class="page-heading compact"><div><p class="desktop-label">Perfil empleado</p><h1>Carlos R.</h1></div><button class="outline-action js-action" type="button">Editar permisos</button></div>
+            <section class="desktop-grid page-metrics"><article class="metric-card wide"><span>Rendimiento barra central</span><strong>€1,840/h</strong><p>312 tickets · ticket medio €18.40 · velocidad media 18s · 98.7% cobros OK.</p></article><article class="metric-card"><span>Riesgo auditoría</span><strong>Medio</strong><p>12 voids · 3 cajón abierto.</p></article><article class="metric-card"><span>Coste turno</span><strong>€80</strong><p>22:30–06:00 · fichaje NFC.</p></article></section>
+            <section class="desktop-grid ops-grid"><article class="desktop-card human-card"><div class="desktop-section-head"><h2>Detalle operativo</h2><span>Live</span></div><table class="staff-cost-table"><tbody><tr><td>Permisos</td><td>POS, cobro, cajón, descuentos limitados</td><td>Editable</td></tr><tr><td>Conectado</td><td>Terminal Barra Central · iPad POS 03</td><td>Online</td></tr><tr><td>Última acción</td><td>Void ticket #B1-1842 · motivo: error producto</td><td>02:28</td></tr><tr><td>Ventas</td><td>€14,720 · 800 bebidas · margen 82.1%</td><td>OK</td></tr></tbody></table></article><article class="desktop-card warehouse-card"><div class="desktop-section-head"><h2>Fraude & control</h2><button class="js-action" type="button">Abrir timeline</button></div><div class="risk-list"><article><strong>Voids</strong><span>12 eventos · €420 acumulado</span><b>Medio</b></article><article><strong>Cajón abierto</strong><span>3 eventos · 2 con venta asociada</span><b>Revisar</b></article><article><strong>Invitaciones</strong><span>0 fuera de política</span><b>OK</b></article></div></article></section>
+          </section>
+
+          <section class="employee-detail-panel" data-staff-detail="elena">
+            <div class="page-heading compact"><div><p class="desktop-label">Perfil empleado</p><h1>Elena M.</h1></div><button class="outline-action js-action" type="button">Editar permisos</button></div>
+            <section class="desktop-grid page-metrics"><article class="metric-card wide"><span>Rendimiento VIP</span><strong>€2,120/h</strong><p>6 mesas activas · upsell +14% · mínimos recuperados €2,840 · 0 no-shows sin gestionar.</p></article><article class="metric-card"><span>Satisfacción sala</span><strong>96%</strong><p>Notas internas cumplidas.</p></article><article class="metric-card"><span>Coste turno</span><strong>€80</strong><p>23:00–06:00 · zona VIP.</p></article></section>
+            <section class="desktop-grid ops-grid"><article class="desktop-card human-card"><div class="desktop-section-head"><h2>Detalle operativo</h2><span>Live</span></div><table class="staff-cost-table"><tbody><tr><td>Permisos</td><td>VIP, reservas, notas cliente, descuentos manager</td><td>Editable</td></tr><tr><td>Conectada</td><td>Mobile VIP · zona V1-V6</td><td>Online</td></tr><tr><td>Última acción</td><td>Upsell pack champagne V4</td><td>02:31</td></tr><tr><td>Ventas influenciadas</td><td>€18,240 · margen 71.4%</td><td>OK</td></tr></tbody></table></article><article class="desktop-card warehouse-card"><div class="desktop-section-head"><h2>VIP intelligence</h2><button class="js-action" type="button">Ver mesas</button></div><div class="risk-list"><article><strong>Mesa inactiva</strong><span>V2 · 28 minutos sin pedir</span><b>Acción</b></article><article><strong>Mínimo pendiente</strong><span>€1,860 entre V2 y V5</span><b>Alto</b></article><article><strong>Notas cliente</strong><span>4 notas aplicadas correctamente</span><b>OK</b></article></div></article></section>
+          </section>
+
+          <section class="employee-detail-panel" data-staff-detail="juan">
+            <div class="page-heading compact"><div><p class="desktop-label">Perfil empleado</p><h1>Juan G.</h1></div><button class="outline-action js-action" type="button">Editar permisos</button></div>
+            <section class="desktop-grid page-metrics"><article class="metric-card wide"><span>Rendimiento runner</span><strong>18</strong><p>Entregas VIP · tiempo medio BDS 03:12 · 2 incidencias resueltas.</p></article><article class="metric-card"><span>Pedidos en ruta</span><strong>3</strong><p>V4, V6, shisha station.</p></article><article class="metric-card"><span>Coste turno</span><strong>€80</strong><p>23:30–06:30 · runner VIP.</p></article></section>
+            <section class="desktop-grid ops-grid"><article class="desktop-card human-card"><div class="desktop-section-head"><h2>Detalle operativo</h2><span>BDS</span></div><table class="staff-cost-table"><tbody><tr><td>Permisos</td><td>BDS, entregas, incidencias, reposición interna</td><td>Editable</td></tr><tr><td>Conectado</td><td>Runner app · dispositivo RG-02</td><td>Online</td></tr><tr><td>Última acción</td><td>Entregado combo V6 · firma staff</td><td>02:35</td></tr><tr><td>SLA</td><td>92% entregas dentro de objetivo</td><td>OK</td></tr></tbody></table></article><article class="desktop-card warehouse-card"><div class="desktop-section-head"><h2>Operativa BDS</h2><button class="js-action" type="button">Abrir cola</button></div><div class="risk-list"><article><strong>Preparando</strong><span>2 tickets VIP · office</span><b>Live</b></article><article><strong>En ruta</strong><span>3 pedidos · ETA 04:20</span><b>OK</b></article><article><strong>Incidencias</strong><span>1 reposición Red Bull</span><b>Acción</b></article></div></article></section>
+          </section>
+
+          <section class="employee-detail-panel" data-staff-detail="sofia">
+            <div class="page-heading compact"><div><p class="desktop-label">Perfil empleado</p><h1>Sofia L.</h1></div><button class="outline-action js-action" type="button">Editar permisos</button></div>
+            <section class="desktop-grid page-metrics"><article class="metric-card wide"><span>Office & finanzas</span><strong>2 OCR</strong><p>4 ajustes de coste · 3 pedidos proveedor · 0 descuadres críticos.</p></article><article class="metric-card"><span>Stock revisado</span><strong>€28.4K</strong><p>Almacén central y VIP office.</p></article><article class="metric-card"><span>Coste turno</span><strong>€80</strong><p>22:00–05:30 · office.</p></article></section>
+            <section class="desktop-grid ops-grid"><article class="desktop-card human-card"><div class="desktop-section-head"><h2>Detalle operativo</h2><span>Office</span></div><table class="staff-cost-table"><tbody><tr><td>Permisos</td><td>OCR, proveedores, stock, costes y cierre parcial</td><td>Editable</td></tr><tr><td>Conectada</td><td>Backoffice · MacBook Office</td><td>Online</td></tr><tr><td>Última acción</td><td>Ajuste coste Tanqueray +7.4%</td><td>02:11</td></tr><tr><td>Impacto margen</td><td>Escandallos recalculados para 12 productos</td><td>OK</td></tr></tbody></table></article><article class="desktop-card warehouse-card"><div class="desktop-section-head"><h2>Supply chain</h2><button class="js-action" type="button">Ver OCR</button></div><div class="risk-list"><article><strong>Albaranes</strong><span>2 procesados · 1 pendiente revisión</span><b>96%</b></article><article><strong>Subida coste</strong><span>Tanqueray +7.4% vs referencia</span><b>Alerta</b></article><article><strong>Pedido rápido</strong><span>Red Bull y Moët programados</span><b>06:00</b></article></div></article></section>
+          </section>
+
           <section class="activity-card"><div class="activity-title"><h3>Asignación de Zonas</h3><i></i></div><div class="density-grid staff-density"><div class="z950">VIP</div><div class="z800">B1</div><div class="z700">B2</div><div class="z600">Puerta</div><div class="z400">Office</div><div class="z300">Runner</div><div class="z200">Stock</div><div class="z100">Back</div></div></section>
         </section>
 

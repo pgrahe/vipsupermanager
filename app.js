@@ -70,6 +70,21 @@ function switchPage(page, scope) {
   });
 }
 
+
+function switchStaff(staff) {
+  document.querySelectorAll("[data-staff-detail]").forEach((panel) => {
+    panel.classList.toggle("active", panel.dataset.staffDetail === staff);
+  });
+  document.querySelectorAll(".employee-row[data-staff]").forEach((row) => {
+    row.classList.toggle("active", row.dataset.staff === staff);
+  });
+  document.querySelectorAll("[data-staff-mobile-detail]").forEach((panel) => {
+    panel.classList.toggle("active", panel.dataset.staffMobileDetail === staff);
+  });
+  const label = { carlos: "Carlos R.", elena: "Elena M.", juan: "Juan G.", sofia: "Sofia L." }[staff] || "empleado";
+  showToast(`Perfil abierto: ${label}.`);
+}
+
 function switchVenue(venue) {
   document.querySelectorAll("[data-venue-detail]").forEach((panel) => {
     panel.classList.toggle("active", panel.dataset.venueDetail === venue);
@@ -121,6 +136,11 @@ document.querySelectorAll(".desktop-sidebar a[data-page]").forEach((link) => {
     event.preventDefault();
     switchPage(link.dataset.page, "desktop");
   });
+});
+
+
+document.querySelectorAll("[data-staff]").forEach((button) => {
+  button.addEventListener("click", () => switchStaff(button.dataset.staff));
 });
 
 document.querySelectorAll(".venue-detail-button[data-venue]").forEach((button) => {
