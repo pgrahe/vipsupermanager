@@ -11,7 +11,7 @@ npm run dev
 Luego abre:
 
 ```text
-http://localhost:8080
+http://127.0.0.1:8080
 ```
 
 ## Deploy en Vercel
@@ -36,3 +36,7 @@ La configuracion vive en `vercel.json`:
 - BDS para runners con estados de preparacion.
 - Stock & P&L con OCR simulado y alertas de coste.
 - Resiliencia visual de `Local mode` mediante simulacion de rush.
+
+## Nota de produccion
+
+No hay backend en produccion. Vercel debe servir solo los archivos estaticos de `dist/`; `dev-server.js` es un servidor local para desarrollo y no debe ejecutarse en Vercel.

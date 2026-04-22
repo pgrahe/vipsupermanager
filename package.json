@@ -2,12 +2,10 @@
   "name": "vipsupermanager",
   "version": "1.0.0",
   "description": "OPSNIGHT operations cockpit prototype for high-volume nightlife venues.",
-  "main": "server.js",
   "scripts": {
     "build": "node build.js",
-    "dev": "node server.js",
-    "start": "node server.js",
-    "test": "node --check server.js && node --check app.js"
+    "dev": "node dev-server.js",
+    "test": "node --check build.js && node --check dev-server.js && node --check app.js"
   },
   "repository": {
     "type": "git",
