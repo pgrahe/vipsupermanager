@@ -1,0 +1,23 @@
+{
+  "name": "vipsupermanager",
+  "version": "1.0.0",
+  "description": "OPSNIGHT operations cockpit prototype for high-volume nightlife venues.",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "test": "node --check server.js && node --check app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pgrahe/vipsupermanager.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/pgrahe/vipsupermanager/issues"
+  },
+  "homepage": "https://github.com/pgrahe/vipsupermanager#readme"
+}

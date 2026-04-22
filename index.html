@@ -1,0 +1,311 @@
+<!doctype html>
+<html class="light" lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OPSNIGHT | Panel de Control</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <section class="mobile-owner" aria-label="OPSNIGHT mobile owner dashboard">
+      <header class="mobile-topbar glass-header">
+        <div class="mobile-brand">
+          <div class="profile-avatar"><span>PG</span></div>
+          <h1>OPSNIGHT</h1>
+        </div>
+        <button class="icon-only settings-trigger" type="button" aria-label="Ajustes"><span class="material-symbols-outlined">tune</span></button>
+      </header>
+
+      <main class="mobile-main">
+        <section class="mobile-page active" data-page="overview">
+          <section class="metric-section">
+            <div class="section-label">Live Performance</div>
+            <div class="mobile-hero-row">
+              <h2>€42.890,00</h2>
+              <div class="trend-pill"><span class="material-symbols-outlined filled">trending_up</span>12%</div>
+            </div>
+            <p>Total Revenue Tonight</p>
+            <div class="mobile-breakdown-grid">
+              <article class="mobile-card"><div class="mobile-card-head"><span>Anticipadas</span><i></i></div><div><strong>€18.420</strong><small>940 Tickets sold</small></div></article>
+              <article class="mobile-card"><div class="mobile-card-head"><span>Taquilla</span><i class="pulse"></i></div><div><strong>€8.150</strong><small>212 Entries</small></div></article>
+              <article class="mobile-card"><div class="mobile-card-head"><span>VIPs</span><i></i></div><div><strong>€12.320</strong><small>18/24 Tables</small></div></article>
+              <article class="mobile-card"><div class="mobile-card-head"><span>Barras</span><i class="pulse"></i></div><div><strong>€4.000</strong><small>Live POS sync</small></div></article>
+            </div>
+          </section>
+
+          <section class="mobile-section">
+            <div class="mobile-section-head">
+              <div><div class="section-label">Live Mapping</div><h3>VIP Floor Plan</h3></div>
+              <div class="floor-legend"><span><i class="occupied-dot"></i>Ocupado</span><span><i class="free-dot"></i>Libre</span></div>
+            </div>
+            <div class="mobile-floor-card">
+              <div class="floor-texture"></div>
+              <div class="mobile-floor-grid">
+                <div class="table occupied">V1</div><div class="table occupied">V2</div><div class="table free">V3</div><div class="table occupied">V4</div>
+                <div class="stage">DJ Stage</div><div class="table occupied">V5</div><div class="table occupied">V6</div>
+                <div class="table free">V7</div><div class="table occupied">V8</div><div class="table free">V9</div><div class="table free">V10</div>
+              </div>
+              <div class="main-bar">Main Bar</div>
+            </div>
+          </section>
+
+          <section class="mobile-section staff-mobile-section">
+            <div class="section-label">Active Personnel</div>
+            <h3>Staff Operations</h3>
+            <div class="mobile-cost-pill">Total Personal: €320</div>
+            <div class="staff-group"><div class="group-title"><span>VIPs</span><b>160€</b><i></i></div><article class="staff-card"><div class="staff-person"><div class="avatar-initials">EM</div><div><strong>Elena M.</strong><span>Head Hostess</span></div></div><b>€80/noche</b></article><article class="staff-card"><div class="staff-person"><div class="avatar-initials">JG</div><div><strong>Juan G.</strong><span>VIP Runner</span></div></div><b>€80/noche</b></article></div>
+            <div class="staff-group"><div class="group-title"><span>Barra 1</span><b>80€</b><i></i></div><article class="staff-card"><div class="staff-person"><div class="avatar-initials">CR</div><div><strong>Carlos R.</strong><span>Senior Mixologist</span></div></div><b>€80/noche</b></article></div>
+          </section>
+        </section>
+
+        <section class="mobile-page" data-page="locales">
+          <section class="mobile-section">
+            <div class="section-label">Locales</div>
+            <div class="mobile-hero-row compact"><h2>€395.520</h2><div class="trend-pill neutral">portfolio</div></div>
+            <p>Facturación live de todas las salas · aforo real 4.928 / legal 5.900.</p>
+            <button class="mobile-primary-action js-action" type="button">Registrar local nuevo</button>
+            <div class="mobile-breakdown-grid">
+              <article class="mobile-card"><div class="mobile-card-head"><span>Aforo legal</span><i></i></div><div><strong>5.900</strong><small>Capacidad autorizada</small></div></article>
+              <article class="mobile-card"><div class="mobile-card-head"><span>Aforo real</span><i class="pulse"></i></div><div><strong>4.928</strong><small>Personas dentro</small></div></article>
+            </div>
+          </section>
+          <section class="mobile-section">
+            <div class="group-title"><span>Locales activos</span><b>LIVE</b><i></i></div>
+            <div class="mobile-list">
+              <article class="mobile-row-card"><div><strong>Kapital Madrid</strong><span>Legal 2.100 · Real 1.842 · Ticket €77.57</span></div><b>€142.890</b></article>
+              <article class="mobile-row-card"><div><strong>Pacha Ibiza</strong><span>Legal 2.800 · Real 2.320 · Ticket €81.22</span></div><b>€188.420</b></article>
+              <article class="mobile-row-card"><div><strong>Opium Barcelona</strong><span>Legal 1.000 · Real 766 · Ticket €83.82</span></div><b>€64.210</b></article>
+            </div>
+          </section>
+          <section class="mobile-section">
+            <div class="group-title"><span>Detalle rápido</span><b>Kapital</b><i></i></div>
+            <div class="mobile-list">
+              <article class="mobile-row-card"><div><strong>Personal contratado hoy</strong><span>46 fichados · 8 conectados a consola</span></div><b>€812/h</b></article>
+              <article class="mobile-row-card"><div><strong>Barra en directo</strong><span>€98.420 · margen botella 73.2%</span></div><b>34.2%</b></article>
+              <article class="mobile-row-card"><div><strong>Cierre por email</strong><span>Informe completo al terminar sesión</span></div><b>02:45</b></article>
+            </div>
+          </section>
+        </section>
+
+        <section class="mobile-page" data-page="finanzas">
+          <section class="mobile-section">
+            <div class="section-label">Financial Ops</div>
+            <div class="mobile-hero-row compact"><h2>34.2%</h2><div class="trend-pill"><span class="material-symbols-outlined filled">trending_up</span>2.4%</div></div>
+            <p>Margen operativo vivo con ventas, COGS, personal y fees.</p>
+            <div class="mobile-list">
+              <article class="mobile-row-card"><div><strong>P&L Operativo</strong><span>Ventas - producto - personal - fees</span></div><b>€98.940</b></article>
+              <article class="mobile-row-card"><div><strong>Liquidación instantánea</strong><span>Revolut-style settlement</span></div><b>€86.200</b></article>
+              <article class="mobile-row-card danger"><div><strong>Riesgo fuga</strong><span>Voids + cajón + invitaciones</span></div><b>Medio</b></article>
+            </div>
+          </section>
+        </section>
+
+        <section class="mobile-page" data-page="personal">
+          <section class="mobile-section">
+            <div class="section-label">Staff Control</div>
+            <div class="mobile-hero-row compact"><h2>46</h2><div class="trend-pill neutral">fichados</div></div>
+            <p>Coste vivo €812/h · permisos, zonas y auditoría por empleado.</p>
+            <div class="staff-group"><div class="group-title"><span>Rendimiento</span><b>LIVE</b><i></i></div><article class="staff-card"><div class="staff-person"><div class="avatar-initials">CR</div><div><strong>Carlos R.</strong><span>€1.840/h · 18 seg/ticket</span></div></div><b>Top</b></article><article class="staff-card"><div class="staff-person"><div class="avatar-initials">EM</div><div><strong>Elena M.</strong><span>VIP upsell +14%</span></div></div><b>OK</b></article></div>
+          </section>
+        </section>
+
+        <section class="mobile-page" data-page="inventario">
+          <section class="mobile-section">
+            <div class="section-label">Inventario</div>
+            <div class="mobile-hero-row compact"><h2>€92.410</h2><div class="trend-pill neutral">stock</div></div>
+            <p>Stock vivo por barra, escandallos y OCR de proveedores.</p>
+            <div class="mobile-list">
+              <article class="mobile-row-card danger"><div><strong>Red Bull Barra Central</strong><span>ETA agotado 13 min</span></div><b>14 uds</b></article>
+              <article class="mobile-row-card danger"><div><strong>Tanqueray No. Ten</strong><span>Stock global crítico</span></div><b>12 bot.</b></article>
+              <article class="mobile-row-card"><div><strong>OCR Proveedores</strong><span>2 albaranes pendientes</span></div><b>96%</b></article>
+            </div>
+          </section>
+        </section>
+      </main>
+
+      <nav class="mobile-bottom-nav glass-header" aria-label="Mobile navigation">
+        <button class="active" type="button" data-page="overview"><span class="material-symbols-outlined filled">dashboard</span><b>Overview</b></button>
+        <button type="button" data-page="locales"><span class="material-symbols-outlined">storefront</span><b>Locales</b></button>
+        <button type="button" data-page="finanzas"><span class="material-symbols-outlined">payments</span><b>Finanzas</b></button>
+        <button type="button" data-page="personal"><span class="material-symbols-outlined">groups</span><b>Staff</b></button>
+        <button type="button" data-page="inventario"><span class="material-symbols-outlined">inventory_2</span><b>Stock</b></button>
+      </nav>
+    </section>
+
+    <section class="desktop-admin" aria-label="OPSNIGHT desktop admin dashboard">
+      <header class="desktop-topbar">
+        <div class="desktop-header-left"><span class="desktop-logo">OPSNIGHT</span><button class="venue-chip js-action" type="button"><span class="material-symbols-outlined">storefront</span>Kapital Madrid<span class="material-symbols-outlined small-symbol">expand_more</span></button></div>
+        <div class="desktop-header-right"><button class="language-button js-action" type="button">Español</button><div class="header-actions"><button class="material-symbols-outlined js-action" type="button" aria-label="Notificaciones">notifications</button><button class="material-symbols-outlined settings-trigger" type="button" aria-label="Ajustes">settings</button><div class="desktop-avatar">PG</div></div></div>
+      </header>
+
+      <aside class="desktop-sidebar">
+        <nav>
+          <a class="active" href="#" data-page="overview"><span class="material-symbols-outlined">dashboard</span>Panel de Control</a>
+          <a href="#" data-page="locales"><span class="material-symbols-outlined">storefront</span>Locales</a>
+          <a href="#" data-page="finanzas"><span class="material-symbols-outlined">payments</span>Finanzas</a>
+          <a href="#" data-page="personal"><span class="material-symbols-outlined">groups</span>Personal</a>
+          <a href="#" data-page="inventario"><span class="material-symbols-outlined">inventory_2</span>Inventario</a>
+        </nav>
+        <div class="sidebar-footer"><a href="#"><span class="material-symbols-outlined">help</span>Soporte</a><a href="#"><span class="material-symbols-outlined">logout</span>Cerrar Sesión</a></div>
+      </aside>
+
+      <main class="desktop-main">
+        <section class="desktop-page active" data-page="overview">
+          <section class="desktop-grid financial-grid">
+            <article class="revenue-desktop-card"><div><p class="desktop-label">Facturación Total (Hoy)</p><h1>€142,890.00</h1></div><div class="desktop-revenue-breakdown"><div><div class="metric-title"><i class="black-square"></i><span>Ingresos Barras</span></div><strong>€98,420.00</strong><div class="metric-bar"><i style="width: 68%"></i></div></div><div><div class="metric-title"><i class="gray-square"></i><span>Ingresos Taquilla</span></div><strong>€44,470.00</strong><div class="metric-bar gray"><i style="width: 32%"></i></div></div></div></article>
+            <article class="margin-desktop-card"><div class="card-headline"><span>Márgenes Operativos</span><span class="material-symbols-outlined">trending_up</span></div><div><strong>34.2%</strong><p>+2.4% vs semana anterior</p></div><dl><div><dt>EBITDA Mensual</dt><dd>€312,400</dd></div><div><dt>Coste de Ventas</dt><dd>22.8%</dd></div></dl></article>
+          </section>
+          <section class="desktop-grid ops-grid"><article class="desktop-card human-card"><div class="desktop-section-head"><h2>Personal & Costes Salariales</h2><span>Live Update</span></div><div class="human-content"><div><p class="mini-label">Densidad por Zona</p><div class="density-grid"><div class="z950">V1</div><div class="z700">V2</div><div class="z400">V3</div><div class="z100">V4</div><div class="z800">B1</div><div class="z950">B2</div><div class="z800">B3</div><div class="z600">B4</div><div class="z300">T1</div><div class="z200">T2</div><div class="z100">T3</div><div class="z100">T4</div></div></div><div><table class="staff-cost-table"><thead><tr><th>Categoría</th><th>Coste/Hora</th><th>Total Act.</th></tr></thead><tbody><tr><td>Seguridad (SIA)</td><td>€22.50</td><td>€1,240.00</td></tr><tr><td>Barra & Sala</td><td>€14.20</td><td>€3,840.00</td></tr><tr><td>Limpieza & Manten.</td><td>€11.80</td><td>€640.00</td></tr></tbody></table></div></div></article><article class="desktop-card warehouse-card"><div class="desktop-section-head"><h2>Stock Crítico (Global)</h2><button class="js-action" type="button">Pedido Rápido</button></div><div class="warehouse-list"><article class="stock-row critical"><div class="stock-thumb">1</div><div><header><strong>Tanqueray No. Ten</strong><b>12 BOTELLAS</b></header><div class="stock-meter"><i style="width: 15%"></i></div></div></article><article class="stock-row"><div class="stock-thumb">2</div><div><header><strong>Grey Goose Vodka 1L</strong><b>48 BOTELLAS</b></header><div class="stock-meter"><i style="width: 60%"></i></div></div></article><article class="stock-row"><div class="stock-thumb">3</div><div><header><strong>Johnnie Walker Black Label</strong><b>32 BOTELLAS</b></header><div class="stock-meter"><i style="width: 42%"></i></div></div></article><article class="stock-row critical"><div class="stock-thumb">4</div><div><header><strong>Moët & Chandon Brut</strong><b>8 BOTELLAS</b></header><div class="stock-meter"><i style="width: 8%"></i></div></div></article></div><footer><span>Próximo envío programado:</span><strong>Lunes, 06:00 AM</strong></footer></article></section>
+          <section class="activity-card"><div class="activity-title"><h3>Actividad Reciente del Sistema</h3><i></i></div><div class="activity-items"><article><span class="material-symbols-outlined">verified_user</span><div><strong>Acceso Biométrico: Director General</strong><small>Hace 4 minutos · Kapital Madrid</small></div></article><article><span class="material-symbols-outlined">report_problem</span><div><strong>Alerta Stock: Ron Barceló Imperial</strong><small>Hace 12 minutos · Pacha Ibiza</small></div></article><article><span class="material-symbols-outlined">currency_exchange</span><div><strong>Cierre Parcial de Caja Barra Central</strong><small>Hace 28 minutos · €14,210 registrados</small></div></article><article><span class="material-symbols-outlined">sensors</span><div><strong>Calibración de Sonido Automática</strong><small>Hace 45 minutos · Sala Principal</small></div></article></div></section>
+        </section>
+
+        <section class="desktop-page" data-page="locales">
+          <div class="page-heading">
+            <div><p class="desktop-label">Operativa multi-local</p><h1>Locales</h1></div>
+            <button class="outline-action js-action" type="button">Registrar local nuevo</button>
+          </div>
+
+          <section class="desktop-grid page-metrics venue-summary-grid">
+            <article class="metric-card wide"><span>Facturación live portfolio</span><strong>€395,520.00</strong><p>Suma en directo de todas las salas: anticipadas, taquilla, barras, VIP, QR y cashless.</p></article>
+            <article class="metric-card"><span>Aforo legal total</span><strong>5,900</strong><p>Capacidad autorizada agregada.</p></article>
+            <article class="metric-card"><span>Aforo real total</span><strong>4,928</strong><p>83.5% dentro ahora mismo.</p></article>
+          </section>
+
+          <section class="desktop-card venue-dashboard-card">
+            <div class="desktop-section-head"><h2>Dashboard de Locales</h2><span>Live Sync</span></div>
+            <div class="venue-control-list">
+              <article class="venue-control-row active" data-venue-row="kapital">
+                <div><strong>Kapital Madrid</strong><span>Madrid · Sala principal · cola puerta 14 min</span></div>
+                <b>€142,890.00</b><em><span>Aforo legal</span>2,100</em><em><span>Aforo real</span>1,842</em>
+                <button class="outline-action venue-detail-button" type="button" data-venue="kapital">Ampliar información</button>
+              </article>
+              <article class="venue-control-row" data-venue-row="pacha">
+                <div><strong>Pacha Ibiza</strong><span>Ibiza · Sesión residencia · riesgo stock alto</span></div>
+                <b>€188,420.00</b><em><span>Aforo legal</span>2,800</em><em><span>Aforo real</span>2,320</em>
+                <button class="outline-action venue-detail-button" type="button" data-venue="pacha">Ampliar información</button>
+              </article>
+              <article class="venue-control-row" data-venue-row="opium">
+                <div><strong>Opium Barcelona</strong><span>Barcelona · Evento privado · VIP 62%</span></div>
+                <b>€64,210.00</b><em><span>Aforo legal</span>1,000</em><em><span>Aforo real</span>766</em>
+                <button class="outline-action venue-detail-button" type="button" data-venue="opium">Ampliar información</button>
+              </article>
+            </div>
+          </section>
+
+          <section class="venue-detail-panel active" data-venue-detail="kapital">
+            <div class="page-heading compact"><div><p class="desktop-label">Detalle local</p><h1>Kapital Madrid</h1></div><button class="outline-action js-action" type="button">Enviar cierre de prueba</button></div>
+            <section class="desktop-grid page-metrics"><article class="metric-card wide"><span>Facturación en directo</span><strong>€142,890.00</strong><p>Anticipadas €18,420 · Taquilla €8,150 · VIP €12,320 · Barras €98,420.</p></article><article class="metric-card"><span>Ticket medio/persona</span><strong>€77.57</strong><p>Live sobre aforo real.</p></article><article class="metric-card"><span>Coste botellas</span><strong>€32,570</strong><p>COGS 22.8% · margen sesión 34.2%.</p></article></section>
+            <section class="desktop-grid ops-grid"><article class="desktop-card human-card"><div class="desktop-section-head"><h2>Permisos, Conectados y Auditoría</h2><span>Security Log</span></div><table class="staff-cost-table"><thead><tr><th>Área</th><th>Dato</th><th>Estado</th></tr></thead><tbody><tr><td>Permisos dirección</td><td>Owner ve P&L, stock y auditoría</td><td>Editable</td></tr><tr><td>Usuarios conectados</td><td>8 activos · 3 POS · 2 puerta · 2 BDS · 1 office</td><td>Live</td></tr><tr><td>Última edición</td><td>Sofia L. cambió precio Tanqueray · 02:11</td><td>Auditado</td></tr><tr><td>Personal contratado hoy</td><td>46 fichados · coste €812/h</td><td>OK</td></tr></tbody></table></article><article class="desktop-card warehouse-card"><div class="desktop-section-head"><h2>Cierre automático nocturno</h2><button class="js-action" type="button">Configurar Email</button></div><div class="risk-list"><article><strong>Destinatarios</strong><span>owner@opsnight.local · direccion@kapital.local</span><b>2</b></article><article><strong>Hora estimada</strong><span>Al cierre de caja + reconciliación de pagos</span><b>06:30</b></article><article><strong>Informe tochísimo</strong><span>P&L, rentabilidad sesión, costes, staff, stock, fraude, aforo, tickets, márgenes y OCR.</span><b>PDF</b></article></div></article></section>
+          </section>
+
+          <section class="venue-detail-panel" data-venue-detail="pacha">
+            <div class="page-heading compact"><div><p class="desktop-label">Detalle local</p><h1>Pacha Ibiza</h1></div><button class="outline-action js-action" type="button">Enviar cierre de prueba</button></div>
+            <section class="desktop-grid page-metrics"><article class="metric-card wide"><span>Facturación en directo</span><strong>€188,420.00</strong><p>Anticipadas €42,100 · Taquilla €21,800 · VIP €38,400 · Barras €86,120.</p></article><article class="metric-card"><span>Ticket medio/persona</span><strong>€81.22</strong><p>Live sobre 2.320 personas dentro.</p></article><article class="metric-card"><span>Coste botellas</span><strong>€48,920</strong><p>COGS 25.9% · margen sesión 31.8%.</p></article></section>
+            <section class="desktop-grid ops-grid"><article class="desktop-card human-card"><div class="desktop-section-head"><h2>Permisos, Conectados y Auditoría</h2><span>Security Log</span></div><table class="staff-cost-table"><tbody><tr><td>Permisos dirección</td><td>Manager ve ventas y staff, no P&L global</td><td>Editable</td></tr><tr><td>Usuarios conectados</td><td>11 activos · 5 POS · 2 puerta · 3 BDS · 1 office</td><td>Live</td></tr><tr><td>Última edición</td><td>Marc P. ajustó mínimo VIP V8 · 01:58</td><td>Auditado</td></tr><tr><td>Personal contratado hoy</td><td>62 fichados · coste €1,180/h</td><td>OK</td></tr></tbody></table></article><article class="desktop-card warehouse-card"><div class="desktop-section-head"><h2>Cierre automático nocturno</h2><button class="js-action" type="button">Configurar Email</button></div><div class="risk-list"><article><strong>Destinatarios</strong><span>owner@opsnight.local · direccion@pacha.local</span><b>2</b></article><article><strong>Hora estimada</strong><span>Al cierre de caja + conciliación cashless</span><b>07:00</b></article><article><strong>Informe final</strong><span>Rentabilidad DJ set, VIP, barras, puerta, stock crítico, pagos y no-shows.</span><b>PDF</b></article></div></article></section>
+          </section>
+
+          <section class="venue-detail-panel" data-venue-detail="opium">
+            <div class="page-heading compact"><div><p class="desktop-label">Detalle local</p><h1>Opium Barcelona</h1></div><button class="outline-action js-action" type="button">Enviar cierre de prueba</button></div>
+            <section class="desktop-grid page-metrics"><article class="metric-card wide"><span>Facturación en directo</span><strong>€64,210.00</strong><p>Anticipadas €14,200 · Taquilla €6,900 · VIP €18,400 · Barras €24,710.</p></article><article class="metric-card"><span>Ticket medio/persona</span><strong>€83.82</strong><p>Live sobre 766 personas dentro.</p></article><article class="metric-card"><span>Coste botellas</span><strong>€18,680</strong><p>COGS 29.1% · evento privado con margen controlado.</p></article></section>
+            <section class="desktop-grid ops-grid"><article class="desktop-card human-card"><div class="desktop-section-head"><h2>Permisos, Conectados y Auditoría</h2><span>Security Log</span></div><table class="staff-cost-table"><tbody><tr><td>Permisos evento</td><td>Cliente ve consumo VIP, no staff ni auditoría</td><td>Editable</td></tr><tr><td>Usuarios conectados</td><td>5 activos · 2 POS · 1 puerta · 1 BDS · 1 office</td><td>Live</td></tr><tr><td>Última edición</td><td>Laura B. añadió lista privada · 00:42</td><td>Auditado</td></tr><tr><td>Personal contratado hoy</td><td>28 fichados · coste €520/h</td><td>OK</td></tr></tbody></table></article><article class="desktop-card warehouse-card"><div class="desktop-section-head"><h2>Cierre automático nocturno</h2><button class="js-action" type="button">Configurar Email</button></div><div class="risk-list"><article><strong>Destinatarios</strong><span>owner@opsnight.local · eventos@opium.local</span><b>2</b></article><article><strong>Hora estimada</strong><span>Tras cierre parcial de barra y consumo VIP</span><b>05:45</b></article><article><strong>Informe final</strong><span>Consumo mínimo, rentabilidad por mesa, barras, coste staff y desviación stock.</span><b>PDF</b></article></div></article></section>
+          </section>
+
+          <section class="activity-card portfolio-footer"><div class="activity-title"><h3>Total portfolio esta noche</h3><i></i></div><div class="portfolio-total-grid"><article><span>Facturación todas las salas</span><strong>€395,520.00</strong></article><article><span>Aforo total legal</span><strong>5,900</strong></article><article><span>Aforo total real</span><strong>4,928</strong></article><article><span>Rentabilidad media sesión</span><strong>32.1%</strong></article></div></section>
+        </section>
+
+        <section class="desktop-page" data-page="finanzas">
+          <div class="page-heading"><div><p class="desktop-label">Embedded finance & P&L</p><h1>Finanzas</h1></div><button class="outline-action js-action" type="button">Exportar cierre</button></div>
+          <section class="desktop-grid financial-grid"><article class="revenue-desktop-card"><div><p class="desktop-label">Beneficio operativo vivo</p><h1>€98,940.00</h1></div><div class="equation-grid"><span>Ventas €142,890</span><span>COGS €32,570</span><span>Labor €8,920</span><span>Fees €1,820</span><span>Merma €640</span></div></article><article class="margin-desktop-card"><div class="card-headline"><span>Liquidación instantánea</span><span class="material-symbols-outlined">bolt</span></div><div><strong>€86.2K</strong><p>Disponible para settlement hoy</p></div><dl><div><dt>QR/Split</dt><dd>€18,420</dd></div><div><dt>NFC/Reader</dt><dd>€67,780</dd></div></dl></article></section>
+          <section class="desktop-grid ops-grid"><article class="desktop-card human-card"><div class="desktop-section-head"><h2>Canales de Pago</h2><span>Reconciled</span></div><table class="staff-cost-table"><thead><tr><th>Canal</th><th>Importe</th><th>Estado</th></tr></thead><tbody><tr><td>Apple Pay / NFC</td><td>€54,210.00</td><td>OK</td></tr><tr><td>QR Mesa / Split-bill</td><td>€18,420.00</td><td>OK</td></tr><tr><td>Cashless Pulsera</td><td>€22,180.00</td><td>OK</td></tr><tr><td>Efectivo Taquilla</td><td>€13,920.00</td><td>Revisión</td></tr></tbody></table></article><article class="desktop-card warehouse-card"><div class="desktop-section-head"><h2>Auditoría de Fugas</h2><button class="js-action" type="button">Abrir Riesgo</button></div><div class="risk-list"><article><strong>Voids Barra 2</strong><span>Carlos R. · €420 · 12 eventos</span><b>Medio</b></article><article><strong>Cajón abierto</strong><span>Sin venta cercana · 3 eventos</span><b>Alto</b></article><article><strong>Invitaciones VIP</strong><span>Dentro de política · 2.1% ventas</span><b>OK</b></article></div></article></section>
+        </section>
+
+        <section class="desktop-page" data-page="personal">
+          <div class="page-heading"><div><p class="desktop-label">Staff operations & control</p><h1>Personal</h1></div><button class="outline-action js-action" type="button">Crear turno</button></div>
+          <section class="desktop-grid page-metrics"><article class="metric-card wide"><span>Coste laboral vivo</span><strong>€812/h</strong><p>46 personas fichadas con PIN/NFC y zona asignada.</p></article><article class="metric-card"><span>Ticket medio staff</span><strong>€18.40</strong><p>Barra & sala.</p></article><article class="metric-card"><span>Velocidad servicio</span><strong>21s</strong><p>Pedido a cobro.</p></article></section>
+          <section class="desktop-grid ops-grid"><article class="desktop-card human-card"><div class="desktop-section-head"><h2>Rendimiento por Empleado</h2><span>Live Update</span></div><table class="staff-cost-table"><thead><tr><th>Empleado</th><th>Zona</th><th>Fact/Hora</th></tr></thead><tbody><tr><td>Carlos R.</td><td>Barra Central</td><td>€1,840</td></tr><tr><td>Elena M.</td><td>VIP V1-V6</td><td>€2,120</td></tr><tr><td>Juan G.</td><td>Runner VIP</td><td>18 entregas</td></tr><tr><td>Sofia L.</td><td>Office</td><td>2 OCR</td></tr></tbody></table></article><article class="desktop-card warehouse-card"><div class="desktop-section-head"><h2>Permisos & Fraude</h2><button class="js-action" type="button">Revisar</button></div><div class="risk-list"><article><strong>Override manager</strong><span>7 aprobaciones · 0 rechazadas</span><b>OK</b></article><article><strong>Cancelación ticket</strong><span>Requiere motivo obligatorio</span><b>Activo</b></article><article><strong>Geofence fichaje</strong><span>46/46 dentro del local</span><b>OK</b></article></div></article></section>
+          <section class="activity-card"><div class="activity-title"><h3>Asignación de Zonas</h3><i></i></div><div class="density-grid staff-density"><div class="z950">VIP</div><div class="z800">B1</div><div class="z700">B2</div><div class="z600">Puerta</div><div class="z400">Office</div><div class="z300">Runner</div><div class="z200">Stock</div><div class="z100">Back</div></div></section>
+        </section>
+
+        <section class="desktop-page" data-page="inventario">
+          <div class="page-heading"><div><p class="desktop-label">Supply chain & escandallos</p><h1>Inventario</h1></div><button class="outline-action js-action" type="button">Escanear albarán</button></div>
+          <section class="desktop-grid page-metrics"><article class="metric-card wide"><span>Valor stock teórico</span><strong>€92,410.00</strong><p>Almacén central, barras, office VIP y estaciones shisha.</p></article><article class="metric-card"><span>Roturas ETA &lt; 30m</span><strong>4</strong><p>Reposición inmediata.</p></article><article class="metric-card"><span>OCR precisión</span><strong>96%</strong><p>2 documentos pendientes.</p></article></section>
+          <section class="desktop-grid ops-grid"><article class="desktop-card human-card"><div class="desktop-section-head"><h2>Escandallo Dinámico</h2><span>Cost Live</span></div><table class="staff-cost-table"><thead><tr><th>Producto TPV</th><th>Coste</th><th>Margen</th></tr></thead><tbody><tr><td>Ron Cola · Barceló 50ml</td><td>€1.92</td><td>84.0%</td></tr><tr><td>Grey Goose botella VIP</td><td>€64.20</td><td>73.2%</td></tr><tr><td>Champagne Pack</td><td>€148.00</td><td>69.1%</td></tr><tr><td>Shisha Love 66</td><td>€8.40</td><td>78.6%</td></tr></tbody></table></article><article class="desktop-card warehouse-card"><div class="desktop-section-head"><h2>Stock Crítico por Ubicación</h2><button class="js-action" type="button">Reponer</button></div><div class="warehouse-list"><article class="stock-row critical"><div class="stock-thumb">RB</div><div><header><strong>Red Bull · Barra Central</strong><b>14 UDS</b></header><div class="stock-meter"><i style="width: 9%"></i></div></div></article><article class="stock-row critical"><div class="stock-thumb">TN</div><div><header><strong>Tanqueray · Global</strong><b>12 BOT</b></header><div class="stock-meter"><i style="width: 15%"></i></div></div></article><article class="stock-row"><div class="stock-thumb">GG</div><div><header><strong>Grey Goose · VIP Office</strong><b>48 BOT</b></header><div class="stock-meter"><i style="width: 60%"></i></div></div></article></div></article></section>
+          <section class="activity-card"><div class="activity-title"><h3>OCR & Proveedores</h3><i></i></div><div class="activity-items"><article><span class="material-symbols-outlined">document_scanner</span><div><strong>Distribuciones Norte</strong><small>Tanqueray +7.4% vs coste referencia.</small></div></article><article><span class="material-symbols-outlined">inventory</span><div><strong>Movimiento interno</strong><small>Almacén central → Barra 1 · 3 Red Bull trays.</small></div></article><article><span class="material-symbols-outlined">science</span><div><strong>Merma detectada</strong><small>Barra 2 · vodka teórico - físico: 420ml.</small></div></article></div></section>
+        </section>
+      </main>
+    </section>
+
+
+    <div class="settings-overlay" id="settingsOverlay" hidden>
+      <aside class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+        <header class="settings-header">
+          <div>
+            <p class="desktop-label">Configuración general</p>
+            <h2 id="settingsTitle">Ajustes</h2>
+          </div>
+          <button class="settings-close" id="settingsClose" type="button" aria-label="Cerrar ajustes">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </header>
+
+        <section class="settings-section">
+          <div class="settings-section-title"><span class="material-symbols-outlined">contrast</span><h3>Apariencia</h3></div>
+          <div class="theme-switcher" role="group" aria-label="Seleccionar tema">
+            <button type="button" data-theme-option="light">Claro</button>
+            <button type="button" data-theme-option="dark">Oscuro</button>
+            <button type="button" data-theme-option="system">Sistema</button>
+          </div>
+          <p class="settings-help" id="themeStatus">Tema claro activo.</p>
+        </section>
+
+        <section class="settings-section">
+          <div class="settings-section-title"><span class="material-symbols-outlined">storefront</span><h3>Local y sesión</h3></div>
+          <label class="settings-field"><span>Local por defecto</span><select><option>Kapital Madrid</option><option>Pacha Ibiza</option><option>Opium Barcelona</option></select></label>
+          <label class="settings-field"><span>Idioma</span><select><option>Español</option><option>English</option></select></label>
+          <label class="settings-field"><span>Moneda</span><select><option>EUR · Euro</option><option>USD · Dollar</option><option>GBP · Pound</option></select></label>
+        </section>
+
+        <section class="settings-section">
+          <div class="settings-section-title"><span class="material-symbols-outlined">admin_panel_settings</span><h3>Seguridad y permisos</h3></div>
+          <label class="settings-toggle"><span><strong>Auditoría estricta</strong><small>Registrar ediciones, voids, cajón abierto y cambios de permisos.</small></span><input type="checkbox" checked /></label>
+          <label class="settings-toggle"><span><strong>Requerir aprobación manager</strong><small>Invitaciones, refunds y descuentos sensibles.</small></span><input type="checkbox" checked /></label>
+          <label class="settings-toggle"><span><strong>Ocultar P&L a roles operativos</strong><small>Solo owner y dirección ven rentabilidad completa.</small></span><input type="checkbox" checked /></label>
+        </section>
+
+        <section class="settings-section">
+          <div class="settings-section-title"><span class="material-symbols-outlined">outgoing_mail</span><h3>Cierre nocturno por email</h3></div>
+          <label class="settings-toggle"><span><strong>Enviar informe automático</strong><small>P&L, aforo, stock, staff, fraude, pagos y rentabilidad de sesión.</small></span><input type="checkbox" checked /></label>
+          <label class="settings-field"><span>Hora de envío</span><select><option>Al cierre de caja + reconciliación</option><option>06:00 AM</option><option>07:00 AM</option></select></label>
+        </section>
+
+        <section class="settings-section">
+          <div class="settings-section-title"><span class="material-symbols-outlined">notifications</span><h3>Alertas operativas</h3></div>
+          <label class="settings-toggle"><span><strong>Stock crítico</strong><small>ETA de rotura por barra y almacén.</small></span><input type="checkbox" checked /></label>
+          <label class="settings-toggle"><span><strong>Mesa VIP inactiva</strong><small>Avisar si pasa demasiado tiempo sin pedido.</small></span><input type="checkbox" checked /></label>
+          <label class="settings-toggle"><span><strong>Riesgo de fuga</strong><small>Voids, cajón, invitaciones y descuadres.</small></span><input type="checkbox" checked /></label>
+        </section>
+
+        <section class="settings-section">
+          <div class="settings-section-title"><span class="material-symbols-outlined">hub</span><h3>Integraciones</h3></div>
+          <div class="integration-list">
+            <article><strong>Pagos QR / NFC</strong><span>Conectado</span></article>
+            <article><strong>OCR Proveedores</strong><span>Activo</span></article>
+            <article><strong>Email de cierre</strong><span>Programado</span></article>
+          </div>
+        </section>
+
+        <footer class="settings-footer">
+          <button class="outline-action" id="settingsCancel" type="button">Cancelar</button>
+          <button class="settings-save" id="settingsSave" type="button">Guardar ajustes</button>
+        </footer>
+      </aside>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
