@@ -4,6 +4,7 @@
   "description": "OPSNIGHT operations cockpit prototype for high-volume nightlife venues.",
   "main": "server.js",
   "scripts": {
+    "build": "node build.js",
     "dev": "node server.js",
     "start": "node server.js",
     "test": "node --check server.js && node --check app.js"

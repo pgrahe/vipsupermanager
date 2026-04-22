@@ -14,6 +14,20 @@ Luego abre:
 http://localhost:8080
 ```
 
+## Deploy en Vercel
+
+Vercel debe publicar la build estatica generada en `dist/`.
+
+```bash
+npm run build
+```
+
+La configuracion vive en `vercel.json`:
+
+- Build command: `npm run build`
+- Output directory: `dist`
+- Fallback SPA: cualquier ruta vuelve a `index.html`
+
 ## Incluye
 
 - Master Control Dashboard con revenue, margen, aforo, staff, stock y audit stream.
