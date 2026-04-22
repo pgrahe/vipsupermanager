@@ -245,10 +245,73 @@ function renderRows(selector, rows) {
   node.innerHTML = (rows || []).map(([title, detail, status]) => `<article><strong>${title}</strong><span>${detail}</span><b>${status}</b></article>`).join("");
 }
 
+function renderVisualRows(selector, rows) {
+  const node = document.querySelector(selector);
+  if (!node) return;
+  node.innerHTML = (rows || []).map(([title, detail, status]) => {
+    const showStatus = status && status !== "OK" && status !== "-";
+    return `
+      <article class="visual-status-item">
+        <i class="material-symbols-outlined">${iconForLabel(title)}</i>
+        <div>
+          <strong>${title}</strong>
+          <span>${detail}</span>
+        </div>
+        ${showStatus ? `<b>${status}</b>` : ""}
+      </article>
+    `;
+  }).join("");
+}
+
+function renderOperationalRows(selector, rows) {
+  const node = document.querySelector(selector);
+  if (!node) return;
+  node.innerHTML = (rows || []).map(([title, detail]) => `
+    <article class="operational-item">
+      <i class="material-symbols-outlined">${iconForLabel(title)}</i>
+      <div>
+        <span>${title}</span>
+        <strong>${detail}</strong>
+      </div>
+      <button class="edit-chip operational-edit" type="button" aria-label="Editar ${title}">
+        <span class="material-symbols-outlined">edit</span>
+      </button>
+    </article>
+  `).join("");
+  node.querySelectorAll(".operational-edit").forEach((button) => button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    showToast("Editar dato operativo: próximamente.");
+  }));
+}
+
+function iconForLabel(label = "") {
+  const key = label.toLowerCase();
+  if (key.includes("permiso")) return "admin_panel_settings";
+  if (key.includes("conect")) return "devices";
+  if (key.includes("acción") || key.includes("accion")) return "history";
+  if (key.includes("modelo") || key.includes("salario")) return "payments";
+  if (key.includes("coste") || key.includes("bonus") || key.includes("recargo")) return "euro";
+  if (key.includes("hora") || key.includes("límite") || key.includes("máx")) return "schedule";
+  if (key.includes("turno") || key.includes("vacaciones") || key.includes("festivo")) return "calendar_month";
+  if (key.includes("ausencia") || key.includes("cumplimiento")) return "verified_user";
+  if (key.includes("fichaje") || key.includes("gps") || key.includes("método")) return "location_on";
+  if (key.includes("retras") || key.includes("abandono") || key.includes("falso")) return "warning";
+  if (key.includes("dni") || key.includes("seguridad") || key.includes("iban")) return "badge";
+  if (key.includes("contacto")) return "call";
+  if (key.includes("tipo") || key.includes("empresa") || key.includes("contrato")) return "business";
+  if (key.includes("document")) return "description";
+  if (key.includes("tpv") || key.includes("ventas") || key.includes("ticket") || key.includes("pago")) return "point_of_sale";
+  if (key.includes("walkie")) return "settings_input_antenna";
+  if (key.includes("tablet") || key.includes("mobile") || key.includes("laptop")) return "devices";
+  if (key.includes("alerta")) return "notifications_active";
+  return "radio_button_checked";
+}
+
 function renderProfileGrid(selector, rows) {
   const node = document.querySelector(selector);
   if (!node) return;
-  node.innerHTML = (rows || []).map(([title, detail, status]) => `<article><span>${title}</span><strong>${detail}</strong><em>${status}</em></article>`).join("");
+  node.innerHTML = (rows || []).map(([title, detail, status]) => `<article><button class="edit-chip" type="button" aria-label="Editar ${title}"><span class="material-symbols-outlined">edit</span></button><div class="profile-card-top"><i class="material-symbols-outlined">${iconForLabel(title)}</i><span>${title}</span></div><strong>${detail}</strong><em>${status}</em></article>`).join("");
+  node.querySelectorAll(".edit-chip").forEach((button) => button.addEventListener("click", (event) => { event.stopPropagation(); showToast("Editar campo: próximamente."); }));
 }
 
 function openStaffDetail(staff) {
@@ -277,16 +340,15 @@ function openStaffDetail(staff) {
   fillText("#employeeDetailBadge", data.badge);
   fillText("#employeeSideTitle", data.sideTitle);
   fillText("#employeeSideAction", data.sideAction);
-  const detailRows = document.querySelector("#employeeDetailRows");
-  if (detailRows) detailRows.innerHTML = data.detail.map(([area, datum, status]) => `<tr><td>${area}</td><td>${datum}</td><td>${status}</td></tr>`).join("");
+  renderOperationalRows("#employeeDetailRows", data.detail);
   renderRows("#employeeRiskRows", data.risks);
   renderProfileGrid("#employeeCostEngine", data.costEngine);
   renderProfileGrid("#employeeScheduling", data.scheduling);
-  renderRows("#employeeGeoFraud", data.geoFraud);
+  renderVisualRows("#employeeGeoFraud", data.geoFraud);
   renderProfileGrid("#employeeFullProfile", data.profile);
   renderRows("#employeeCompany", data.company);
   renderProfileGrid("#employeeDevices", data.devices);
-  renderRows("#employeePos", data.pos);
+  renderVisualRows("#employeePos", data.pos);
   showToast(`Pantalla abierta: ${data.title}.`);
 }
 
