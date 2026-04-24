@@ -6,6 +6,10 @@ const settingsSave = document.querySelector("#settingsSave");
 const themeStatus = document.querySelector("#themeStatus");
 const themeButtons = [...document.querySelectorAll("[data-theme-option]")];
 const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
+const desktopAdmin = document.querySelector(".desktop-admin");
+const accessTrigger = document.querySelector("#accessSwitcherTrigger");
+const accessMenu = document.querySelector("#accessSwitcherMenu");
+const accessLabel = document.querySelector("#currentAccessLabel");
 
 const staffData = {
   carlos: {
@@ -145,6 +149,70 @@ const venueData = {
   },
 };
 
+const accessModes = {
+  director: { label: "Director", page: "overview" },
+  barra: { label: "Barra TPV", page: "tpv", catalog: "barra" },
+  taquilla: { label: "Taquilla", page: "tpv", catalog: "taquilla" },
+  vip: { label: "VIP", page: "personal", staff: "elena" },
+  office: { label: "Office", page: "finanzas" },
+};
+
+const tpvCatalogs = {
+  taquilla: [
+    { id: "comp-godo", name: "Compromiso GODÓ", price: 0, tag: "Compromiso", tone: "amber", icon: "confirmation_number", category: "Entradas" },
+    { id: "rrpp", name: "Compromiso via RRPP", price: 0, tag: "RRPP", tone: "violet", icon: "confirmation_number", category: "Entradas" },
+    { id: "img-chica", name: "Imagen chica", price: 0, tag: "Imagen chica", tone: "pink", icon: "confirmation_number", category: "Entradas" },
+    { id: "inv-chico", name: "Invitación chico", price: 0, tag: "Invitación chico", tone: "cyan", icon: "confirmation_number", category: "Entradas" },
+    { id: "compromiso", name: "Compromiso", price: 5, tag: "Compromiso", tone: "amber", icon: "confirmation_number", category: "Entradas" },
+    { id: "entrada10", name: "Entrada 10€", price: 10, tag: "Entrada", tone: "green", icon: "confirmation_number", category: "Entradas" },
+    { id: "entrada12", name: "Entrada 12€", price: 12, tag: "Entrada", tone: "green", icon: "confirmation_number", category: "Entradas" },
+    { id: "entrada15", name: "Entrada 15€", price: 15, tag: "Entrada", tone: "green", icon: "confirmation_number", category: "Entradas" },
+    { id: "entrada18", name: "Entrada 18€", price: 18, tag: "Entrada", tone: "green", icon: "confirmation_number", category: "Entradas" },
+    { id: "entrada20", name: "Entrada 20€", price: 20, tag: "Entrada", tone: "green", icon: "confirmation_number", category: "Entradas" },
+    { id: "entrada25", name: "Entrada 25€", price: 25, tag: "Entrada", tone: "green", icon: "confirmation_number", category: "Entradas" },
+    { id: "entrada30", name: "Entrada 30€", price: 30, tag: "Entrada", tone: "green", icon: "confirmation_number", category: "Entradas" },
+    { id: "entrada35", name: "Entrada 35€", price: 35, tag: "Entrada", tone: "green", icon: "confirmation_number", category: "Entradas" },
+    { id: "entrada40", name: "Entrada 40€", price: 40, tag: "Entrada", tone: "green", icon: "confirmation_number", category: "Entradas" },
+    { id: "entrada45", name: "Entrada 45€", price: 45, tag: "Entrada", tone: "green", icon: "confirmation_number", category: "Entradas" },
+    { id: "entrada50", name: "Entrada 50€", price: 50, tag: "Entrada", tone: "green", icon: "confirmation_number", category: "Entradas" },
+    { id: "entrada60", name: "Entrada 60€", price: 60, tag: "Entrada", tone: "green", icon: "confirmation_number", category: "Entradas" },
+    { id: "entrada80", name: "Entrada 80€", price: 80, tag: "Entrada", tone: "green", icon: "confirmation_number", category: "Entradas" },
+    { id: "entrada100", name: "Entrada 100€", price: 100, tag: "Entrada", tone: "green", icon: "confirmation_number", category: "Entradas" },
+  ],
+  barra: [
+    { id: "ron-cola", name: "Ron Cola", price: 12, tag: "Combinado", tone: "green", icon: "liquor", category: "Ron" },
+    { id: "vodka-rb", name: "Vodka Red Bull", price: 15, tag: "Premium", tone: "cyan", icon: "liquor", category: "Vodka" },
+    { id: "gin-tonic", name: "Gin Tonic", price: 14, tag: "Copa", tone: "violet", icon: "wine_bar", category: "Ginebra" },
+    { id: "jb-cola", name: "JB Cola", price: 12, tag: "Whisky", tone: "amber", icon: "liquor", category: "Whisky" },
+    { id: "barcelo-cola", name: "Barceló Cola", price: 13, tag: "Ron", tone: "green", icon: "liquor", category: "Ron" },
+    { id: "moet", name: "Moët Brut", price: 220, tag: "Botella", tone: "amber", icon: "liquor", category: "Champagne" },
+    { id: "grey-goose", name: "Grey Goose VIP", price: 260, tag: "Botella", tone: "violet", icon: "liquor", category: "Vodka" },
+    { id: "redbull", name: "Red Bull", price: 6, tag: "Refresco", tone: "cyan", icon: "bolt", category: "Refrescos" },
+    { id: "coca-cola", name: "Coca-Cola", price: 5, tag: "Refresco", tone: "cyan", icon: "bolt", category: "Refrescos" },
+    { id: "agua", name: "Agua", price: 5, tag: "Soft", tone: "slate", icon: "water_drop", category: "Agua" },
+    { id: "zumo-pina", name: "Zumo Piña", price: 6, tag: "Zumo", tone: "amber", icon: "water_drop", category: "Zumos" },
+    { id: "tequila-shot", name: "Tequila Shot", price: 8, tag: "Shot", tone: "green", icon: "liquor", category: "Tequila" },
+    { id: "shisha", name: "Shisha Love 66", price: 45, tag: "Shisha", tone: "pink", icon: "air", category: "Snack & Fun" },
+  ],
+};
+
+const tpvProductsById = Object.values(tpvCatalogs).flat().reduce((acc, product) => {
+  acc[product.id] = product;
+  return acc;
+}, {});
+
+const tpvState = {
+  catalog: "taquilla",
+  ticket: [],
+  sort: "price-asc",
+  search: "",
+  category: "all",
+};
+
+function formatMoney(value) {
+  return `${Number(value).toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;
+}
+
 function showToast(message) {
   if (!toast) return;
   toast.textContent = message;
@@ -191,10 +259,181 @@ function bindActionButtons(root = document) {
   });
 }
 
+function openAccessMenu() {
+  if (!accessMenu || !accessTrigger) return;
+  accessMenu.hidden = false;
+  accessTrigger.setAttribute("aria-expanded", "true");
+}
+
+function closeAccessMenu() {
+  if (!accessMenu || !accessTrigger) return;
+  accessMenu.hidden = true;
+  accessTrigger.setAttribute("aria-expanded", "false");
+}
+
 function switchPage(page, scope) {
   document.querySelectorAll(`.${scope}-page`).forEach((section) => section.classList.toggle("active", section.dataset.page === page));
   const navSelector = scope === "desktop" ? ".desktop-sidebar a[data-page]" : ".mobile-bottom-nav button[data-page]";
   document.querySelectorAll(navSelector).forEach((item) => item.classList.toggle("active", item.dataset.page === page));
+}
+
+function renderTPVClock() {
+  const now = new Date();
+  const dateLabel = new Intl.DateTimeFormat("es-ES", { weekday: "short", day: "2-digit", month: "short" }).format(now);
+  const timeLabel = new Intl.DateTimeFormat("es-ES", { hour: "2-digit", minute: "2-digit" }).format(now);
+  fillText("#tpvDateLabel", dateLabel);
+  fillText("#tpvClockLabel", timeLabel);
+  fillText("#tpvClockBadge", timeLabel);
+}
+
+function renderTPVCatalog() {
+  const grid = document.querySelector("#tpvProductGrid");
+  const searchWrap = document.querySelector("#tpvSearchWrap");
+  const searchInput = document.querySelector("#tpvSearchInput");
+  const categoryTabs = document.querySelector("#tpvCategoryTabs");
+  const sortButton = document.querySelector("#tpvSortButton");
+  if (!grid) return;
+  const catalogProducts = tpvCatalogs[tpvState.catalog] || [];
+  const isBarra = tpvState.catalog === "barra";
+  const sortMode = tpvState.sort || (isBarra ? "featured" : "price-asc");
+  let products = [...catalogProducts];
+  if (isBarra && tpvState.category && tpvState.category !== "all") {
+    products = products.filter((product) => product.category === tpvState.category);
+  }
+  if (isBarra && tpvState.search.trim()) {
+    const query = tpvState.search.trim().toLowerCase();
+    products = products.filter((product) =>
+      [product.name, product.category, product.tag].filter(Boolean).some((value) => value.toLowerCase().includes(query))
+    );
+  }
+  products.sort((a, b) => {
+    if (sortMode === "name-asc") return a.name.localeCompare(b.name, "es");
+    if (sortMode === "name-desc") return b.name.localeCompare(a.name, "es");
+    if (sortMode === "price-desc") return b.price - a.price || a.name.localeCompare(b.name, "es");
+    return a.price - b.price || a.name.localeCompare(b.name, "es");
+  });
+  fillText("#tpvContextTitle", tpvState.catalog === "taquilla" ? "Entradas Taquilla" : "Catálogo Barra");
+  fillText("#tpvUserLabel", tpvState.catalog === "taquilla" ? "Taquilla" : "Barra");
+  fillText("#tpvAccessModeLabel", tpvState.catalog === "taquilla" ? "Usuario Taquilla" : "Usuario Barra");
+  document.querySelectorAll("[data-pos-catalog]").forEach((button) => button.classList.toggle("active", button.dataset.posCatalog === tpvState.catalog));
+  if (searchWrap) searchWrap.hidden = !isBarra;
+  if (categoryTabs) categoryTabs.hidden = !isBarra;
+  grid.dataset.catalog = tpvState.catalog;
+  if (searchInput && searchInput.value !== tpvState.search) searchInput.value = tpvState.search;
+  if (sortButton) sortButton.textContent = sortMode === "name-asc" ? "Alfabeto A-Z" : sortMode === "name-desc" ? "Alfabeto Z-A" : sortMode === "price-desc" ? "Precio mayor-menor" : "Precio menor-mayor";
+  if (categoryTabs && isBarra) {
+    const categories = ["all", ...new Set(catalogProducts.map((product) => product.category).filter(Boolean))];
+    categoryTabs.innerHTML = categories.map((category) => `
+      <button class="${tpvState.category === category ? "active" : ""}" type="button" data-pos-category="${category}">
+        ${category === "all" ? "Todo" : category}
+      </button>
+    `).join("");
+    categoryTabs.querySelectorAll("[data-pos-category]").forEach((button) => {
+      button.addEventListener("click", () => {
+        tpvState.category = button.dataset.posCategory || "all";
+        renderTPVCatalog();
+      });
+    });
+  } else if (categoryTabs) {
+    categoryTabs.innerHTML = "";
+  }
+  grid.innerHTML = products.map((product) => `
+    <article class="tpv-product-card ${product.tone}">
+      <div class="tpv-product-main">
+        <strong>${product.name}</strong>
+        <b>${formatMoney(product.price)}</b>
+        <span>${product.tag}</span>
+      </div>
+      <i class="material-symbols-outlined">${product.icon}</i>
+      <button class="tpv-add-button" type="button" data-pos-add="${product.id}">+</button>
+    </article>
+  `).join("");
+  grid.querySelectorAll("[data-pos-add]").forEach((button) => button.addEventListener("click", () => addTPVItem(button.dataset.posAdd)));
+}
+
+function renderTPVTicket() {
+  const itemsWrap = document.querySelector("#tpvTicketItems");
+  const emptyState = document.querySelector("#tpvEmptyState");
+  const total = tpvState.ticket.reduce((sum, item) => sum + item.price * item.qty, 0);
+  fillText("#tpvTotalAmount", formatMoney(total));
+  fillText("#tpvItemCount", `${tpvState.ticket.reduce((sum, item) => sum + item.qty, 0)} ítems`);
+  if (!itemsWrap || !emptyState) return;
+  if (!tpvState.ticket.length) {
+    itemsWrap.innerHTML = "";
+    emptyState.hidden = false;
+    emptyState.classList.remove("is-hidden");
+    return;
+  }
+  emptyState.hidden = true;
+  emptyState.classList.add("is-hidden");
+  itemsWrap.innerHTML = tpvState.ticket.map((item) => `
+    <article class="tpv-ticket-item">
+      <div class="tpv-ticket-top">
+        <div class="tpv-ticket-copy">
+          <strong>${item.name}</strong>
+          <span>${item.category || item.tag || ""}</span>
+        </div>
+        <b>${formatMoney(item.price * item.qty)}</b>
+      </div>
+      <div class="tpv-ticket-bottom">
+        <div class="tpv-qty-pill">
+          <button type="button" data-pos-remove="${item.id}">−</button>
+          <span>${item.qty}</span>
+          <button type="button" data-pos-add="${item.id}">+</button>
+        </div>
+        <button class="tpv-ticket-remove" type="button" data-pos-delete="${item.id}">
+          <span class="material-symbols-outlined">delete</span>Quitar
+        </button>
+      </div>
+    </article>
+  `).join("");
+  itemsWrap.querySelectorAll("[data-pos-remove]").forEach((button) => button.addEventListener("click", () => removeTPVItem(button.dataset.posRemove)));
+  itemsWrap.querySelectorAll("[data-pos-add]").forEach((button) => button.addEventListener("click", () => addTPVItem(button.dataset.posAdd)));
+  itemsWrap.querySelectorAll("[data-pos-delete]").forEach((button) => button.addEventListener("click", () => {
+    tpvState.ticket = tpvState.ticket.filter((item) => item.id !== button.dataset.posDelete);
+    renderTPVTicket();
+  }));
+}
+
+function addTPVItem(id) {
+  const product = tpvProductsById[id];
+  if (!product) return;
+  const existing = tpvState.ticket.find((item) => item.id === id);
+  if (existing) existing.qty += 1;
+  else tpvState.ticket.push({ ...product, qty: 1 });
+  renderTPVTicket();
+}
+
+function removeTPVItem(id) {
+  const existing = tpvState.ticket.find((item) => item.id === id);
+  if (!existing) return;
+  existing.qty -= 1;
+  if (existing.qty <= 0) tpvState.ticket = tpvState.ticket.filter((item) => item.id !== id);
+  renderTPVTicket();
+}
+
+function setTPVCatalog(catalog, announce = true) {
+  tpvState.catalog = catalog in tpvCatalogs ? catalog : "taquilla";
+  tpvState.search = "";
+  tpvState.category = "all";
+  tpvState.sort = tpvState.catalog === "barra" ? "price-asc" : "price-asc";
+  renderTPVCatalog();
+  if (announce) showToast(`TPV abierto: ${tpvState.catalog}.`);
+}
+
+function applyAccessMode(mode, announce = true) {
+  const config = accessModes[mode] || accessModes.director;
+  if (accessLabel) accessLabel.textContent = config.label;
+  document.querySelectorAll(".access-option").forEach((button) => button.classList.toggle("active", button.dataset.access === mode));
+  desktopAdmin?.classList.toggle("pos-access", config.page === "tpv");
+  desktopAdmin?.setAttribute("data-access-mode", mode);
+  closeVenueDetail();
+  closeStaffDetail();
+  switchPage(config.page, "desktop");
+  if (config.page === "tpv") setTPVCatalog(config.catalog || "taquilla", false);
+  if (config.staff) openStaffDetail(config.staff);
+  closeAccessMenu();
+  if (announce) showToast(`Acceso cambiado a ${config.label}.`);
 }
 
 function fillText(id, value) {
@@ -375,6 +614,10 @@ function switchStaff(staff) {
 }
 
 applyTheme();
+renderTPVClock();
+renderTPVTicket();
+renderTPVCatalog();
+setInterval(renderTPVClock, 60000);
 
 themeButtons.forEach((button) => button.addEventListener("click", () => applyTheme(button.dataset.themeOption)));
 systemTheme.addEventListener("change", () => { if (document.documentElement.dataset.themeMode === "system") applyTheme("system"); });
@@ -390,8 +633,35 @@ document.querySelector("#backToVenues")?.addEventListener("click", closeVenueDet
 document.querySelector("#backToEmployees")?.addEventListener("click", closeStaffDetail);
 document.querySelectorAll("[data-staff]").forEach((button) => button.addEventListener("click", () => switchStaff(button.dataset.staff)));
 document.querySelectorAll("[data-employee-tab]").forEach((button) => button.addEventListener("click", () => switchEmployeeTab(button.dataset.employeeTab)));
+accessTrigger?.addEventListener("click", () => {
+  if (accessMenu?.hidden) openAccessMenu();
+  else closeAccessMenu();
+});
+document.querySelectorAll(".access-option").forEach((button) => button.addEventListener("click", () => applyAccessMode(button.dataset.access)));
+document.querySelectorAll("[data-pos-catalog]").forEach((button) => button.addEventListener("click", () => setTPVCatalog(button.dataset.posCatalog)));
+document.querySelector("#tpvSearchInput")?.addEventListener("input", (event) => {
+  tpvState.search = event.target.value || "";
+  renderTPVCatalog();
+});
+document.querySelector("#tpvSortButton")?.addEventListener("click", () => {
+  const sequence = ["price-asc", "price-desc", "name-asc", "name-desc"];
+  const currentIndex = sequence.indexOf(tpvState.sort);
+  tpvState.sort = sequence[(currentIndex + 1) % sequence.length];
+  renderTPVCatalog();
+});
+document.querySelector("#tpvClearButton")?.addEventListener("click", () => {
+  tpvState.ticket = [];
+  renderTPVTicket();
+  showToast("Ticket vaciado.");
+});
+document.addEventListener("click", (event) => {
+  if (!accessMenu || accessMenu.hidden) return;
+  if (event.target instanceof Node && (accessMenu.contains(event.target) || accessTrigger?.contains(event.target))) return;
+  closeAccessMenu();
+});
 
 document.querySelectorAll(".permission-save").forEach((button) => button.addEventListener("click", () => showToast("Permisos actualizados y auditados.")));
 document.querySelectorAll(".sidebar-footer a").forEach((link) => link.addEventListener("click", (event) => event.preventDefault()));
 
 bindActionButtons();
+applyAccessMode("director", false);

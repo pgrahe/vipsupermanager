@@ -2,6 +2,20 @@
 
 Prototipo navegable de OPSNIGHT, un cockpit operativo para discotecas, grandes salas y restauracion de alto volumen.
 
+## Desarrollo local
+
+```bash
+npm run dev
+```
+
+Esto levanta un servidor local en:
+
+```text
+http://127.0.0.1:3000
+```
+
+Sirve directamente los archivos del prototipo y aplica fallback SPA a `index.html`.
+
 ## Build local
 
 ```bash

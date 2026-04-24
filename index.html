@@ -150,7 +150,24 @@
     <section class="desktop-admin" aria-label="OPSNIGHT desktop admin dashboard">
       <header class="desktop-topbar">
         <div class="desktop-header-left"><span class="desktop-logo">OPSNIGHT</span><button class="venue-chip js-action" type="button"><span class="material-symbols-outlined">storefront</span>Kapital Madrid<span class="material-symbols-outlined small-symbol">expand_more</span></button></div>
-        <div class="desktop-header-right"><button class="language-button js-action" type="button">Español</button><div class="header-actions"><button class="material-symbols-outlined js-action" type="button" aria-label="Notificaciones">notifications</button><button class="material-symbols-outlined settings-trigger" type="button" aria-label="Ajustes">settings</button><div class="desktop-avatar">PG</div></div></div>
+        <div class="desktop-header-right">
+          <div class="access-switcher">
+            <button class="access-switcher-trigger" id="accessSwitcherTrigger" type="button" aria-expanded="false" aria-controls="accessSwitcherMenu">
+              <span class="material-symbols-outlined">switch_account</span>
+              <div><small>Acceso</small><strong id="currentAccessLabel">Director</strong></div>
+              <span class="material-symbols-outlined small-symbol">expand_more</span>
+            </button>
+            <div class="access-switcher-menu" id="accessSwitcherMenu" hidden>
+              <button class="access-option active" type="button" data-access="director"><span class="material-symbols-outlined">shield</span><div><strong>Director</strong><small>Overview general</small></div></button>
+              <button class="access-option" type="button" data-access="barra"><span class="material-symbols-outlined">point_of_sale</span><div><strong>Barra TPV</strong><small>Cobro barra conversacional</small></div></button>
+              <button class="access-option" type="button" data-access="taquilla"><span class="material-symbols-outlined">confirmation_number</span><div><strong>Taquilla</strong><small>Entradas y control puerta</small></div></button>
+              <button class="access-option" type="button" data-access="vip"><span class="material-symbols-outlined">liquor</span><div><strong>VIP</strong><small>Mesa, botellas y sala</small></div></button>
+              <button class="access-option" type="button" data-access="office"><span class="material-symbols-outlined">receipt_long</span><div><strong>Office</strong><small>Finanzas y cierre</small></div></button>
+            </div>
+          </div>
+          <button class="language-button js-action" type="button">Español</button>
+          <div class="header-actions"><button class="material-symbols-outlined js-action" type="button" aria-label="Notificaciones">notifications</button><button class="material-symbols-outlined settings-trigger" type="button" aria-label="Ajustes">settings</button><div class="desktop-avatar">PG</div></div>
+        </div>
       </header>
 
       <aside class="desktop-sidebar">
@@ -170,7 +187,7 @@
             <article class="revenue-desktop-card"><div><p class="desktop-label">Facturación Total (Hoy)</p><h1>€142,890.00</h1></div><div class="desktop-revenue-breakdown"><div><div class="metric-title"><i class="black-square"></i><span>Ingresos Barras</span></div><strong>€98,420.00</strong><div class="metric-bar"><i style="width: 68%"></i></div></div><div><div class="metric-title"><i class="gray-square"></i><span>Ingresos Taquilla</span></div><strong>€44,470.00</strong><div class="metric-bar gray"><i style="width: 32%"></i></div></div></div></article>
             <article class="margin-desktop-card"><div class="card-headline"><span>Márgenes Operativos</span><span class="material-symbols-outlined">trending_up</span></div><div><strong>34.2%</strong><p>+2.4% vs semana anterior</p></div><dl><div><dt>EBITDA Mensual</dt><dd>€312,400</dd></div><div><dt>Coste de Ventas</dt><dd>22.8%</dd></div></dl></article>
           </section>
-          <section class="desktop-grid ops-grid"><article class="desktop-card human-card"><div class="desktop-section-head"><h2>Personal & Costes Salariales</h2><span>Live Update</span></div><div class="human-content"><div><p class="mini-label">Densidad por Zona</p><div class="density-grid"><div class="z950">V1</div><div class="z700">V2</div><div class="z400">V3</div><div class="z100">V4</div><div class="z800">B1</div><div class="z950">B2</div><div class="z800">B3</div><div class="z600">B4</div><div class="z300">T1</div><div class="z200">T2</div><div class="z100">T3</div><div class="z100">T4</div></div></div><div><table class="staff-cost-table"><thead><tr><th>Categoría</th><th>Coste/Hora</th><th>Total Act.</th></tr></thead><tbody><tr><td>Seguridad (SIA)</td><td>€22.50</td><td>€1,240.00</td></tr><tr><td>Barra & Sala</td><td>€14.20</td><td>€3,840.00</td></tr><tr><td>Limpieza & Manten.</td><td>€11.80</td><td>€640.00</td></tr></tbody></table></div></div></article><article class="desktop-card warehouse-card"><div class="desktop-section-head"><h2>Stock Crítico (Global)</h2><button class="js-action" type="button">Pedido Rápido</button></div><div class="warehouse-list"><article class="stock-row critical"><div class="stock-thumb">1</div><div><header><strong>Tanqueray No. Ten</strong><b>12 BOTELLAS</b></header><div class="stock-meter"><i style="width: 15%"></i></div></div></article><article class="stock-row"><div class="stock-thumb">2</div><div><header><strong>Grey Goose Vodka 1L</strong><b>48 BOTELLAS</b></header><div class="stock-meter"><i style="width: 60%"></i></div></div></article><article class="stock-row"><div class="stock-thumb">3</div><div><header><strong>Johnnie Walker Black Label</strong><b>32 BOTELLAS</b></header><div class="stock-meter"><i style="width: 42%"></i></div></div></article><article class="stock-row critical"><div class="stock-thumb">4</div><div><header><strong>Moët & Chandon Brut</strong><b>8 BOTELLAS</b></header><div class="stock-meter"><i style="width: 8%"></i></div></div></article></div><footer><span>Próximo envío programado:</span><strong>Lunes, 06:00 AM</strong></footer></article></section>
+          <section class="desktop-grid ops-grid"><article class="desktop-card human-card"><div class="desktop-section-head"><h2>Personal & Costes Salariales</h2><span>Live Update</span></div><div class="human-summary-strip"><article><small>Staff activo</small><strong>46</strong><span>32 barra · 8 sala · 6 soporte</span></article><article><small>Coste vivo</small><strong>€812/h</strong><span>ETA cierre €5,640</span></article><article><small>Productividad</small><strong>€176</strong><span>facturación por staff conectado</span></article></div><div class="human-content human-content-redesign single-column"><div class="human-cost-panel full-width"><div class="human-panel-head"><div><p class="mini-label">Personal activo</p><h3>Categoría, coste/hora y total activo</h3></div><button class="outline-action js-action" type="button">Abrir detalle</button></div><div class="staff-cost-list-head"><span>Personal activo</span><span>Categoría</span><span>Coste/hora</span><span>Total act.</span></div><div class="staff-cost-stack staff-cost-stack-detailed"><article><div><strong>Carlos R. · Elena M. · equipo barra</strong><span>27 personas activas · ticket medio €18.40 · 2.1k bebidas/h</span></div><em>Barra & Sala</em><b class="staff-rate">€14.20/h</b><strong class="staff-total">€3,840</strong></article><article><div><strong>Seguridad pista + VIP + puerta</strong><span>11 personas activas · control acceso y sala principal</span></div><em>Seguridad (SIA)</em><b class="staff-rate">€22.50/h</b><strong class="staff-total">€1,240</strong></article><article><div><strong>Limpieza, backline y mantenimiento</strong><span>8 personas activas · soporte técnico y cierre operativo</span></div><em>Limpieza & Manten.</em><b class="staff-rate">€11.80/h</b><strong class="staff-total">€640</strong></article></div><div class="staff-cost-foot"><span>Coste total sesión estimado</span><strong>€5,720</strong></div></div></div></article><article class="desktop-card warehouse-card"><div class="desktop-section-head"><h2>Stock Crítico (Global)</h2><button class="js-action" type="button">Pedido Rápido</button></div><div class="warehouse-list"><article class="stock-row critical"><div class="stock-thumb">1</div><div><header><strong>Tanqueray No. Ten</strong><b>12 BOTELLAS</b></header><div class="stock-meter"><i style="width: 15%"></i></div></div></article><article class="stock-row"><div class="stock-thumb">2</div><div><header><strong>Grey Goose Vodka 1L</strong><b>48 BOTELLAS</b></header><div class="stock-meter"><i style="width: 60%"></i></div></div></article><article class="stock-row"><div class="stock-thumb">3</div><div><header><strong>Johnnie Walker Black Label</strong><b>32 BOTELLAS</b></header><div class="stock-meter"><i style="width: 42%"></i></div></div></article><article class="stock-row critical"><div class="stock-thumb">4</div><div><header><strong>Moët & Chandon Brut</strong><b>8 BOTELLAS</b></header><div class="stock-meter"><i style="width: 8%"></i></div></div></article></div><footer><span>Próximo envío programado:</span><strong>Lunes, 06:00 AM</strong></footer></article></section>
           <section class="activity-card"><div class="activity-title"><h3>Actividad Reciente del Sistema</h3><i></i></div><div class="activity-items"><article><span class="material-symbols-outlined">verified_user</span><div><strong>Acceso Biométrico: Director General</strong><small>Hace 4 minutos · Kapital Madrid</small></div></article><article><span class="material-symbols-outlined">report_problem</span><div><strong>Alerta Stock: Ron Barceló Imperial</strong><small>Hace 12 minutos · Pacha Ibiza</small></div></article><article><span class="material-symbols-outlined">currency_exchange</span><div><strong>Cierre Parcial de Caja Barra Central</strong><small>Hace 28 minutos · €14,210 registrados</small></div></article><article><span class="material-symbols-outlined">sensors</span><div><strong>Calibración de Sonido Automática</strong><small>Hace 45 minutos · Sala Principal</small></div></article></div></section>
         </section>
 
@@ -307,6 +324,52 @@
                 <article><i class="material-symbols-outlined">description</i><div><strong>PDF dirección</strong><span>Resumen ejecutivo + detalle contable exportable.</span></div></article>
               </div>
             </article>
+          </section>
+        </section>
+
+        <section class="desktop-page" data-page="tpv">
+          <section class="tpv-shell">
+            <div class="tpv-layout">
+              <aside class="tpv-ticket-panel">
+                <div class="tpv-ticket-head"><h2>Ticket</h2><span id="tpvItemCount">0 ítems</span></div>
+                <div class="tpv-total-card">
+                  <small>Total</small>
+                  <strong id="tpvTotalAmount">0,00 €</strong>
+                </div>
+                <div class="tpv-ticket-items" id="tpvTicketItems"></div>
+                <div class="tpv-empty-state" id="tpvEmptyState">Pulsa un producto o entrada para añadirlo al ticket.</div>
+                <div class="tpv-payment-grid">
+                  <button class="tpv-pay-card js-action" type="button"><span class="material-symbols-outlined">credit_card</span>Tarjeta</button>
+                  <button class="tpv-pay-cash js-action" type="button"><span class="material-symbols-outlined">payments</span>Efectivo</button>
+                </div>
+                <button class="tpv-clear-button" id="tpvClearButton" type="button">Vaciar ticket</button>
+              </aside>
+
+              <section class="tpv-catalog-panel">
+                <div class="tpv-toolbar">
+                  <div>
+                    <small>TPV</small>
+                    <h2 id="tpvContextTitle">Entradas Taquilla</h2>
+                  </div>
+                  <div class="tpv-toolbar-actions">
+                    <div class="tpv-segmented">
+                      <button class="active" type="button" data-pos-catalog="taquilla">Taquilla</button>
+                      <button type="button" data-pos-catalog="barra">Catálogo</button>
+                    </div>
+                    <div class="tpv-filter-bar">
+                      <span>Ordenar</span>
+                      <button class="tpv-filter-button" id="tpvSortButton" type="button">Precio menor-mayor</button>
+                    </div>
+                    <div class="tpv-clock-pill"><span class="material-symbols-outlined">schedule</span><b id="tpvClockBadge">20:15</b></div>
+                  </div>
+                </div>
+                <div class="tpv-search-row" id="tpvSearchWrap" hidden>
+                  <input id="tpvSearchInput" type="text" placeholder="Buscar por nombre, categoría o precio" />
+                </div>
+                <div class="tpv-category-row" id="tpvCategoryTabs" hidden></div>
+                <div class="tpv-product-grid" id="tpvProductGrid"></div>
+              </section>
+            </div>
           </section>
         </section>
 
