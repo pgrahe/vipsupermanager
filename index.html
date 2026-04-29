@@ -838,15 +838,35 @@
               </div>
               <div class="mph-content">
                 <div class="mph-filters-row">
-                  <button class="mph-filter-pill" type="button"><span class="material-symbols-outlined">language</span>Global<span class="material-symbols-outlined">expand_more</span></button>
-                  <button class="mph-filter-pill" type="button">Hoy, 24 may<span class="material-symbols-outlined">calendar_today</span></button>
+                  <button class="mph-filter-pill" id="mphScopeTrigger" type="button" aria-expanded="false" aria-controls="mphScopeMenu">
+                    <span class="mph-filter-pill-main"><span class="material-symbols-outlined">language</span><b id="mphScopeLabel">Global</b></span>
+                    <span class="material-symbols-outlined">expand_more</span>
+                  </button>
+                  <button class="mph-filter-pill" id="mphDateTrigger" type="button" aria-expanded="false" aria-controls="mphDateMenu">
+                    <span class="mph-filter-pill-main"><b id="mphDateLabel">Hoy, 24 may</b></span>
+                    <span class="material-symbols-outlined">calendar_today</span>
+                  </button>
+                </div>
+                <div class="mph-inline-menu-wrap">
+                  <div class="mph-inline-menu" id="mphScopeMenu" hidden>
+                    <button class="active" type="button" data-mph-scope="global">Global</button>
+                    <button type="button" data-mph-scope="kapital">Kapital Madrid</button>
+                    <button type="button" data-mph-scope="pacha">Pacha Ibiza</button>
+                    <button type="button" data-mph-scope="opium">Opium Barcelona</button>
+                  </div>
+                  <div class="mph-inline-menu mph-inline-menu--date" id="mphDateMenu" hidden>
+                    <button class="active" type="button" data-mph-date="Hoy, 24 may">Hoy, 24 may</button>
+                    <button type="button" data-mph-date="Ayer, 23 may">Ayer, 23 may</button>
+                    <button type="button" data-mph-date="Últimos 7 días">Últimos 7 días</button>
+                    <button type="button" data-mph-date="Mes actual">Mes actual</button>
+                  </div>
                 </div>
                 <div class="mph-hero-block">
                   <p class="mph-label">Facturación total (hoy)</p>
                   <strong class="mph-hero-num">€142,890.00</strong>
-                  <div class="mph-trend-row">
-                    <span class="mph-trend up"><span class="material-symbols-outlined">arrow_upward</span>12.4% (€15,920.00)</span>
+                  <div class="mph-meta-row">
                     <span class="mph-trend-label">vs ayer</span>
+                    <span class="mph-trend up"><span class="material-symbols-outlined">arrow_upward</span>12.4% (€15,920.00)</span>
                   </div>
                 </div>
                 <div class="mph-two-col">
@@ -866,9 +886,9 @@
                   <div class="mph-margin-row">
                     <div>
                       <strong class="mph-margin-num">26.7%</strong>
-                      <div class="mph-trend-row">
-                        <span class="mph-trend up"><span class="material-symbols-outlined">arrow_upward</span>2.6 pp</span>
+                      <div class="mph-margin-meta">
                         <span class="mph-trend-label">vs ayer</span>
+                        <span class="mph-trend up"><span class="material-symbols-outlined">arrow_upward</span>2.6 pp</span>
                       </div>
                     </div>
                     <svg class="mph-sparkline" viewBox="0 0 120 42" preserveAspectRatio="none">
@@ -964,45 +984,41 @@
                   <div class="mph-kpi-item">
                     <small>Staff activo</small>
                     <strong>132</strong>
-                    <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>5</span>
                     <span class="mph-vs">vs ayer</span>
+                    <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>5</span>
                   </div>
                   <div class="mph-kpi-item">
                     <small>Coste por hora</small>
                     <strong>€1,258</strong>
-                    <span class="mph-trend-sm down"><span class="material-symbols-outlined">arrow_downward</span>-3.2%</span>
                     <span class="mph-vs">vs ayer</span>
+                    <span class="mph-trend-sm down"><span class="material-symbols-outlined">arrow_downward</span>-3.2%</span>
                   </div>
                   <div class="mph-kpi-item">
                     <small>Productividad</small>
                     <strong>€1,082</strong>
-                    <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>8.1%</span>
                     <span class="mph-vs">vs ayer</span>
+                    <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>8.1%</span>
                   </div>
                 </div>
                 <p class="mph-section-title">Coste por categoría</p>
                 <div class="mph-cat-table">
                   <div class="mph-cat-head">
-                    <span></span><span>Categoría</span><span>Staff</span><span>Coste/h</span><span>Prod.</span><span></span>
+                    <span>Categoría</span><span>Staff activo</span><span>Coste €/hora</span><span>Productividad</span><span></span>
                   </div>
                   <div class="mph-cat-row">
-                    <div class="mph-cat-icon mph-cat-barra"><span class="material-symbols-outlined">sports_bar</span></div>
-                    <span>Barra</span><span>56</span><span>€612</span><span>€1,324</span>
+                    <div class="mph-cat-cell mph-cat-main"><div class="mph-cat-icon mph-cat-barra"><span class="material-symbols-outlined">sports_bar</span></div><span>Barra</span></div><span>56</span><span>€612</span><span>€1,324</span>
                     <span class="material-symbols-outlined mph-chevron">chevron_right</span>
                   </div>
                   <div class="mph-cat-row">
-                    <div class="mph-cat-icon mph-cat-seg"><span class="material-symbols-outlined">security</span></div>
-                    <span>Seguridad</span><span>38</span><span>€426</span><span>€892</span>
+                    <div class="mph-cat-cell mph-cat-main"><div class="mph-cat-icon mph-cat-seg"><span class="material-symbols-outlined">security</span></div><span>Seguridad</span></div><span>38</span><span>€426</span><span>€892</span>
                     <span class="material-symbols-outlined mph-chevron">chevron_right</span>
                   </div>
                   <div class="mph-cat-row">
-                    <div class="mph-cat-icon mph-cat-vip"><span class="material-symbols-outlined">diamond</span></div>
-                    <span>VIP</span><span>18</span><span>€220</span><span>€1,742</span>
+                    <div class="mph-cat-cell mph-cat-main"><div class="mph-cat-icon mph-cat-vip"><span class="material-symbols-outlined">diamond</span></div><span>VIP</span></div><span>18</span><span>€220</span><span>€1,742</span>
                     <span class="material-symbols-outlined mph-chevron">chevron_right</span>
                   </div>
                   <div class="mph-cat-row">
-                    <div class="mph-cat-icon mph-cat-otros"><span class="material-symbols-outlined">more_horiz</span></div>
-                    <span>Otros</span><span>20</span><span>€0</span><span>€0</span>
+                    <div class="mph-cat-cell mph-cat-main"><div class="mph-cat-icon mph-cat-otros"><span class="material-symbols-outlined">more_horiz</span></div><span>Otros</span></div><span>20</span><span>€0</span><span>€0</span>
                     <span class="material-symbols-outlined mph-chevron">chevron_right</span>
                   </div>
                 </div>

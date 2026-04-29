@@ -674,6 +674,27 @@ applyAccessMode("director", false);
   const trigger = document.getElementById("mobileModeTrigger");
   const closeBtn = document.getElementById("mphClose");
   const backBtn = document.getElementById("mphBackBtn");
+  const scopeTrigger = document.getElementById("mphScopeTrigger");
+  const dateTrigger = document.getElementById("mphDateTrigger");
+  const scopeMenu = document.getElementById("mphScopeMenu");
+  const dateMenu = document.getElementById("mphDateMenu");
+  const scopeLabel = document.getElementById("mphScopeLabel");
+  const dateLabel = document.getElementById("mphDateLabel");
+
+  function closeInlineMenus() {
+    scopeMenu && (scopeMenu.hidden = true);
+    dateMenu && (dateMenu.hidden = true);
+    scopeTrigger?.setAttribute("aria-expanded", "false");
+    dateTrigger?.setAttribute("aria-expanded", "false");
+  }
+
+  function toggleInlineMenu(menu, triggerButton) {
+    if (!menu || !triggerButton) return;
+    const willOpen = menu.hidden;
+    closeInlineMenus();
+    menu.hidden = !willOpen;
+    triggerButton.setAttribute("aria-expanded", willOpen ? "true" : "false");
+  }
 
   function openPreview() {
     if (!overlay) return;
@@ -699,6 +720,8 @@ applyAccessMode("director", false);
   trigger?.addEventListener("click", openPreview);
   closeBtn?.addEventListener("click", closePreview);
   backBtn?.addEventListener("click", () => switchMphScreen("locales"));
+  scopeTrigger?.addEventListener("click", () => toggleInlineMenu(scopeMenu, scopeTrigger));
+  dateTrigger?.addEventListener("click", () => toggleInlineMenu(dateMenu, dateTrigger));
 
   overlay?.addEventListener("click", (e) => {
     if (e.target === overlay) closePreview();
@@ -728,5 +751,38 @@ applyAccessMode("director", false);
       tab.closest(".mph-stock-tabs")?.querySelectorAll(".mph-stock-tab").forEach((t) => t.classList.remove("active"));
       tab.classList.add("active");
     });
+  });
+
+  scopeMenu?.querySelectorAll("[data-mph-scope]").forEach((button) => {
+    button.addEventListener("click", () => {
+      scopeMenu.querySelectorAll("[data-mph-scope]").forEach((item) => item.classList.remove("active"));
+      button.classList.add("active");
+      if (scopeLabel) scopeLabel.textContent = button.dataset.mphScope === "global"
+        ? "Global"
+        : button.textContent?.trim() || "Global";
+      closeInlineMenus();
+      showToast(`Vista ${button.textContent?.trim() || "Global"} aplicada.`);
+    });
+  });
+
+  dateMenu?.querySelectorAll("[data-mph-date]").forEach((button) => {
+    button.addEventListener("click", () => {
+      dateMenu.querySelectorAll("[data-mph-date]").forEach((item) => item.classList.remove("active"));
+      button.classList.add("active");
+      if (dateLabel) dateLabel.textContent = button.dataset.mphDate || button.textContent?.trim() || "Hoy, 24 may";
+      closeInlineMenus();
+      showToast(`Periodo ${button.dataset.mphDate || button.textContent?.trim() || "Hoy"} aplicado.`);
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Node)) return;
+    if (
+      scopeMenu?.contains(event.target) ||
+      dateMenu?.contains(event.target) ||
+      scopeTrigger?.contains(event.target) ||
+      dateTrigger?.contains(event.target)
+    ) return;
+    closeInlineMenus();
   });
 })();
