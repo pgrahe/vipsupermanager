@@ -227,29 +227,27 @@ img { display: block; max-width: 100%; }
 /* ════════════════════════════════════════════════════════
    MOBILE MODE BUTTON (desktop topbar)
    ════════════════════════════════════════════════════════ */
-@media (min-width: 768px) {
-  .mobile-mode-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    border: 1px solid #e4e4e7;
-    border-radius: var(--small-radius);
-    background: transparent;
-    font-size: 11px;
-    font-weight: 800;
-    color: #000;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    transition: background 160ms ease, color 160ms ease;
-    white-space: nowrap;
-  }
-  .mobile-mode-btn:hover { background: #000; color: #fff; }
-  .mobile-mode-btn .material-symbols-outlined { font-size: 16px; }
+.mobile-mode-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid #e4e4e7;
+  border-radius: var(--small-radius);
+  background: transparent;
+  font-size: 11px;
+  font-weight: 700;
+  color: #71717a;
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+  white-space: nowrap;
 }
-html.dark .mobile-mode-btn { border-color: #27272a; color: var(--primary); }
-html.dark .mobile-mode-btn:hover { background: var(--primary); color: #000; }
+.mobile-mode-btn:hover { background: #000; color: #fff; border-color: #000; }
+.mobile-mode-btn .material-symbols-outlined { font-size: 15px; }
+html.dark .mobile-mode-btn { border-color: #3a3a3a; color: #a1a1aa; }
+html.dark .mobile-mode-btn:hover { background: var(--primary); color: #000; border-color: var(--primary); }
 
 /* ════════════════════════════════════════════════════════
    MOBILE PREVIEW OVERLAY
