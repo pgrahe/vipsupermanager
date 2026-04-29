@@ -948,16 +948,21 @@ html.dark .mobile-mode-btn:hover { background: var(--primary); color: #000; bord
 /* ── KPI Strip ────────────────────────────────────────── */
 .kpi-strip {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 12px;
   margin-bottom: 20px;
 }
 .kpi-card {
+  grid-column: span 2;
   padding: 18px 20px;
   background: var(--surface-container-lowest);
   border-radius: var(--soft-radius);
   border: 1px solid transparent;
   transition: border-color 160ms ease;
+}
+.kpi-card--revenue {
+  grid-column: span 4;
+  padding: 20px 24px 18px;
 }
 .kpi-card:hover { border-color: #e4e4e7; }
 .kpi-label {
@@ -976,6 +981,36 @@ html.dark .mobile-mode-btn:hover { background: var(--primary); color: #000; bord
   letter-spacing: -0.05em;
   line-height: 1;
   margin-bottom: 10px;
+}
+.kpi-card--revenue .kpi-value {
+  font-size: clamp(42px, 4.2vw, 64px);
+  letter-spacing: -0.075em;
+  margin-bottom: 8px;
+}
+.kpi-revenue-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.kpi-revenue-meta span,
+.kpi-revenue-meta b {
+  color: #71717a;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.kpi-revenue-meta b {
+  color: #000;
+  font-style: normal;
+  font-weight: 800;
+}
+.kpi-card--revenue .kpi-sub {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 12px;
 }
 .kpi-sub {
   display: flex;
@@ -1456,6 +1491,10 @@ html.dark .mobile-mode-btn:hover { background: var(--primary); color: #000; bord
 }
 
 @media (min-width: 768px) and (max-width: 1180px) {
+  .kpi-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kpi-card,
+  .kpi-card--revenue { grid-column: span 1; }
+  .kpi-card--revenue .kpi-sub { grid-template-columns: 1fr; }
   .metric-card,
   .metric-card.wide { grid-column: span 12; }
   .equation-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
