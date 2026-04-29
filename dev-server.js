@@ -4,7 +4,7 @@ const path = require("path");
 const url = require("url");
 
 const root = __dirname;
-const host = "127.0.0.1";
+const host = "localhost";
 const port = Number(process.env.PORT || 3000);
 
 const mimeTypes = {

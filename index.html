@@ -162,7 +162,7 @@
 
     <section class="desktop-admin" aria-label="OPSNIGHT desktop admin dashboard">
       <header class="desktop-topbar">
-        <div class="desktop-header-left"><span class="desktop-logo">OPSNIGHT</span><button class="mobile-mode-btn" id="mobileModeTrigger" type="button"><span class="material-symbols-outlined">smartphone</span>Modo Mobile</button><button class="venue-chip js-action" type="button"><span class="material-symbols-outlined">storefront</span>Kapital Madrid<span class="material-symbols-outlined small-symbol">expand_more</span></button></div>
+        <div class="desktop-header-left"><span class="desktop-logo">OPSNIGHT</span><button class="venue-chip js-action" type="button"><span class="material-symbols-outlined">storefront</span>Kapital Madrid<span class="material-symbols-outlined small-symbol">expand_more</span></button></div>
         <div class="desktop-header-right">
           <div class="access-switcher">
             <button class="access-switcher-trigger" id="accessSwitcherTrigger" type="button" aria-expanded="false" aria-controls="accessSwitcherMenu">
@@ -1193,6 +1193,17 @@
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
+          const isLocalHost =
+            window.location.hostname === "localhost" ||
+            window.location.hostname === "127.0.0.1";
+
+          if (isLocalHost) {
+            navigator.serviceWorker.getRegistrations().then((registrations) => {
+              registrations.forEach((registration) => registration.unregister());
+            }).catch(() => {});
+            return;
+          }
+
           navigator.serviceWorker.register("/sw.js").catch(() => {});
         });
       }
