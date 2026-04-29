@@ -284,6 +284,8 @@ function renderTPVClock() {
   fillText("#tpvDateLabel", dateLabel);
   fillText("#tpvClockLabel", timeLabel);
   fillText("#tpvClockBadge", timeLabel);
+  fillText("#lsbTime", timeLabel);
+  fillText("#mphClock", timeLabel);
 }
 
 function renderTPVCatalog() {
@@ -665,3 +667,66 @@ document.querySelectorAll(".sidebar-footer a").forEach((link) => link.addEventLi
 
 bindActionButtons();
 applyAccessMode("director", false);
+
+// ── Mobile Preview Mode ──────────────────────────────────
+(function initMobilePreview() {
+  const overlay = document.getElementById("mobilePreviewOverlay");
+  const trigger = document.getElementById("mobileModeTrigger");
+  const closeBtn = document.getElementById("mphClose");
+  const backBtn = document.getElementById("mphBackBtn");
+
+  function openPreview() {
+    if (!overlay) return;
+    overlay.hidden = false;
+    document.body.style.overflow = "hidden";
+  }
+
+  function closePreview() {
+    if (!overlay) return;
+    overlay.hidden = true;
+    document.body.style.overflow = "";
+  }
+
+  function switchMphScreen(screenId) {
+    document.querySelectorAll(".mph-screen").forEach((s) => s.classList.remove("active"));
+    document.querySelectorAll(".mph-bottom-nav button[data-mph-screen]").forEach((b) => b.classList.remove("active"));
+    const target = document.querySelector(`.mph-screen[data-mph-screen="${screenId}"]`);
+    const navBtn = document.querySelector(`.mph-bottom-nav button[data-mph-screen="${screenId}"]`);
+    if (target) target.classList.add("active");
+    if (navBtn) navBtn.classList.add("active");
+  }
+
+  trigger?.addEventListener("click", openPreview);
+  closeBtn?.addEventListener("click", closePreview);
+  backBtn?.addEventListener("click", () => switchMphScreen("locales"));
+
+  overlay?.addEventListener("click", (e) => {
+    if (e.target === overlay) closePreview();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && overlay && !overlay.hidden) closePreview();
+  });
+
+  document.querySelectorAll(".mph-bottom-nav button[data-mph-screen]").forEach((btn) => {
+    btn.addEventListener("click", () => switchMphScreen(btn.dataset.mphScreen));
+  });
+
+  document.querySelectorAll("[data-mph-goto]").forEach((el) => {
+    el.addEventListener("click", () => switchMphScreen(el.dataset.mphGoto));
+  });
+
+  document.querySelectorAll(".mph-tab").forEach((tab) => {
+    tab.addEventListener("click", () => {
+      tab.closest(".mph-tab-row")?.querySelectorAll(".mph-tab").forEach((t) => t.classList.remove("active"));
+      tab.classList.add("active");
+    });
+  });
+
+  document.querySelectorAll(".mph-stock-tab").forEach((tab) => {
+    tab.addEventListener("click", () => {
+      tab.closest(".mph-stock-tabs")?.querySelectorAll(".mph-stock-tab").forEach((t) => t.classList.remove("active"));
+      tab.classList.add("active");
+    });
+  });
+})();
