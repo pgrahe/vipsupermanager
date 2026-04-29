@@ -1193,18 +1193,16 @@
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
-          const isLocalHost =
-            window.location.hostname === "localhost" ||
-            window.location.hostname === "127.0.0.1";
+          navigator.serviceWorker
+            .getRegistrations()
+            .then((registrations) => Promise.all(registrations.map((registration) => registration.unregister())))
+            .catch(() => {});
 
-          if (isLocalHost) {
-            navigator.serviceWorker.getRegistrations().then((registrations) => {
-              registrations.forEach((registration) => registration.unregister());
-            }).catch(() => {});
-            return;
+          if ("caches" in window) {
+            caches.keys().then((keys) =>
+              Promise.all(keys.filter((key) => key.startsWith("opsnight-")).map((key) => caches.delete(key)))
+            ).catch(() => {});
           }
-
-          navigator.serviceWorker.register("/sw.js").catch(() => {});
         });
       }
     </script>
