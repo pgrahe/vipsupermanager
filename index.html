@@ -897,6 +897,42 @@
                     </svg>
                   </div>
                 </div>
+                <div class="mph-card mph-activity-card">
+                  <div class="mph-card-head">
+                    <p class="mph-section-title mph-section-title--caps">Actividad en tiempo real</p>
+                    <span class="mph-live-pill">LIVE</span>
+                  </div>
+                  <div class="mph-activity-list">
+                    <article class="mph-activity-row">
+                      <span class="material-symbols-outlined mph-activity-icon">verified_user</span>
+                      <div>
+                        <strong>Acceso Biométrico: Director General</strong>
+                        <small>Hace 4 min · Kapital Madrid</small>
+                      </div>
+                    </article>
+                    <article class="mph-activity-row">
+                      <span class="material-symbols-outlined mph-activity-icon">report_problem</span>
+                      <div>
+                        <strong>Alerta Stock: Ron Barceló Imperial</strong>
+                        <small>Hace 12 min · Pacha Ibiza</small>
+                      </div>
+                    </article>
+                    <article class="mph-activity-row">
+                      <span class="material-symbols-outlined mph-activity-icon">currency_exchange</span>
+                      <div>
+                        <strong>Cierre Parcial de Caja Barra Central</strong>
+                        <small>Hace 28 min · €14,210 registrados</small>
+                      </div>
+                    </article>
+                    <article class="mph-activity-row">
+                      <span class="material-symbols-outlined mph-activity-icon">sensors</span>
+                      <div>
+                        <strong>Calibración de Sonido Automática</strong>
+                        <small>Hace 45 min · Sala Principal</small>
+                      </div>
+                    </article>
+                  </div>
+                </div>
               </div>
             </section>
 
@@ -1035,12 +1071,15 @@
               <div class="mph-content mph-content--stock">
                 <div class="mph-stock-tabs">
                   <button class="mph-stock-tab active" type="button">Crítico <span class="mph-badge mph-badge--red">3</span></button>
-                  <button class="mph-stock-tab" type="button">Bajo <span class="mph-badge">7</span></button>
+                  <button class="mph-stock-tab" type="button">Bajo <span class="mph-badge mph-badge--amber">7</span></button>
                   <button class="mph-stock-tab" type="button">Todos</button>
                 </div>
                 <div class="mph-stock-list">
                   <div class="mph-stock-item critical">
-                    <div class="mph-product-img mph-product-gg">GG</div>
+                    <div class="mph-product-accent"></div>
+                    <div class="mph-product-img">
+                      <img alt="Grey Goose Vodka" src="https://www.pngplay.com/wp-content/uploads/15/Grey-Goose-Vodka-Transparent-Images.png"/>
+                    </div>
                     <div class="mph-product-info">
                       <div class="mph-product-header">
                         <div><strong>Grey Goose</strong><small>Vodka</small></div>
@@ -1053,7 +1092,10 @@
                     </div>
                   </div>
                   <div class="mph-stock-item critical">
-                    <div class="mph-product-img mph-product-mc">MC</div>
+                    <div class="mph-product-accent"></div>
+                    <div class="mph-product-img">
+                      <img alt="Moet & Chandon Brut" src="https://www.pngplay.com/wp-content/uploads/15/Moet-Chandon-Brut-Imperial-PNG-Free-File-Download.png"/>
+                    </div>
                     <div class="mph-product-info">
                       <div class="mph-product-header">
                         <div><strong>Moët & Chandon</strong><small>Champagne</small></div>
@@ -1066,7 +1108,10 @@
                     </div>
                   </div>
                   <div class="mph-stock-item critical">
-                    <div class="mph-product-img mph-product-jw">JW</div>
+                    <div class="mph-product-accent"></div>
+                    <div class="mph-product-img">
+                      <img alt="Johnnie Walker Black Label" src="https://upload.wikimedia.org/wikipedia/commons/2/21/Johnnie_Walker_Black_Label.jpg"/>
+                    </div>
                     <div class="mph-product-info">
                       <div class="mph-product-header">
                         <div><strong>Johnnie Walker</strong><small>Black Label</small></div>
@@ -1078,12 +1123,15 @@
                       </div>
                     </div>
                   </div>
-                  <div class="mph-stock-item">
-                    <div class="mph-product-img mph-product-bs">BS</div>
+                  <div class="mph-stock-item low">
+                    <div class="mph-product-accent"></div>
+                    <div class="mph-product-img">
+                      <img alt="Bombay Sapphire Gin" src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Bombay-sapphire.jpg"/>
+                    </div>
                     <div class="mph-product-info">
                       <div class="mph-product-header">
                         <div><strong>Bombay Sapphire</strong><small>Gin</small></div>
-                        <span class="material-symbols-outlined mph-warning-icon" style="color:#d4d4d8">warning</span>
+                        <span class="material-symbols-outlined mph-warning-icon mph-warning-icon--amber">warning</span>
                       </div>
                       <div class="mph-product-stock">
                         <div><small>Stock actual</small><b>28 botellas</b></div>

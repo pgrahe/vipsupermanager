@@ -669,6 +669,34 @@ html.dark .mobile-mode-btn:hover { background: var(--primary); color: #000; bord
   padding: 22px 20px;
   margin-bottom: 12px;
 }
+.mph-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.mph-section-title--caps {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.mph-live-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #111111;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
 .mph-margin-row {
   display: flex;
   align-items: flex-end;
@@ -689,6 +717,39 @@ html.dark .mobile-mode-btn:hover { background: var(--primary); color: #000; bord
   gap: 8px;
 }
 .mph-sparkline { width: 136px; height: 64px; flex-shrink: 0; }
+.mph-activity-card { padding-top: 18px; padding-bottom: 10px; }
+.mph-activity-list {
+  display: flex;
+  flex-direction: column;
+}
+.mph-activity-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 0;
+  border-top: 1px solid #f0f1f4;
+}
+.mph-activity-row:first-child { border-top: none; padding-top: 2px; }
+.mph-activity-icon {
+  font-size: 18px !important;
+  color: #a1a1aa;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.mph-activity-row strong {
+  display: block;
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 700;
+  color: #111111;
+  margin-bottom: 4px;
+}
+.mph-activity-row small {
+  display: block;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #8e8e93;
+}
 
 /* ════════════════════════════════════════════════════════
    SCREEN 2 — LOCALES
@@ -732,22 +793,22 @@ html.dark .mobile-mode-btn:hover { background: var(--primary); color: #000; bord
 }
 .mph-tab.active { background: #fff; color: #000; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
 
-.mph-venue-list { display: flex; flex-direction: column; gap: 8px; }
+.mph-venue-list { display: flex; flex-direction: column; gap: 12px; }
 .mph-venue-row {
   display: flex;
   align-items: flex-start;
   gap: 12px;
   padding: 14px;
-  background: #fff;
-  border: 1.5px solid transparent;
+  background: #f7f7f9;
+  border: 1px solid #ececf1;
   border-radius: 18px;
   text-align: left;
   cursor: pointer;
   width: 100%;
-  transition: border-color 160ms ease;
+  transition: border-color 160ms ease, background 160ms ease;
 }
-.mph-venue-row:hover { border-color: #d4d4d8; }
-.mph-venue-row.best { border-color: #34c759; background: rgba(52,199,89,0.03); }
+.mph-venue-row:hover { border-color: #d4d4d8; background: #f3f4f6; }
+.mph-venue-row.best { border-color: #34c759; background: #f4fcf6; }
 .mph-venue-logo {
   width: 44px;
   height: 44px;
@@ -877,27 +938,32 @@ html.dark .mobile-mode-btn:hover { background: var(--primary); color: #000; bord
 .mph-content--stock { padding: 0; gap: 0; }
 .mph-stock-tabs {
   display: flex;
-  gap: 6px;
-  padding: 12px 14px 10px;
+  gap: 0;
+  margin: 12px 14px 10px;
+  padding: 4px;
   background: #fff;
-  border-bottom: 1px solid #e8e8ed;
+  border: 1px solid #ededf1;
+  border-radius: 14px;
   flex-shrink: 0;
 }
 .mph-stock-tab {
   display: flex;
   align-items: center;
   gap: 5px;
-  padding: 7px 14px;
-  background: #e8e8ed;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+  padding: 9px 10px;
+  background: transparent;
   border: none;
-  border-radius: 999px;
+  border-radius: 11px;
   font-size: 13px;
   font-weight: 700;
-  color: #8e8e93;
+  color: #1c1c1e;
   cursor: pointer;
   transition: background 160ms ease, color 160ms ease;
 }
-.mph-stock-tab.active { background: #000; color: #fff; }
+.mph-stock-tab.active { background: #111111; color: #fff; }
 .mph-badge {
   display: inline-flex;
   align-items: center;
@@ -905,73 +971,132 @@ html.dark .mobile-mode-btn:hover { background: var(--primary); color: #000; bord
   min-width: 18px;
   height: 18px;
   padding: 0 5px;
-  background: rgba(0,0,0,0.1);
+  background: #f3f4f6;
   border-radius: 999px;
   font-size: 10px;
   font-weight: 800;
+  color: #ff9500;
 }
 .mph-stock-tab.active .mph-badge { background: rgba(255,255,255,0.22); color: #fff; }
 .mph-badge--red { background: rgba(255,59,48,0.14); color: #ff3b30; }
+.mph-badge--amber { background: rgba(255,149,0,0.14); color: #ff9500; }
 .mph-stock-tab.active .mph-badge--red { background: rgba(255,255,255,0.22); color: #fff; }
+.mph-stock-tab.active .mph-badge--amber { background: rgba(255,255,255,0.22); color: #fff; }
 
 .mph-stock-list {
   flex: 1;
   overflow-y: auto;
-  padding: 12px 14px;
+  padding: 4px 14px 12px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 .mph-stock-list::-webkit-scrollbar { display: none; }
 
 .mph-stock-item {
+  position: relative;
   display: flex;
-  align-items: center;
-  gap: 12px;
+  align-items: flex-start;
+  gap: 14px;
   background: #fff;
-  border-radius: 18px;
-  padding: 14px;
-  border: 1.5px solid transparent;
+  border-radius: 16px;
+  padding: 14px 14px 14px 16px;
+  border: 1px solid #ececf0;
+  overflow: hidden;
 }
-.mph-stock-item.critical { border-color: rgba(255,59,48,0.18); }
+.mph-stock-item.critical .mph-product-accent { background: #ff3b30; }
+.mph-stock-item.low .mph-product-accent { background: #ff9500; }
+
+.mph-product-accent {
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 3px;
+  border-radius: 999px;
+  background: transparent;
+}
 
 .mph-product-img {
-  width: 52px;
-  height: 68px;
-  border-radius: 10px;
+  width: 56px;
+  height: 108px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
-  font-weight: 900;
-  color: #fff;
   flex-shrink: 0;
-  letter-spacing: -0.02em;
+  margin-left: 4px;
 }
-.mph-product-gg { background: linear-gradient(145deg, #94a3b8, #64748b); }
-.mph-product-mc { background: linear-gradient(145deg, #d4a853, #a07828); }
-.mph-product-jw { background: linear-gradient(145deg, #92400e, #6b3009); }
-.mph-product-bs { background: linear-gradient(145deg, #3b82f6, #1d4ed8); }
+.mph-product-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
 
-.mph-product-info { flex: 1; min-width: 0; }
+.mph-product-info {
+  flex: 1;
+  min-width: 0;
+  padding-top: 2px;
+}
 .mph-product-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 10px;
+  gap: 12px;
+  margin-bottom: 14px;
 }
-.mph-product-header strong { display: block; font-size: 14px; font-weight: 700; color: #000; }
-.mph-product-header small { display: block; font-size: 11px; color: #8e8e93; margin-top: 1px; }
-.mph-warning-icon { font-size: 18px !important; color: #ff3b30; flex-shrink: 0; }
-.mph-product-stock { display: flex; gap: 20px; }
-.mph-product-stock div { display: flex; flex-direction: column; }
-.mph-product-stock small { font-size: 10px; color: #8e8e93; margin-bottom: 2px; }
-.mph-product-stock b { font-size: 14px; font-weight: 800; color: #000; }
+.mph-product-header strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #111111;
+}
+.mph-product-header small {
+  display: block;
+  font-size: 13px;
+  line-height: 1.2;
+  color: #8e8e93;
+  margin-top: 2px;
+}
+.mph-warning-icon {
+  font-size: 20px !important;
+  color: #ff3b30;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.mph-warning-icon--amber { color: #ff9500; }
+.mph-product-stock {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+.mph-product-stock div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.mph-product-stock div + div {
+  border-left: 1px solid #ececf0;
+  padding-left: 16px;
+  margin-left: 16px;
+}
+.mph-product-stock small {
+  font-size: 12px;
+  color: #8e8e93;
+}
+.mph-product-stock b {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111111;
+}
 .mph-critical-val { color: #ff3b30 !important; }
 
 .mph-stock-cta {
-  padding: 10px 14px 14px;
-  background: #f2f2f7;
+  padding: 4px 14px 16px;
+  background: #ffffff;
   flex-shrink: 0;
 }
 .mph-cta-btn {
@@ -980,12 +1105,12 @@ html.dark .mobile-mode-btn:hover { background: var(--primary); color: #000; bord
   justify-content: center;
   gap: 8px;
   width: 100%;
-  padding: 16px;
+  padding: 15px 16px;
   background: #000;
   color: #fff;
   border: none;
-  border-radius: 16px;
-  font-size: 15px;
+  border-radius: 12px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   transition: background 160ms ease;
