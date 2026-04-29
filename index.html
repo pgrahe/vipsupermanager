@@ -2,8 +2,21 @@
 <html class="light" lang="es">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>OPSNIGHT | Panel de Control</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="OPSNIGHT" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
+
+    <!-- SEO / Open Graph -->
+    <meta name="description" content="Panel de control operativo para locales de ocio nocturno. Aforos, TPV, personal, stock y finanzas en tiempo real." />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
@@ -166,6 +179,7 @@
             </div>
           </div>
           <button class="language-button js-action" type="button">Español</button>
+          <button class="mobile-mode-btn" id="mobileModeTrigger" type="button"><span class="material-symbols-outlined">smartphone</span>Modo Mobile</button>
           <div class="header-actions"><button class="material-symbols-outlined js-action" type="button" aria-label="Notificaciones">notifications</button><button class="material-symbols-outlined settings-trigger" type="button" aria-label="Ajustes">settings</button><div class="desktop-avatar">PG</div></div>
         </div>
       </header>
@@ -183,12 +197,183 @@
 
       <main class="desktop-main">
         <section class="desktop-page active" data-page="overview">
-          <section class="desktop-grid financial-grid">
-            <article class="revenue-desktop-card"><div><p class="desktop-label">Facturación Total (Hoy)</p><h1>€142,890.00</h1></div><div class="desktop-revenue-breakdown"><div><div class="metric-title"><i class="black-square"></i><span>Ingresos Barras</span></div><strong>€98,420.00</strong><div class="metric-bar"><i style="width: 68%"></i></div></div><div><div class="metric-title"><i class="gray-square"></i><span>Ingresos Taquilla</span></div><strong>€44,470.00</strong><div class="metric-bar gray"><i style="width: 32%"></i></div></div></div></article>
-            <article class="margin-desktop-card"><div class="card-headline"><span>Márgenes Operativos</span><span class="material-symbols-outlined">trending_up</span></div><div><strong>34.2%</strong><p>+2.4% vs semana anterior</p></div><dl><div><dt>EBITDA Mensual</dt><dd>€312,400</dd></div><div><dt>Coste de Ventas</dt><dd>22.8%</dd></div></dl></article>
+
+          <!-- Barra de estado live -->
+          <div class="live-status-bar">
+            <div class="lsb-left">
+              <span class="material-symbols-outlined lsb-icon">sensors</span>
+              <strong>Kapital Madrid</strong>
+              <span class="lsb-sep">·</span>
+              <span id="lsbTime">22:47</span>
+              <span class="lsb-sep">·</span>
+              <span class="lsb-sync">Sync hace 12s</span>
+            </div>
+            <div class="lsb-center">
+              <span class="lsb-cap-label">Aforo</span>
+              <strong class="lsb-cap-value">1,842 <em>/ 2,100</em></strong>
+              <div class="lsb-cap-bar"><i style="width: 87.7%"></i></div>
+              <span class="lsb-cap-pct">87.7% · 258 plazas libres</span>
+            </div>
+            <div class="lsb-right">
+              <button class="lsb-alert-pill lsb-alert-critical js-action" type="button">
+                <span class="material-symbols-outlined">warning</span>
+                2 alertas críticas
+              </button>
+              <button class="lsb-alert-pill js-action" type="button">
+                <span class="material-symbols-outlined">notifications</span>
+                Ver todo
+              </button>
+            </div>
+          </div>
+
+          <!-- KPI Strip: 5 métricas clave -->
+          <div class="kpi-strip">
+            <article class="kpi-card">
+              <p class="kpi-label">Facturación Total</p>
+              <strong class="kpi-value">€142,890</strong>
+              <div class="kpi-sub">
+                <span><i class="black-square"></i> Barras €98,420</span>
+                <span><i class="gray-square"></i> Taquilla €44,470</span>
+              </div>
+            </article>
+            <article class="kpi-card">
+              <p class="kpi-label">Aforo Actual</p>
+              <strong class="kpi-value">87.7%</strong>
+              <div class="kpi-sub">
+                <span>1,842 de 2,100 · 258 libres</span>
+                <span>Estado: normal</span>
+              </div>
+            </article>
+            <article class="kpi-card">
+              <p class="kpi-label">Margen Operativo</p>
+              <strong class="kpi-value">34.2%</strong>
+              <div class="kpi-sub">
+                <span>+2.4% vs semana ant.</span>
+                <span>EBITDA €312,400</span>
+              </div>
+            </article>
+            <article class="kpi-card">
+              <p class="kpi-label">Personal Activo</p>
+              <strong class="kpi-value">46</strong>
+              <div class="kpi-sub">
+                <span>€812/h · ETA cierre €5,720</span>
+                <span>32 barra · 8 sala · 6 soporte</span>
+              </div>
+            </article>
+            <article class="kpi-card kpi-card--alert">
+              <p class="kpi-label">Alertas Activas</p>
+              <strong class="kpi-value kpi-value--alert">2</strong>
+              <div class="kpi-sub">
+                <span>Stock crítico: 2 ítems</span>
+                <span>Última: hace 12 min</span>
+              </div>
+            </article>
+          </div>
+
+          <!-- Fila operativa: Personal + Stock Crítico + Actividad -->
+          <section class="desktop-grid overview-ops-grid">
+
+            <!-- Personal colapsado a KPIs -->
+            <article class="desktop-card overview-personal-card">
+              <div class="desktop-section-head">
+                <h2>Personal & Costes</h2>
+                <span>Live</span>
+              </div>
+              <div class="human-summary-strip">
+                <article>
+                  <small>Staff activo</small>
+                  <strong>46</strong>
+                  <span>32 barra · 8 sala · 6 soporte</span>
+                </article>
+                <article>
+                  <small>Coste vivo</small>
+                  <strong>€812/h</strong>
+                  <span>ETA cierre €5,640</span>
+                </article>
+                <article>
+                  <small>Productividad</small>
+                  <strong>€176</strong>
+                  <span>facturación por staff</span>
+                </article>
+              </div>
+              <div class="overview-cost-total">
+                <span>Coste total sesión estimado</span>
+                <strong>€5,720</strong>
+              </div>
+              <button class="outline-action js-action overview-detail-btn" type="button">Abrir detalle completo</button>
+            </article>
+
+            <!-- Stock Crítico: solo ítems rojos -->
+            <article class="desktop-card warehouse-card">
+              <div class="desktop-section-head">
+                <h2>Stock Crítico</h2>
+                <button class="js-action" type="button">Pedido Rápido</button>
+              </div>
+              <div class="warehouse-list">
+                <article class="stock-row critical">
+                  <div class="stock-thumb">!</div>
+                  <div>
+                    <header><strong>Tanqueray No. Ten</strong><b>12 BOTELLAS</b></header>
+                    <div class="stock-meter"><i style="width: 15%"></i></div>
+                  </div>
+                </article>
+                <article class="stock-row critical">
+                  <div class="stock-thumb">!</div>
+                  <div>
+                    <header><strong>Moët & Chandon Brut</strong><b>8 BOTELLAS</b></header>
+                    <div class="stock-meter"><i style="width: 8%"></i></div>
+                  </div>
+                </article>
+                <div class="stock-ok-row">
+                  <span class="material-symbols-outlined">check_circle</span>
+                  <span>Resto del inventario en niveles normales</span>
+                </div>
+              </div>
+              <footer>
+                <span>Próximo envío programado:</span>
+                <strong>Lunes, 06:00 AM</strong>
+              </footer>
+            </article>
+
+            <!-- Actividad en tiempo real (antes debajo del fold) -->
+            <article class="desktop-card overview-activity-card">
+              <div class="desktop-section-head">
+                <h2>Actividad en Tiempo Real</h2>
+                <span>Live</span>
+              </div>
+              <div class="activity-items activity-items--vertical">
+                <article>
+                  <span class="material-symbols-outlined">verified_user</span>
+                  <div>
+                    <strong>Acceso Biométrico: Director General</strong>
+                    <small>Hace 4 min · Kapital Madrid</small>
+                  </div>
+                </article>
+                <article>
+                  <span class="material-symbols-outlined">report_problem</span>
+                  <div>
+                    <strong>Alerta Stock: Ron Barceló Imperial</strong>
+                    <small>Hace 12 min · Pacha Ibiza</small>
+                  </div>
+                </article>
+                <article>
+                  <span class="material-symbols-outlined">currency_exchange</span>
+                  <div>
+                    <strong>Cierre Parcial de Caja Barra Central</strong>
+                    <small>Hace 28 min · €14,210 registrados</small>
+                  </div>
+                </article>
+                <article>
+                  <span class="material-symbols-outlined">sensors</span>
+                  <div>
+                    <strong>Calibración de Sonido Automática</strong>
+                    <small>Hace 45 min · Sala Principal</small>
+                  </div>
+                </article>
+              </div>
+            </article>
+
           </section>
-          <section class="desktop-grid ops-grid"><article class="desktop-card human-card"><div class="desktop-section-head"><h2>Personal & Costes Salariales</h2><span>Live Update</span></div><div class="human-summary-strip"><article><small>Staff activo</small><strong>46</strong><span>32 barra · 8 sala · 6 soporte</span></article><article><small>Coste vivo</small><strong>€812/h</strong><span>ETA cierre €5,640</span></article><article><small>Productividad</small><strong>€176</strong><span>facturación por staff conectado</span></article></div><div class="human-content human-content-redesign single-column"><div class="human-cost-panel full-width"><div class="human-panel-head"><div><p class="mini-label">Personal activo</p><h3>Categoría, coste/hora y total activo</h3></div><button class="outline-action js-action" type="button">Abrir detalle</button></div><div class="staff-cost-list-head"><span>Personal activo</span><span>Categoría</span><span>Coste/hora</span><span>Total act.</span></div><div class="staff-cost-stack staff-cost-stack-detailed"><article><div><strong>Carlos R. · Elena M. · equipo barra</strong><span>27 personas activas · ticket medio €18.40 · 2.1k bebidas/h</span></div><em>Barra & Sala</em><b class="staff-rate">€14.20/h</b><strong class="staff-total">€3,840</strong></article><article><div><strong>Seguridad pista + VIP + puerta</strong><span>11 personas activas · control acceso y sala principal</span></div><em>Seguridad (SIA)</em><b class="staff-rate">€22.50/h</b><strong class="staff-total">€1,240</strong></article><article><div><strong>Limpieza, backline y mantenimiento</strong><span>8 personas activas · soporte técnico y cierre operativo</span></div><em>Limpieza & Manten.</em><b class="staff-rate">€11.80/h</b><strong class="staff-total">€640</strong></article></div><div class="staff-cost-foot"><span>Coste total sesión estimado</span><strong>€5,720</strong></div></div></div></article><article class="desktop-card warehouse-card"><div class="desktop-section-head"><h2>Stock Crítico (Global)</h2><button class="js-action" type="button">Pedido Rápido</button></div><div class="warehouse-list"><article class="stock-row critical"><div class="stock-thumb">1</div><div><header><strong>Tanqueray No. Ten</strong><b>12 BOTELLAS</b></header><div class="stock-meter"><i style="width: 15%"></i></div></div></article><article class="stock-row"><div class="stock-thumb">2</div><div><header><strong>Grey Goose Vodka 1L</strong><b>48 BOTELLAS</b></header><div class="stock-meter"><i style="width: 60%"></i></div></div></article><article class="stock-row"><div class="stock-thumb">3</div><div><header><strong>Johnnie Walker Black Label</strong><b>32 BOTELLAS</b></header><div class="stock-meter"><i style="width: 42%"></i></div></div></article><article class="stock-row critical"><div class="stock-thumb">4</div><div><header><strong>Moët & Chandon Brut</strong><b>8 BOTELLAS</b></header><div class="stock-meter"><i style="width: 8%"></i></div></div></article></div><footer><span>Próximo envío programado:</span><strong>Lunes, 06:00 AM</strong></footer></article></section>
-          <section class="activity-card"><div class="activity-title"><h3>Actividad Reciente del Sistema</h3><i></i></div><div class="activity-items"><article><span class="material-symbols-outlined">verified_user</span><div><strong>Acceso Biométrico: Director General</strong><small>Hace 4 minutos · Kapital Madrid</small></div></article><article><span class="material-symbols-outlined">report_problem</span><div><strong>Alerta Stock: Ron Barceló Imperial</strong><small>Hace 12 minutos · Pacha Ibiza</small></div></article><article><span class="material-symbols-outlined">currency_exchange</span><div><strong>Cierre Parcial de Caja Barra Central</strong><small>Hace 28 minutos · €14,210 registrados</small></div></article><article><span class="material-symbols-outlined">sensors</span><div><strong>Calibración de Sonido Automática</strong><small>Hace 45 minutos · Sala Principal</small></div></article></div></section>
         </section>
 
         <section class="desktop-page" data-page="locales">
@@ -619,7 +804,395 @@
       </aside>
     </div>
 
+    <!-- ── Mobile Preview Overlay ─────────────────────── -->
+    <div class="mobile-preview-overlay" id="mobilePreviewOverlay" hidden>
+      <div class="mph-wrapper">
+        <button class="mph-close" id="mphClose" type="button">
+          <span class="material-symbols-outlined">close</span>
+          Salir de Modo Mobile
+        </button>
+        <div class="mph-frame">
+
+          <!-- Status bar -->
+          <div class="mph-status-bar">
+            <span id="mphClock">22:47</span>
+            <div class="mph-status-icons">
+              <span class="material-symbols-outlined">signal_cellular_alt</span>
+              <span class="material-symbols-outlined">wifi</span>
+              <span class="material-symbols-outlined">battery_full</span>
+            </div>
+          </div>
+
+          <!-- Screens -->
+          <div class="mph-screens-wrap">
+
+            <!-- Pantalla 1: Panel de Control -->
+            <section class="mph-screen active" data-mph-screen="panel">
+              <div class="mph-topbar">
+                <button class="mph-icon-btn" type="button"><span class="material-symbols-outlined">menu</span></button>
+                <h1>Panel de Control</h1>
+                <button class="mph-icon-btn" type="button"><span class="material-symbols-outlined">notifications</span></button>
+              </div>
+              <div class="mph-content">
+                <div class="mph-filters-row">
+                  <button class="mph-filter-pill" type="button"><span class="material-symbols-outlined">language</span>Global<span class="material-symbols-outlined">expand_more</span></button>
+                  <button class="mph-filter-pill" type="button">Hoy, 24 may<span class="material-symbols-outlined">calendar_today</span></button>
+                </div>
+                <div class="mph-hero-block">
+                  <p class="mph-label">Facturación total (hoy)</p>
+                  <strong class="mph-hero-num">€142,890.00</strong>
+                  <div class="mph-trend-row">
+                    <span class="mph-trend up"><span class="material-symbols-outlined">arrow_upward</span>12.4% (€15,920.00)</span>
+                    <span class="mph-trend-label">vs ayer</span>
+                  </div>
+                </div>
+                <div class="mph-two-col">
+                  <div class="mph-metric-box">
+                    <p class="mph-label">Ingresos barras</p>
+                    <strong>€85,420.00</strong>
+                    <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>10.8%</span>
+                  </div>
+                  <div class="mph-metric-box">
+                    <p class="mph-label">Ingresos taquilla</p>
+                    <strong>€57,470.00</strong>
+                    <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>14.3%</span>
+                  </div>
+                </div>
+                <div class="mph-card">
+                  <p class="mph-label">Márgenes operativos</p>
+                  <div class="mph-margin-row">
+                    <div>
+                      <strong class="mph-margin-num">26.7%</strong>
+                      <div class="mph-trend-row">
+                        <span class="mph-trend up"><span class="material-symbols-outlined">arrow_upward</span>2.6 pp</span>
+                        <span class="mph-trend-label">vs ayer</span>
+                      </div>
+                    </div>
+                    <svg class="mph-sparkline" viewBox="0 0 120 42" preserveAspectRatio="none">
+                      <polyline points="0,38 15,34 30,30 45,24 60,18 75,14 90,10 105,7 120,4" stroke="#000" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                      <polyline points="0,40 15,38 30,37 45,36 60,35 75,34 90,33 105,32 120,31" stroke="#d4d4d8" stroke-width="1.5" fill="none" stroke-dasharray="3 2" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Pantalla 2: Rendimiento por Locales -->
+            <section class="mph-screen" data-mph-screen="locales">
+              <div class="mph-topbar">
+                <button class="mph-icon-btn" type="button"><span class="material-symbols-outlined">menu</span></button>
+                <h1>Rendimiento por Locales</h1>
+                <button class="mph-icon-btn" type="button"><span class="material-symbols-outlined">filter_list</span></button>
+              </div>
+              <div class="mph-content">
+                <button class="mph-venue-selector" type="button">Kapital Madrid<span class="material-symbols-outlined">expand_more</span></button>
+                <div class="mph-tab-row">
+                  <button class="mph-tab active" type="button">Hoy</button>
+                  <button class="mph-tab" type="button">7 días</button>
+                  <button class="mph-tab" type="button">30 días</button>
+                  <button class="mph-tab" type="button">MTD</button>
+                </div>
+                <div class="mph-venue-list">
+                  <button class="mph-venue-row best" data-mph-goto="local-detail" type="button">
+                    <div class="mph-venue-logo mph-logo-k">K</div>
+                    <div class="mph-venue-info">
+                      <div class="mph-venue-name-row"><strong>Kapital Madrid</strong><span class="mph-best-badge">Mejor rendimiento</span></div>
+                      <div class="mph-venue-stats">
+                        <div><small>Facturación</small><b>€42,890</b></div>
+                        <div><small>Ocupación</small><b>78%</b></div>
+                        <div><small>Margen</small><b>28.4%</b></div>
+                      </div>
+                      <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>15.6% vs ayer</span>
+                    </div>
+                  </button>
+                  <button class="mph-venue-row" data-mph-goto="local-detail" type="button">
+                    <div class="mph-venue-logo mph-logo-b">B</div>
+                    <div class="mph-venue-info">
+                      <div class="mph-venue-name-row"><strong>Barceló Sevilla</strong></div>
+                      <div class="mph-venue-stats">
+                        <div><small>Facturación</small><b>€28,450</b></div>
+                        <div><small>Ocupación</small><b>65%</b></div>
+                        <div><small>Margen</small><b>24.1%</b></div>
+                      </div>
+                      <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>8.7% vs ayer</span>
+                    </div>
+                  </button>
+                  <button class="mph-venue-row" data-mph-goto="local-detail" type="button">
+                    <div class="mph-venue-logo mph-logo-o">O</div>
+                    <div class="mph-venue-info">
+                      <div class="mph-venue-name-row"><strong>Opium Barcelona</strong></div>
+                      <div class="mph-venue-stats">
+                        <div><small>Facturación</small><b>€24,230</b></div>
+                        <div><small>Ocupación</small><b>62%</b></div>
+                        <div><small>Margen</small><b>23.5%</b></div>
+                      </div>
+                      <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>6.3% vs ayer</span>
+                    </div>
+                  </button>
+                  <button class="mph-venue-row" data-mph-goto="local-detail" type="button">
+                    <div class="mph-venue-logo mph-logo-m">M</div>
+                    <div class="mph-venue-info">
+                      <div class="mph-venue-name-row"><strong>Moma Valencia</strong></div>
+                      <div class="mph-venue-stats">
+                        <div><small>Facturación</small><b>€22,110</b></div>
+                        <div><small>Ocupación</small><b>58%</b></div>
+                        <div><small>Margen</small><b>21.2%</b></div>
+                      </div>
+                      <span class="mph-trend-sm down"><span class="material-symbols-outlined">arrow_downward</span>-1.4% vs ayer</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <!-- Pantalla 3: Personal & Costes -->
+            <section class="mph-screen" data-mph-screen="personal">
+              <div class="mph-topbar">
+                <button class="mph-icon-btn" type="button"><span class="material-symbols-outlined">menu</span></button>
+                <h1>Personal & Costes</h1>
+                <button class="mph-icon-btn" type="button"><span class="material-symbols-outlined">calendar_today</span></button>
+              </div>
+              <div class="mph-content">
+                <div class="mph-date-row">
+                  <span></span>
+                  <span class="mph-date-pill">Hoy, 24 may <span class="material-symbols-outlined">calendar_today</span></span>
+                </div>
+                <div class="mph-kpi-trio">
+                  <div class="mph-kpi-item">
+                    <small>Staff activo</small>
+                    <strong>132</strong>
+                    <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>5</span>
+                    <span class="mph-vs">vs ayer</span>
+                  </div>
+                  <div class="mph-kpi-item">
+                    <small>Coste por hora</small>
+                    <strong>€1,258</strong>
+                    <span class="mph-trend-sm down"><span class="material-symbols-outlined">arrow_downward</span>-3.2%</span>
+                    <span class="mph-vs">vs ayer</span>
+                  </div>
+                  <div class="mph-kpi-item">
+                    <small>Productividad</small>
+                    <strong>€1,082</strong>
+                    <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>8.1%</span>
+                    <span class="mph-vs">vs ayer</span>
+                  </div>
+                </div>
+                <p class="mph-section-title">Coste por categoría</p>
+                <div class="mph-cat-table">
+                  <div class="mph-cat-head">
+                    <span></span><span>Categoría</span><span>Staff</span><span>Coste/h</span><span>Prod.</span><span></span>
+                  </div>
+                  <div class="mph-cat-row">
+                    <div class="mph-cat-icon mph-cat-barra"><span class="material-symbols-outlined">sports_bar</span></div>
+                    <span>Barra</span><span>56</span><span>€612</span><span>€1,324</span>
+                    <span class="material-symbols-outlined mph-chevron">chevron_right</span>
+                  </div>
+                  <div class="mph-cat-row">
+                    <div class="mph-cat-icon mph-cat-seg"><span class="material-symbols-outlined">security</span></div>
+                    <span>Seguridad</span><span>38</span><span>€426</span><span>€892</span>
+                    <span class="material-symbols-outlined mph-chevron">chevron_right</span>
+                  </div>
+                  <div class="mph-cat-row">
+                    <div class="mph-cat-icon mph-cat-vip"><span class="material-symbols-outlined">diamond</span></div>
+                    <span>VIP</span><span>18</span><span>€220</span><span>€1,742</span>
+                    <span class="material-symbols-outlined mph-chevron">chevron_right</span>
+                  </div>
+                  <div class="mph-cat-row">
+                    <div class="mph-cat-icon mph-cat-otros"><span class="material-symbols-outlined">more_horiz</span></div>
+                    <span>Otros</span><span>20</span><span>€0</span><span>€0</span>
+                    <span class="material-symbols-outlined mph-chevron">chevron_right</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Pantalla 4: Stock Crítico -->
+            <section class="mph-screen" data-mph-screen="stock">
+              <div class="mph-topbar">
+                <button class="mph-icon-btn" type="button"><span class="material-symbols-outlined">menu</span></button>
+                <h1>Stock Crítico</h1>
+                <button class="mph-icon-btn" type="button"><span class="material-symbols-outlined">search</span></button>
+              </div>
+              <div class="mph-content mph-content--stock">
+                <div class="mph-stock-tabs">
+                  <button class="mph-stock-tab active" type="button">Crítico <span class="mph-badge mph-badge--red">3</span></button>
+                  <button class="mph-stock-tab" type="button">Bajo <span class="mph-badge">7</span></button>
+                  <button class="mph-stock-tab" type="button">Todos</button>
+                </div>
+                <div class="mph-stock-list">
+                  <div class="mph-stock-item critical">
+                    <div class="mph-product-img mph-product-gg">GG</div>
+                    <div class="mph-product-info">
+                      <div class="mph-product-header">
+                        <div><strong>Grey Goose</strong><small>Vodka</small></div>
+                        <span class="material-symbols-outlined mph-warning-icon">warning</span>
+                      </div>
+                      <div class="mph-product-stock">
+                        <div><small>Stock actual</small><b class="mph-critical-val">8 botellas</b></div>
+                        <div><small>Mínimo</small><b>20 botellas</b></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mph-stock-item critical">
+                    <div class="mph-product-img mph-product-mc">MC</div>
+                    <div class="mph-product-info">
+                      <div class="mph-product-header">
+                        <div><strong>Moët & Chandon</strong><small>Champagne</small></div>
+                        <span class="material-symbols-outlined mph-warning-icon">warning</span>
+                      </div>
+                      <div class="mph-product-stock">
+                        <div><small>Stock actual</small><b class="mph-critical-val">6 botellas</b></div>
+                        <div><small>Mínimo</small><b>15 botellas</b></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mph-stock-item critical">
+                    <div class="mph-product-img mph-product-jw">JW</div>
+                    <div class="mph-product-info">
+                      <div class="mph-product-header">
+                        <div><strong>Johnnie Walker</strong><small>Black Label</small></div>
+                        <span class="material-symbols-outlined mph-warning-icon">warning</span>
+                      </div>
+                      <div class="mph-product-stock">
+                        <div><small>Stock actual</small><b class="mph-critical-val">10 botellas</b></div>
+                        <div><small>Mínimo</small><b>25 botellas</b></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mph-stock-item">
+                    <div class="mph-product-img mph-product-bs">BS</div>
+                    <div class="mph-product-info">
+                      <div class="mph-product-header">
+                        <div><strong>Bombay Sapphire</strong><small>Gin</small></div>
+                        <span class="material-symbols-outlined mph-warning-icon" style="color:#d4d4d8">warning</span>
+                      </div>
+                      <div class="mph-product-stock">
+                        <div><small>Stock actual</small><b>28 botellas</b></div>
+                        <div><small>Mínimo</small><b>20 botellas</b></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="mph-stock-cta">
+                  <button class="mph-cta-btn js-action" type="button">
+                    <span class="material-symbols-outlined">shopping_cart</span>
+                    Pedido rápido
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <!-- Pantalla 5: Kapital Madrid (detalle local) -->
+            <section class="mph-screen" data-mph-screen="local-detail">
+              <div class="mph-topbar">
+                <button class="mph-icon-btn mph-back-btn" id="mphBackBtn" type="button"><span class="material-symbols-outlined">arrow_back</span></button>
+                <h1>Kapital Madrid</h1>
+                <button class="mph-icon-btn" type="button"><span class="material-symbols-outlined">more_horiz</span></button>
+              </div>
+              <div class="mph-content">
+                <div class="mph-live-row">
+                  <span class="mph-live-dot"></span>
+                  <span>Live update</span>
+                  <span class="mph-updated">Actualizado ahora</span>
+                </div>
+                <div class="mph-date-row">
+                  <span></span>
+                  <span class="mph-date-pill">Hoy, 24 may <span class="material-symbols-outlined">calendar_today</span></span>
+                </div>
+                <div class="mph-hero-block">
+                  <p class="mph-label">Facturación (hoy)</p>
+                  <strong class="mph-hero-num">€42,890.00</strong>
+                  <div class="mph-trend-row">
+                    <span class="mph-trend up"><span class="material-symbols-outlined">arrow_upward</span>15.6% (€5,780.00)</span>
+                    <span class="mph-trend-label">vs ayer</span>
+                  </div>
+                </div>
+                <div class="mph-two-col">
+                  <div class="mph-metric-box">
+                    <p class="mph-label">Ingresos barras</p>
+                    <strong>€26,450.00</strong>
+                    <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>13.2%</span>
+                  </div>
+                  <div class="mph-metric-box">
+                    <p class="mph-label">Ingresos taquilla</p>
+                    <strong>€16,440.00</strong>
+                    <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>18.3%</span>
+                  </div>
+                </div>
+                <div class="mph-two-col">
+                  <div class="mph-metric-box">
+                    <p class="mph-label">Ocupación</p>
+                    <strong>78%</strong>
+                    <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>6 pp</span>
+                  </div>
+                  <div class="mph-metric-box">
+                    <p class="mph-label">Margen operativo</p>
+                    <strong>28.4%</strong>
+                    <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>3.1 pp</span>
+                  </div>
+                </div>
+                <div class="mph-chart-card">
+                  <p class="mph-label">Evolución facturación</p>
+                  <svg class="mph-chart-svg" viewBox="0 0 300 80" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="mphChartGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#000" stop-opacity="0.1"/>
+                        <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+                      </linearGradient>
+                    </defs>
+                    <path d="M0,74 L30,70 L60,65 L90,60 L120,52 L150,42 L180,32 L210,22 L240,14 L270,8 L300,4" stroke="#000" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M0,74 L30,70 L60,65 L90,60 L120,52 L150,42 L180,32 L210,22 L240,14 L270,8 L300,4 L300,78 L0,78 Z" fill="url(#mphChartGrad)"/>
+                    <line x1="0" y1="71" x2="300" y2="71" stroke="#f0f0f2" stroke-width="1"/>
+                    <line x1="0" y1="50" x2="300" y2="50" stroke="#f0f0f2" stroke-width="1"/>
+                    <line x1="0" y1="29" x2="300" y2="29" stroke="#f0f0f2" stroke-width="1"/>
+                    <line x1="0" y1="8" x2="300" y2="8" stroke="#f0f0f2" stroke-width="1"/>
+                    <text x="4" y="70" font-size="7" fill="#a1a1aa" font-family="Inter,sans-serif">0</text>
+                    <text x="4" y="49" font-size="7" fill="#a1a1aa" font-family="Inter,sans-serif">20K</text>
+                    <text x="4" y="28" font-size="7" fill="#a1a1aa" font-family="Inter,sans-serif">40K</text>
+                    <text x="4" y="9" font-size="7" fill="#a1a1aa" font-family="Inter,sans-serif">60K</text>
+                    <text x="4" y="78" font-size="7" fill="#a1a1aa" font-family="Inter,sans-serif">00:00</text>
+                    <text x="72" y="78" font-size="7" fill="#a1a1aa" font-family="Inter,sans-serif">06:00</text>
+                    <text x="148" y="78" font-size="7" fill="#a1a1aa" font-family="Inter,sans-serif">12:00</text>
+                    <text x="222" y="78" font-size="7" fill="#a1a1aa" font-family="Inter,sans-serif">18:00</text>
+                    <text x="272" y="78" font-size="7" fill="#a1a1aa" font-family="Inter,sans-serif">00:00</text>
+                  </svg>
+                </div>
+              </div>
+            </section>
+
+          </div><!-- mph-screens-wrap -->
+
+          <!-- Bottom Nav -->
+          <nav class="mph-bottom-nav">
+            <button class="active" data-mph-screen="panel" type="button">
+              <span class="material-symbols-outlined">grid_view</span><b>Panel</b>
+            </button>
+            <button data-mph-screen="locales" type="button">
+              <span class="material-symbols-outlined">location_on</span><b>Locales</b>
+            </button>
+            <button data-mph-screen="personal" type="button">
+              <span class="material-symbols-outlined">group</span><b>Personal</b>
+            </button>
+            <button data-mph-screen="stock" type="button">
+              <span class="material-symbols-outlined">inventory_2</span><b>Stock</b>
+            </button>
+            <button data-mph-screen="mas" type="button">
+              <span class="material-symbols-outlined">more_horiz</span><b>Más</b>
+            </button>
+          </nav>
+
+        </div><!-- mph-frame -->
+      </div><!-- mph-wrapper -->
+    </div><!-- mobile-preview-overlay -->
+
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="dashboard.js"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/sw.js").catch(() => {});
+        });
+      }
+    </script>
   </body>
 </html>
