@@ -2163,6 +2163,167 @@ html.dark .risk-list.visual-risk-list .visual-status-item {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+.bottle-summary-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.bottle-summary-strip article,
+.bottle-threshold-box {
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--surface-container-low);
+}
+.bottle-summary-strip span,
+.bottle-threshold-box span {
+  color: #a1a1aa;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.bottle-summary-strip strong {
+  display: block;
+  margin-top: 10px;
+  color: #000;
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 950;
+  letter-spacing: -0.05em;
+}
+.bottle-summary-strip small,
+.bottle-threshold-box p {
+  display: block;
+  margin-top: 6px;
+  color: #71717a;
+  font-size: 10px;
+  line-height: 1.4;
+}
+.bottle-catalog-table {
+  display: grid;
+  gap: 0;
+}
+.bottle-catalog-head,
+.bottle-catalog-table article {
+  display: grid;
+  grid-template-columns: minmax(170px, 1.35fr) minmax(108px, 0.9fr) minmax(56px, 0.45fr) minmax(62px, 0.48fr) minmax(62px, 0.48fr) minmax(62px, 0.48fr) minmax(70px, 0.52fr);
+  align-items: center;
+  gap: 8px;
+}
+.bottle-catalog-head {
+  padding: 0 0 10px;
+  border-bottom: 1px solid #f4f4f5;
+}
+.bottle-catalog-head span {
+  color: #a1a1aa;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.bottle-catalog-head span:nth-child(n+3),
+.bottle-catalog-table article b,
+.bottle-catalog-table article em,
+.bottle-catalog-table article i,
+.bottle-catalog-table article u {
+  text-align: right;
+}
+.bottle-catalog-table article {
+  min-height: 60px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f4f4f5;
+}
+.bottle-catalog-table article:last-child {
+  border-bottom: 0;
+}
+.bottle-catalog-table article strong {
+  color: #000;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+.bottle-catalog-table article span {
+  color: #71717a;
+  font-size: 9px;
+}
+.bottle-catalog-table article b,
+.bottle-catalog-table article em,
+.bottle-catalog-table article i,
+.bottle-catalog-table article u {
+  color: #000;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.bottle-catalog-table article mark {
+  justify-self: end;
+  padding: 5px 7px;
+  border-radius: 999px;
+  background: var(--surface-container-low);
+  color: #000;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.bottle-catalog-table article.warning mark {
+  background: #fff4e5;
+  color: #9a5b00;
+}
+.bottle-catalog-table article.critical mark {
+  background: #fff0f0;
+  color: #ba1a1a;
+}
+.bottle-catalog-table article.warning u,
+.bottle-catalog-table article.critical u {
+  color: #ba1a1a;
+}
+.bottle-alert-list {
+  display: grid;
+  gap: 10px;
+}
+.bottle-alert-list article {
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--surface-container-low);
+}
+.bottle-alert-list article strong {
+  display: block;
+  color: #000;
+  font-size: 12px;
+  font-weight: 900;
+}
+.bottle-alert-list article span {
+  display: block;
+  margin-top: 5px;
+  color: #71717a;
+  font-size: 10px;
+  line-height: 1.4;
+}
+.bottle-alert-list article.warning {
+  background: #fff8ef;
+}
+.bottle-alert-list article.critical {
+  background: #fff3f3;
+}
+.bottle-alert-list article.critical strong {
+  color: #ba1a1a;
+}
+.bottle-threshold-box {
+  margin-top: 16px;
+}
+.bottle-threshold-box strong {
+  display: block;
+  margin-top: 10px;
+  color: #000;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
 .employee-leakage-table {
   display: grid;
   gap: 0;
@@ -2279,22 +2440,33 @@ html.dark .risk-list.visual-risk-list .visual-status-item {
   }
   .stock-control-row,
   .employee-leakage-head,
-  .employee-leakage-table article {
+  .employee-leakage-table article,
+  .bottle-catalog-head,
+  .bottle-catalog-table article {
     grid-template-columns: 1fr;
     align-items: start;
   }
   .stock-control-row b,
   .stock-control-row em,
-  .employee-leakage-table .mini-profile-button {
+  .employee-leakage-table .mini-profile-button,
+  .bottle-catalog-table article b,
+  .bottle-catalog-table article em,
+  .bottle-catalog-table article i,
+  .bottle-catalog-table article u,
+  .bottle-catalog-table article mark {
     justify-self: start;
     text-align: left;
+  }
+  .bottle-summary-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 767px) {
   .finance-equation-strip,
   .invite-board,
-  .reconciliation-stack {
+  .reconciliation-stack,
+  .bottle-summary-strip {
     grid-template-columns: 1fr;
   }
 }
@@ -2336,8 +2508,53 @@ html.dark .invoice-list b,
 html.dark .employee-leakage-table b,
 html.dark .ai-insight,
 html.dark .invite-board article,
+html.dark .bottle-summary-strip article,
+html.dark .bottle-alert-list article,
+html.dark .bottle-threshold-box,
 html.dark .reconciliation-stack article {
   background: var(--surface-container-low);
+}
+html.dark .bottle-catalog-table article strong,
+html.dark .bottle-catalog-table article b,
+html.dark .bottle-catalog-table article em,
+html.dark .bottle-catalog-table article i,
+html.dark .bottle-catalog-table article u,
+html.dark .bottle-threshold-box strong,
+html.dark .bottle-summary-strip strong {
+  color: var(--primary);
+}
+html.dark .bottle-catalog-head,
+html.dark .bottle-catalog-table article,
+html.dark .bottle-catalog-table article:last-child {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+html.dark .bottle-catalog-head span,
+html.dark .bottle-catalog-table article span,
+html.dark .bottle-summary-strip span,
+html.dark .bottle-summary-strip small,
+html.dark .bottle-threshold-box span,
+html.dark .bottle-threshold-box p,
+html.dark .bottle-alert-list article span {
+  color: #a1a1aa;
+}
+html.dark .bottle-catalog-table article mark {
+  background: #27272a;
+  color: var(--primary);
+}
+html.dark .bottle-catalog-table article.warning mark {
+  background: rgba(245, 158, 11, 0.14);
+  color: #fbbf24;
+}
+html.dark .bottle-catalog-table article.critical mark,
+html.dark .bottle-alert-list article.critical {
+  background: rgba(186, 26, 26, 0.14);
+  color: var(--error);
+}
+html.dark .bottle-alert-list article.warning {
+  background: rgba(245, 158, 11, 0.12);
+}
+html.dark .bottle-alert-list article strong {
+  color: var(--primary);
 }
 html.dark .finance-signal-card.critical {
   background: linear-gradient(180deg, var(--surface-container-lowest) 0%, #1a0e0d 100%);
