@@ -796,7 +796,7 @@ html.dark .mobile-mode-btn:hover { background: var(--primary); color: #000; bord
 .mph-venue-list { display: flex; flex-direction: column; gap: 12px; }
 .mph-venue-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
   padding: 14px;
   background: #f7f7f9;
@@ -829,10 +829,19 @@ html.dark .mobile-mode-btn:hover { background: var(--primary); color: #000; bord
 .mph-venue-name-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
 .mph-venue-name-row strong { font-size: 14px; font-weight: 700; color: #000; }
 .mph-best-badge { padding: 2px 8px; background: #34c759; color: #fff; border-radius: 999px; font-size: 10px; font-weight: 700; }
-.mph-venue-stats { display: flex; gap: 16px; margin-bottom: 6px; }
+.mph-venue-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 6px; }
 .mph-venue-stats div { display: flex; flex-direction: column; }
 .mph-venue-stats small { font-size: 10px; color: #8e8e93; font-weight: 500; margin-bottom: 1px; }
 .mph-venue-stats b { font-size: 13px; font-weight: 800; color: #000; }
+.mph-venue-chevron {
+  align-self: center;
+  color: #c7c7cc;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.mph-trend-sm.flat { color: #8e8e93; }
 
 /* ════════════════════════════════════════════════════════
    SCREEN 3 — PERSONAL
@@ -897,13 +906,18 @@ html.dark .mobile-mode-btn:hover { background: var(--primary); color: #000; bord
   grid-template-columns: minmax(108px, 1.2fr) 56px 64px 74px 16px;
   gap: 8px;
   align-items: center;
+  width: 100%;
   padding: 14px;
+  background: #fff;
+  border: none;
   border-bottom: 1px solid #f2f2f7;
   font-size: 12px;
   font-weight: 500;
   color: #000;
+  text-align: left;
 }
 .mph-cat-row:last-child { border-bottom: none; }
+.mph-cat-row:hover { background: #fafafb; }
 .mph-cat-cell {
   display: flex;
   align-items: center;
@@ -931,6 +945,220 @@ html.dark .mobile-mode-btn:hover { background: var(--primary); color: #000; bord
 .mph-cat-vip,
 .mph-cat-otros { background: #111111; }
 .mph-chevron { font-size: 16px !important; color: #c7c7cc; justify-self: end; }
+.mph-kpi-trio--category { margin-bottom: 14px; }
+.mph-category-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid #ececf1;
+  border-radius: 16px;
+}
+.mph-category-banner .mph-cat-icon {
+  width: 42px;
+  height: 42px;
+}
+.mph-category-banner strong {
+  display: block;
+  font-size: 18px;
+  font-weight: 800;
+  color: #000;
+  letter-spacing: -0.03em;
+}
+.mph-category-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: #8e8e93;
+}
+.mph-roster-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.mph-roster-card {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto 16px;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  padding: 14px;
+  background: #f7f7f9;
+  border: 1px solid #ececf1;
+  border-radius: 16px;
+  text-align: left;
+}
+.mph-roster-avatar,
+.mph-staff-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: #111111;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+.mph-roster-avatar {
+  width: 42px;
+  height: 42px;
+}
+.mph-roster-copy {
+  min-width: 0;
+}
+.mph-roster-copy strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #000;
+}
+.mph-roster-copy span,
+.mph-roster-copy small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mph-roster-copy span {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #3a3a3c;
+}
+.mph-roster-copy small {
+  margin-top: 3px;
+  font-size: 10px;
+  color: #8e8e93;
+}
+.mph-roster-metric {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  text-align: right;
+}
+.mph-roster-metric b {
+  font-size: 13px;
+  font-weight: 800;
+  color: #000;
+  white-space: nowrap;
+}
+.mph-roster-metric span {
+  font-size: 10px;
+  color: #8e8e93;
+  white-space: nowrap;
+}
+.mph-staff-sheet-hero {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid #ececf1;
+  border-radius: 16px;
+}
+.mph-staff-avatar {
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+}
+.mph-staff-sheet-copy {
+  min-width: 0;
+}
+.mph-staff-sheet-copy strong {
+  display: block;
+  font-size: 18px;
+  font-weight: 800;
+  color: #000;
+  letter-spacing: -0.03em;
+}
+.mph-staff-sheet-copy p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #3a3a3c;
+}
+.mph-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.mph-chip-row span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  color: #111111;
+  font-size: 10px;
+  font-weight: 700;
+}
+.mph-sheet-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 2px 0 14px;
+  padding-bottom: 2px;
+  overflow-x: auto;
+}
+.mph-sheet-tabs::-webkit-scrollbar { display: none; }
+.mph-sheet-tab {
+  flex: 0 0 auto;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid #ececf1;
+  border-radius: 999px;
+  background: #fff;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 700;
+}
+.mph-sheet-tab.active {
+  background: #111111;
+  border-color: #111111;
+  color: #fff;
+}
+.mph-sheet-panel { display: none; }
+.mph-sheet-panel.active { display: block; }
+.mph-sheet-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.mph-sheet-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid #ececf1;
+  border-radius: 14px;
+}
+.mph-sheet-row strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: #000;
+}
+.mph-sheet-row span {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #3a3a3c;
+}
+.mph-sheet-row b {
+  align-self: center;
+  justify-self: end;
+  font-size: 10px;
+  font-weight: 800;
+  color: #8e8e93;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
 
 /* ════════════════════════════════════════════════════════
    SCREEN 4 — STOCK

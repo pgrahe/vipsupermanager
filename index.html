@@ -946,61 +946,12 @@
               <div class="mph-content">
                 <button class="mph-venue-selector" type="button">Kapital Madrid<span class="material-symbols-outlined">expand_more</span></button>
                 <div class="mph-tab-row">
-                  <button class="mph-tab active" type="button">Hoy</button>
-                  <button class="mph-tab" type="button">7 días</button>
-                  <button class="mph-tab" type="button">30 días</button>
-                  <button class="mph-tab" type="button">MTD</button>
+                  <button class="mph-tab active" type="button" data-mph-period="today">Hoy</button>
+                  <button class="mph-tab" type="button" data-mph-period="7d">7 días</button>
+                  <button class="mph-tab" type="button" data-mph-period="30d">30 días</button>
+                  <button class="mph-tab" type="button" data-mph-period="mtd">MTD</button>
                 </div>
-                <div class="mph-venue-list">
-                  <button class="mph-venue-row best" data-mph-goto="local-detail" type="button">
-                    <div class="mph-venue-logo mph-logo-k">K</div>
-                    <div class="mph-venue-info">
-                      <div class="mph-venue-name-row"><strong>Kapital Madrid</strong><span class="mph-best-badge">Mejor rendimiento</span></div>
-                      <div class="mph-venue-stats">
-                        <div><small>Facturación</small><b>€42,890</b></div>
-                        <div><small>Ocupación</small><b>78%</b></div>
-                        <div><small>Margen</small><b>28.4%</b></div>
-                      </div>
-                      <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>15.6% vs ayer</span>
-                    </div>
-                  </button>
-                  <button class="mph-venue-row" data-mph-goto="local-detail" type="button">
-                    <div class="mph-venue-logo mph-logo-b">B</div>
-                    <div class="mph-venue-info">
-                      <div class="mph-venue-name-row"><strong>Barceló Sevilla</strong></div>
-                      <div class="mph-venue-stats">
-                        <div><small>Facturación</small><b>€28,450</b></div>
-                        <div><small>Ocupación</small><b>65%</b></div>
-                        <div><small>Margen</small><b>24.1%</b></div>
-                      </div>
-                      <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>8.7% vs ayer</span>
-                    </div>
-                  </button>
-                  <button class="mph-venue-row" data-mph-goto="local-detail" type="button">
-                    <div class="mph-venue-logo mph-logo-o">O</div>
-                    <div class="mph-venue-info">
-                      <div class="mph-venue-name-row"><strong>Opium Barcelona</strong></div>
-                      <div class="mph-venue-stats">
-                        <div><small>Facturación</small><b>€24,230</b></div>
-                        <div><small>Ocupación</small><b>62%</b></div>
-                        <div><small>Margen</small><b>23.5%</b></div>
-                      </div>
-                      <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>6.3% vs ayer</span>
-                    </div>
-                  </button>
-                  <button class="mph-venue-row" data-mph-goto="local-detail" type="button">
-                    <div class="mph-venue-logo mph-logo-m">M</div>
-                    <div class="mph-venue-info">
-                      <div class="mph-venue-name-row"><strong>Moma Valencia</strong></div>
-                      <div class="mph-venue-stats">
-                        <div><small>Facturación</small><b>€22,110</b></div>
-                        <div><small>Ocupación</small><b>58%</b></div>
-                        <div><small>Margen</small><b>21.2%</b></div>
-                      </div>
-                      <span class="mph-trend-sm down"><span class="material-symbols-outlined">arrow_downward</span>-1.4% vs ayer</span>
-                    </div>
-                  </button>
-                </div>
+                <div class="mph-venue-list" id="mphVenueList"></div>
               </div>
             </section>
 
@@ -1037,27 +988,107 @@
                   </div>
                 </div>
                 <p class="mph-section-title">Coste por categoría</p>
-                <div class="mph-cat-table">
-                  <div class="mph-cat-head">
-                    <span>Categoría</span><span>Staff activo</span><span>Coste €/hora</span><span>Productividad</span><span></span>
-                  </div>
-                  <div class="mph-cat-row">
-                    <div class="mph-cat-cell mph-cat-main"><div class="mph-cat-icon mph-cat-barra"><span class="material-symbols-outlined">sports_bar</span></div><span>Barra</span></div><span>56</span><span>€612</span><span>€1,324</span>
-                    <span class="material-symbols-outlined mph-chevron">chevron_right</span>
-                  </div>
-                  <div class="mph-cat-row">
-                    <div class="mph-cat-cell mph-cat-main"><div class="mph-cat-icon mph-cat-seg"><span class="material-symbols-outlined">security</span></div><span>Seguridad</span></div><span>38</span><span>€426</span><span>€892</span>
-                    <span class="material-symbols-outlined mph-chevron">chevron_right</span>
-                  </div>
-                  <div class="mph-cat-row">
-                    <div class="mph-cat-cell mph-cat-main"><div class="mph-cat-icon mph-cat-vip"><span class="material-symbols-outlined">diamond</span></div><span>VIP</span></div><span>18</span><span>€220</span><span>€1,742</span>
-                    <span class="material-symbols-outlined mph-chevron">chevron_right</span>
-                  </div>
-                  <div class="mph-cat-row">
-                    <div class="mph-cat-cell mph-cat-main"><div class="mph-cat-icon mph-cat-otros"><span class="material-symbols-outlined">more_horiz</span></div><span>Otros</span></div><span>20</span><span>€0</span><span>€0</span>
-                    <span class="material-symbols-outlined mph-chevron">chevron_right</span>
+                <div class="mph-cat-table" id="mphCategoryTable"></div>
+              </div>
+            </section>
+
+            <section class="mph-screen" data-mph-screen="category-detail">
+              <div class="mph-topbar">
+                <button class="mph-icon-btn mph-back-btn" id="mphCategoryBackBtn" type="button"><span class="material-symbols-outlined">arrow_back</span></button>
+                <h1 id="mphCategoryTitle">Barra</h1>
+                <button class="mph-icon-btn" type="button"><span class="material-symbols-outlined">more_horiz</span></button>
+              </div>
+              <div class="mph-content">
+                <div class="mph-category-banner">
+                  <div class="mph-cat-icon" id="mphCategoryIcon"><span class="material-symbols-outlined">sports_bar</span></div>
+                  <div>
+                    <p class="mph-label" id="mphCategorySubtitle">Cobertura operativa en tiempo real</p>
+                    <strong id="mphCategoryHeading">Barra</strong>
                   </div>
                 </div>
+                <div class="mph-kpi-trio mph-kpi-trio--category">
+                  <div class="mph-kpi-item">
+                    <small>Staff activo</small>
+                    <strong id="mphCategoryStaff">56</strong>
+                    <span class="mph-vs">actualmente conectado</span>
+                  </div>
+                  <div class="mph-kpi-item">
+                    <small>Coste €/hora</small>
+                    <strong id="mphCategoryCost">€612</strong>
+                    <span class="mph-vs">coste vivo</span>
+                  </div>
+                  <div class="mph-kpi-item">
+                    <small>Productividad</small>
+                    <strong id="mphCategoryProductivity">€1,324</strong>
+                    <span class="mph-vs">output medio</span>
+                  </div>
+                </div>
+                <div class="mph-card">
+                  <div class="mph-card-head">
+                    <p class="mph-section-title">Foco operativo</p>
+                    <span class="mph-live-pill">Live</span>
+                  </div>
+                  <div class="mph-sheet-card-list" id="mphCategoryInsightRows"></div>
+                </div>
+                <div class="mph-card">
+                  <div class="mph-card-head">
+                    <p class="mph-section-title">Perfiles activos clave</p>
+                    <span class="mph-category-count" id="mphCategoryRosterCount">2 perfiles</span>
+                  </div>
+                  <div class="mph-roster-list" id="mphCategoryRoster"></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="mph-screen" data-mph-screen="staff-sheet">
+              <div class="mph-topbar">
+                <button class="mph-icon-btn mph-back-btn" id="mphStaffBackBtn" type="button"><span class="material-symbols-outlined">arrow_back</span></button>
+                <h1 id="mphStaffSheetTitle">Carlos R.</h1>
+                <button class="mph-icon-btn" type="button"><span class="material-symbols-outlined">more_horiz</span></button>
+              </div>
+              <div class="mph-content">
+                <div class="mph-staff-sheet-hero">
+                  <div class="mph-staff-avatar" id="mphStaffInitials">CR</div>
+                  <div class="mph-staff-sheet-copy">
+                    <strong id="mphStaffName">Carlos R.</strong>
+                    <p id="mphStaffRole">Barra Central · Online</p>
+                    <div class="mph-chip-row" id="mphStaffTags"></div>
+                  </div>
+                </div>
+                <div class="mph-two-col">
+                  <div class="mph-metric-box">
+                    <p class="mph-label">Productividad</p>
+                    <strong id="mphStaffProductivity">€1,840/h</strong>
+                    <span class="mph-trend-sm up" id="mphStaffLiveNote"><span class="material-symbols-outlined">arrow_upward</span>312 tickets monitorizados</span>
+                  </div>
+                  <div class="mph-metric-box">
+                    <p class="mph-label">Coste / hora</p>
+                    <strong id="mphStaffCostHour">€64/h</strong>
+                    <span class="mph-trend-sm flat" id="mphStaffStatusNote"><span class="material-symbols-outlined">remove</span>Online · Barra principal</span>
+                  </div>
+                </div>
+                <div class="mph-sheet-tabs">
+                  <button class="mph-sheet-tab active" type="button" data-mph-staff-tab="summary">Resumen</button>
+                  <button class="mph-sheet-tab" type="button" data-mph-staff-tab="costs">Costes</button>
+                  <button class="mph-sheet-tab" type="button" data-mph-staff-tab="shifts">Turnos</button>
+                  <button class="mph-sheet-tab" type="button" data-mph-staff-tab="control">Control</button>
+                  <button class="mph-sheet-tab" type="button" data-mph-staff-tab="profile">Perfil</button>
+                </div>
+                <section class="mph-sheet-panel active" data-mph-staff-panel="summary">
+                  <div class="mph-sheet-card-list" id="mphStaffSummaryRows"></div>
+                </section>
+                <section class="mph-sheet-panel" data-mph-staff-panel="costs">
+                  <div class="mph-sheet-card-list" id="mphStaffCostRows"></div>
+                </section>
+                <section class="mph-sheet-panel" data-mph-staff-panel="shifts">
+                  <div class="mph-sheet-card-list" id="mphStaffShiftRows"></div>
+                </section>
+                <section class="mph-sheet-panel" data-mph-staff-panel="control">
+                  <div class="mph-sheet-card-list" id="mphStaffControlRows"></div>
+                </section>
+                <section class="mph-sheet-panel" data-mph-staff-panel="profile">
+                  <div class="mph-sheet-card-list" id="mphStaffProfileRows"></div>
+                </section>
               </div>
             </section>
 

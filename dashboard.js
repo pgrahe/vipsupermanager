@@ -77,6 +77,178 @@ for (const [key, modules] of Object.entries(sharedStaffModules)) {
   Object.assign(staffData[key], modules);
 }
 
+function createMphExistingStaffProfile(id, config) {
+  const data = staffData[id];
+  return {
+    id,
+    title: data.title,
+    initials: data.initials,
+    tags: data.tags,
+    summaryRows: [...data.detail, ...data.risks],
+    costRows: data.costEngine,
+    shiftRows: data.scheduling,
+    controlRows: [...data.geoFraud, ...data.devices],
+    profileRows: [...data.profile, ...data.company, ...data.pos],
+    ...config,
+  };
+}
+
+const mphStaffProfiles = {
+  carlos: createMphExistingStaffProfile("carlos", {
+    category: "barra",
+    role: "Barra Central · Online",
+    productivity: "€1,840/h",
+    costPerHour: "€64/h",
+    liveNote: "312 tickets monitorizados · ticket medio €18.40",
+    statusNote: "Online · POS-BC-03 · Barra principal",
+  }),
+  elena: createMphExistingStaffProfile("elena", {
+    category: "vip",
+    role: "VIP V1-V6 · Online",
+    productivity: "€2,120/h",
+    costPerHour: "€58/h",
+    liveNote: "6 mesas activas · upsell +14%",
+    statusNote: "Online · VIP-MOB-02 · Floor V1-V6",
+  }),
+  juan: createMphExistingStaffProfile("juan", {
+    category: "vip",
+    role: "Runner VIP · SLA 92%",
+    productivity: "18 entregas",
+    costPerHour: "€53/h",
+    liveNote: "3 pedidos en ruta · ETA 04:20",
+    statusNote: "Online · Runner RG-02 · VIP floor",
+  }),
+  sofia: createMphExistingStaffProfile("sofia", {
+    category: "otros",
+    role: "Office · Finanzas",
+    productivity: "2 OCR",
+    costPerHour: "€71/h",
+    liveNote: "4 ajustes coste · 3 pedidos proveedor",
+    statusNote: "Online · Backoffice · Control financiero",
+  }),
+  lucas: {
+    id: "lucas",
+    category: "barra",
+    title: "Lucas V.",
+    initials: "LV",
+    role: "Barra 2 · Speed rail",
+    productivity: "€1,260/h",
+    costPerHour: "€49/h",
+    liveNote: "221 tickets · 19s por cobro · 0 descuadres",
+    statusNote: "Online · POS-B2-04 · Barra 2",
+    tags: ["Interno", "Barra 2", "Online", "Sin incidencias"],
+    summaryRows: [["Permisos", "POS, descuentos limitados, cierre parcial", "Editable"], ["Última acción", "Cierre parcial barra 2 · 02:19", "OK"], ["Ritmo", "221 tickets · ticket medio €15.30", "Live"], ["Riesgo", "0 voids y 0 cajón sin venta", "Bajo"]],
+    costRows: [["Modelo salarial", "€80 noche + bonus velocidad", "Activo"], ["Coste en tiempo real", "€49.80 acumulado · ETA cierre €81.20", "Live"], ["Horas extra", "Sin previsión", "OK"], ["Recargo nocturno", "+12% desde 02:00", "Aplicado"]],
+    shiftRows: [["Turno evento", "Barra 2 · 23:00-06:00", "Asignado"], ["Vacaciones", "8 días disponibles", "OK"], ["Ausencias", "0 incidencias", "OK"], ["Cumplimiento", "Descanso y horas semanales OK", "OK"]],
+    controlRows: [["Fichaje entrada", "22:54 · GPS dentro de zona", "OK"], ["Método", "NFC + PIN supervisor", "Activo"], ["Dispositivo", "POS-B2-04 · Walkie WK-19", "Online"], ["Antifraude", "0 eventos fuera de patrón", "OK"]],
+    profileRows: [["DNI", "***9184D", "Verificado"], ["Seguridad Social", "Alta activa", "OK"], ["Empresa", "OPSNIGHT Staff Internal", "Interno"], ["Tipo", "Interno · Barra", "Activo"], ["Método pago", "NFC 68% · QR 18% · Cash 14%", "Mix"]],
+  },
+  nuria: {
+    id: "nuria",
+    category: "seguridad",
+    title: "Nuria P.",
+    initials: "NP",
+    role: "Coordinadora acceso norte",
+    productivity: "96% SLA",
+    costPerHour: "€74/h",
+    liveNote: "1.248 accesos validados · 0 colas críticas",
+    statusNote: "Online · Acceso Norte · Control puertas",
+    tags: ["Externa", "Seguridad", "Coordinación", "Live"],
+    summaryRows: [["Cobertura", "8 vigilantes coordinados · acceso norte y VIP", "Live"], ["Incidencias", "1 cacheo ampliado · 0 expulsiones", "Bajo"], ["Última acción", "Refuerzo puerta VIP solicitado · 02:07", "OK"], ["Cumplimiento", "Aforos, listas y pulseras dentro de SLA", "OK"]],
+    costRows: [["Modelo salarial", "Proveedor externo por horas", "Activo"], ["Coste en tiempo real", "€74.00/h · ETA cierre €518", "Live"], ["Horas extra", "1h extra aprobada si pico 05:00", "Aviso"], ["Factura proveedor", "Night Security SL · validación automática", "OK"]],
+    shiftRows: [["Turno evento", "22:00-06:00 · Coordinación accesos", "Asignado"], ["Rotación", "Acceso norte, VIP, perímetro", "Activo"], ["Descansos", "2 pausas planificadas", "OK"], ["Cumplimiento", "Cobertura completa en 3 zonas", "OK"]],
+    controlRows: [["Fichaje entrada", "21:51 · geofence puerta", "OK"], ["Bodycam / radio", "WK-02 · bodycam enlazada", "Online"], ["Alertas", "0 intrusiones · 0 abandono", "OK"], ["Checklist", "Cacheo, listas y pulseras completado", "96%"]],
+    profileRows: [["DNI", "***5412T", "Verificado"], ["Empresa", "Night Security SL", "Externa"], ["Tipo", "Jefa de equipo seguridad", "Activo"], ["CAE", "Documentación al día", "OK"], ["Contacto", "+34 *** 210 · nuria@security.local", "OK"]],
+  },
+  raul: {
+    id: "raul",
+    category: "seguridad",
+    title: "Raúl C.",
+    initials: "RC",
+    role: "Control perimetral VIP",
+    productivity: "92% SLA",
+    costPerHour: "€62/h",
+    liveNote: "22 incidencias resueltas · perímetro estable",
+    statusNote: "Online · VIP access · perímetro",
+    tags: ["Externo", "Seguridad", "VIP", "Perímetro"],
+    summaryRows: [["Cobertura", "Controla entrada VIP y backstage", "Live"], ["Incidencias", "2 conflictos leves resueltos", "OK"], ["Última acción", "Acompañamiento cliente high-value · 01:42", "OK"], ["Riesgo", "Sin alarmas críticas", "Bajo"]],
+    costRows: [["Modelo salarial", "Proveedor externo por hora", "Activo"], ["Coste en tiempo real", "€62.00/h", "Live"], ["Horas extra", "No previstas", "OK"], ["Bonus", "Plus evento premium", "Activo"]],
+    shiftRows: [["Turno evento", "23:00-06:00 · acceso VIP", "Asignado"], ["Puesto", "VIP + backstage", "Activo"], ["Descanso", "1 pausa completada", "OK"], ["Cumplimiento", "Checklist de accesos completa", "OK"]],
+    controlRows: [["Fichaje entrada", "22:56 · geofence VIP", "OK"], ["Radio", "WK-08 · canal seguridad", "Online"], ["Bodycam", "Sin incidencias", "OK"], ["Alertas", "0 fugas de perímetro", "OK"]],
+    profileRows: [["DNI", "***3021G", "Verificado"], ["Empresa", "Night Security SL", "Externa"], ["Tipo", "Seguridad VIP", "Activo"], ["Certificación", "TIP vigente", "OK"], ["Contacto", "+34 *** 302 · raul@security.local", "OK"]],
+  },
+  andrea: {
+    id: "andrea",
+    category: "otros",
+    title: "Andrea S.",
+    initials: "AS",
+    role: "Coordinación RRPP y listas",
+    productivity: "84 listas",
+    costPerHour: "€44/h",
+    liveNote: "84 check-ins RRPP · 3 upgrades gestionados",
+    statusNote: "Online · Front desk · RRPP",
+    tags: ["Interna", "RRPP", "Listas", "Front desk"],
+    summaryRows: [["Permisos", "Listas, upgrades y soporte puerta", "Editable"], ["Última acción", "Upgrade VIP aprobado · 02:03", "Live"], ["Ritmo", "84 check-ins · 3 incidencias resueltas", "OK"], ["Impacto", "Deriva tráfico a VIP y puerta sin bloqueo", "OK"]],
+    costRows: [["Modelo salarial", "€44/h evento", "Activo"], ["Coste en tiempo real", "€44.00/h", "Live"], ["Horas extra", "No previstas", "OK"], ["Bonus", "No aplica", "-"]],
+    shiftRows: [["Turno evento", "22:30-05:30 · Front desk", "Asignado"], ["Cobertura", "Lista, upgrades, soporte RRPP", "Activo"], ["Vacaciones", "6 días disponibles", "OK"], ["Cumplimiento", "Check-in y notas al día", "OK"]],
+    controlRows: [["Fichaje entrada", "22:24 · GPS puerta principal", "OK"], ["Dispositivo", "iPad check-in 02", "Online"], ["Alertas", "0 colas fuera de rango", "OK"], ["Checklist", "Listas y pulseras auditadas", "OK"]],
+    profileRows: [["DNI", "***7710M", "Verificado"], ["Empresa", "OPSNIGHT Staff Internal", "Interno"], ["Tipo", "RRPP / Listas", "Activo"], ["Contacto", "+34 *** 771 · andrea@staff.local", "OK"], ["Documento", "Contrato + PRL + protección datos", "Completa"]],
+  },
+};
+
+const mphCategoryOrder = ["barra", "seguridad", "vip", "otros"];
+
+const mphCategoryData = {
+  barra: {
+    id: "barra",
+    title: "Barra",
+    subtitle: "4 barras operativas · 14 POS sincronizados · velocidad media 19s",
+    icon: "sports_bar",
+    iconClass: "mph-cat-barra",
+    staffActive: "56",
+    costPerHour: "€612",
+    productivity: "€1,324",
+    insights: [["Cobertura", "56 staff activos · Barra Central, B1, B2 y terraza", "Live"], ["Coste estimado cierre", "€4,896 con bonus velocidad y recargo nocturno", "OK"], ["Calidad operativa", "12 voids revisados · 0 descuadres críticos", "Controlado"]],
+    staffIds: ["carlos", "lucas"],
+  },
+  seguridad: {
+    id: "seguridad",
+    title: "Seguridad",
+    subtitle: "Accesos, perímetro y backstage con SLA y control de aforo",
+    icon: "security",
+    iconClass: "mph-cat-seg",
+    staffActive: "38",
+    costPerHour: "€426",
+    productivity: "€892",
+    insights: [["Cobertura", "38 agentes desplegados · puertas, VIP y perímetro", "Live"], ["Incidencias", "2 leves resueltas · 0 alarmas críticas", "Bajo"], ["Cumplimiento", "Control de listas, pulseras y cacheos dentro de SLA", "96%"]],
+    staffIds: ["nuria", "raul"],
+  },
+  vip: {
+    id: "vip",
+    title: "VIP",
+    subtitle: "Hostess, runners y floor managers conectados en directo",
+    icon: "diamond",
+    iconClass: "mph-cat-vip",
+    staffActive: "18",
+    costPerHour: "€220",
+    productivity: "€1,742",
+    insights: [["Cobertura", "18 perfiles activos · mesas V1-V10 y backstage", "Live"], ["Mínimos VIP", "€6,480 recuperados · upsell +14%", "OK"], ["Operativa", "3 pedidos en ruta · 1 mesa inactiva bajo seguimiento", "Acción"]],
+    staffIds: ["elena", "juan"],
+  },
+  otros: {
+    id: "otros",
+    title: "Otros",
+    subtitle: "Office, RRPP y soporte operativo sin venta directa imputada",
+    icon: "more_horiz",
+    iconClass: "mph-cat-otros",
+    staffActive: "20",
+    costPerHour: "€0",
+    productivity: "€0",
+    insights: [["Soporte", "Office, OCR, RRPP y front desk sincronizados", "Live"], ["Coste imputado", "Categoría auxiliar sin revenue directo atribuible", "Modelo"], ["Impacto", "3 upgrades, 2 OCR y cierre parcial preparados", "OK"]],
+    staffIds: ["sofia", "andrea"],
+  },
+};
+
 const venueData = {
   kapital: {
     title: "Kapital Madrid",
@@ -208,6 +380,281 @@ const tpvState = {
   search: "",
   category: "all",
 };
+
+const mphVenueProfiles = [
+  { id: "kapital-madrid", name: "Kapital Madrid", logo: "K", logoClass: "mph-logo-k", baseRevenue: 34850, baseOccupancy: 78, baseMargin: 28.4, seed: 1.2 },
+  { id: "barcelo-sevilla", name: "Barceló Sevilla", logo: "B", logoClass: "mph-logo-b", baseRevenue: 26300, baseOccupancy: 65, baseMargin: 24.1, seed: 2.6 },
+  { id: "opium-barcelona", name: "Opium Barcelona", logo: "O", logoClass: "mph-logo-o", baseRevenue: 23150, baseOccupancy: 62, baseMargin: 23.5, seed: 4.1 },
+  { id: "moma-valencia", name: "Moma Valencia", logo: "M", logoClass: "mph-logo-m", baseRevenue: 20880, baseOccupancy: 58, baseMargin: 21.2, seed: 5.4 },
+];
+
+const mphVenueSeries = mphVenueProfiles.reduce((acc, profile) => {
+  acc[profile.id] = buildMphVenueSeries(profile);
+  return acc;
+}, {});
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function normalizeRangeToken(value = "") {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function formatCompactCurrency(value) {
+  return `€${Math.round(value).toLocaleString("es-ES")}`;
+}
+
+function formatSignedPercent(value) {
+  const prefix = value > 0 ? "+" : value < 0 ? "-" : "";
+  return `${prefix}${Math.abs(value).toLocaleString("es-ES", {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  })}%`;
+}
+
+function buildMphVenueSeries(profile, days = 120) {
+  const endDate = new Date();
+  endDate.setHours(12, 0, 0, 0);
+  return Array.from({ length: days }, (_, index) => {
+    const offset = days - index - 1;
+    const date = new Date(endDate);
+    date.setDate(endDate.getDate() - offset);
+    const weekDay = date.getDay();
+    const weeklyBoost = [0.9, 0.93, 0.98, 1.02, 1.08, 1.18, 1.12][weekDay];
+    const wave = 1 + Math.sin((index + profile.seed) * 0.33) * 0.06 + Math.cos((index + profile.seed) * 0.17) * 0.04;
+    const revenue = Math.round(profile.baseRevenue * weeklyBoost * wave);
+    const occupancy = clamp(
+      Math.round(profile.baseOccupancy + (weeklyBoost - 1) * 34 + Math.sin((index + profile.seed) * 0.45) * 4 + Math.cos((index + profile.seed) * 0.14) * 2),
+      42,
+      98
+    );
+    const margin = clamp(
+      Number((profile.baseMargin + (weeklyBoost - 1) * 4.5 + Math.cos((index + profile.seed) * 0.39) * 1.2).toFixed(1)),
+      18,
+      39.5
+    );
+    return { revenue, occupancy, margin };
+  });
+}
+
+function resolveMphRange(periodKey, referenceDate = new Date()) {
+  const token = normalizeRangeToken(periodKey || "today");
+  if (token.includes("hoy") || token === "today" || token === "1d") {
+    return { key: "today", days: 1, comparisonLabel: "vs ayer" };
+  }
+  if (token === "mtd") {
+    return { key: "mtd", days: referenceDate.getDate(), comparisonLabel: "vs tramo anterior" };
+  }
+  const monthMatch = token.match(/(\d+)\s*mes/);
+  if (monthMatch) {
+    const months = Number(monthMatch[1]);
+    return {
+      key: `${months}m`,
+      days: months * 30,
+      comparisonLabel: `vs ${months} ${months === 1 ? "mes previo" : "meses previos"}`,
+    };
+  }
+  const dayMatch = token.match(/(\d+)\s*(d|dia|dias)/);
+  if (dayMatch) {
+    const days = Number(dayMatch[1]);
+    return {
+      key: `${days}d`,
+      days,
+      comparisonLabel: days === 7 ? "vs 7 días previos" : days === 30 ? "vs 30 días previos" : `vs ${days} días previos`,
+    };
+  }
+  return { key: "today", days: 1, comparisonLabel: "vs ayer" };
+}
+
+function summarizeMphVenueSlice(slice) {
+  if (!slice.length) return { revenue: 0, occupancy: 0, margin: 0 };
+  const totals = slice.reduce((acc, item) => {
+    acc.revenue += item.revenue;
+    acc.occupancy += item.occupancy;
+    acc.margin += item.margin;
+    return acc;
+  }, { revenue: 0, occupancy: 0, margin: 0 });
+  return {
+    revenue: totals.revenue,
+    occupancy: Math.round(totals.occupancy / slice.length),
+    margin: Number((totals.margin / slice.length).toFixed(1)),
+  };
+}
+
+function getMphVenueMetrics(profile, periodKey) {
+  const range = resolveMphRange(periodKey);
+  const series = mphVenueSeries[profile.id] || [];
+  const days = clamp(range.days, 1, Math.max(1, Math.floor(series.length / 2)));
+  const currentSlice = series.slice(-days);
+  const previousSlice = series.slice(-(days * 2), -days);
+  const current = summarizeMphVenueSlice(currentSlice);
+  const previous = summarizeMphVenueSlice(previousSlice.length ? previousSlice : currentSlice);
+  const delta = previous.revenue ? ((current.revenue - previous.revenue) / previous.revenue) * 100 : 0;
+  const trendClass = Math.abs(delta) < 0.15 ? "flat" : delta > 0 ? "up" : "down";
+  const trendIcon = trendClass === "flat" ? "remove" : delta > 0 ? "arrow_upward" : "arrow_downward";
+  return {
+    ...profile,
+    ...current,
+    delta,
+    trendClass,
+    trendIcon,
+    comparisonLabel: range.comparisonLabel,
+    score: current.revenue * (current.margin / 100) * (0.55 + current.occupancy / 100),
+  };
+}
+
+function renderMphVenueRows(periodKey = "today") {
+  const venueList = document.getElementById("mphVenueList");
+  if (!venueList) return;
+  const venues = mphVenueProfiles
+    .map((profile) => getMphVenueMetrics(profile, periodKey))
+    .sort((a, b) => b.score - a.score);
+  const bestVenueId = venues[0]?.id;
+  venueList.innerHTML = venues.map((venue) => `
+    <button class="mph-venue-row ${venue.id === bestVenueId ? "best" : ""}" data-mph-goto="local-detail" type="button">
+      <div class="mph-venue-logo ${venue.logoClass}">${venue.logo}</div>
+      <div class="mph-venue-info">
+        <div class="mph-venue-name-row">
+          <strong>${venue.name}</strong>
+          ${venue.id === bestVenueId ? '<span class="mph-best-badge">Mejor rendimiento</span>' : ""}
+        </div>
+        <div class="mph-venue-stats">
+          <div><small>Facturación</small><b>${formatCompactCurrency(venue.revenue)}</b></div>
+          <div><small>Ocupación</small><b>${venue.occupancy}%</b></div>
+          <div><small>Margen</small><b>${venue.margin.toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%</b></div>
+        </div>
+        <span class="mph-trend-sm ${venue.trendClass}">
+          <span class="material-symbols-outlined">${venue.trendIcon}</span>${formatSignedPercent(venue.delta)} ${venue.comparisonLabel}
+        </span>
+      </div>
+      <span class="mph-venue-chevron" aria-hidden="true">&gt;</span>
+    </button>
+  `).join("");
+}
+
+function renderMphSheetCardList(selector, rows) {
+  const node = document.querySelector(selector);
+  if (!node) return;
+  node.innerHTML = (rows || []).map(([title, detail, status]) => `
+    <article class="mph-sheet-row">
+      <div>
+        <strong>${title}</strong>
+        <span>${detail}</span>
+      </div>
+      <b>${status || "-"}</b>
+    </article>
+  `).join("");
+}
+
+function renderMphCategoryTable() {
+  const node = document.getElementById("mphCategoryTable");
+  if (!node) return;
+  node.innerHTML = `
+    <div class="mph-cat-head">
+      <span>Categoría</span><span>Staff activo</span><span>Coste €/hora</span><span>Productividad</span><span></span>
+    </div>
+    ${mphCategoryOrder.map((categoryId) => {
+      const category = mphCategoryData[categoryId];
+      return `
+        <button class="mph-cat-row" type="button" data-mph-category="${category.id}">
+          <div class="mph-cat-cell mph-cat-main">
+            <div class="mph-cat-icon ${category.iconClass}"><span class="material-symbols-outlined">${category.icon}</span></div>
+            <span>${category.title}</span>
+          </div>
+          <span>${category.staffActive}</span>
+          <span>${category.costPerHour}</span>
+          <span>${category.productivity}</span>
+          <span class="material-symbols-outlined mph-chevron">chevron_right</span>
+        </button>
+      `;
+    }).join("")}
+  `;
+}
+
+function openMphCategoryDetail(categoryId, announce = true) {
+  const category = mphCategoryData[categoryId];
+  if (!category) return;
+  fillText("#mphCategoryTitle", category.title);
+  fillText("#mphCategorySubtitle", category.subtitle);
+  fillText("#mphCategoryHeading", category.title);
+  fillText("#mphCategoryStaff", category.staffActive);
+  fillText("#mphCategoryCost", category.costPerHour);
+  fillText("#mphCategoryProductivity", category.productivity);
+  fillText("#mphCategoryRosterCount", `${category.staffIds.length} perfiles monitorizados`);
+  const categoryIcon = document.getElementById("mphCategoryIcon");
+  if (categoryIcon) categoryIcon.innerHTML = `<span class="material-symbols-outlined">${category.icon}</span>`;
+  categoryIcon?.classList.remove("mph-cat-barra", "mph-cat-seg", "mph-cat-vip", "mph-cat-otros");
+  if (categoryIcon) categoryIcon.classList.add(category.iconClass);
+  renderMphSheetCardList("#mphCategoryInsightRows", category.insights);
+  const roster = document.getElementById("mphCategoryRoster");
+  if (roster) {
+    roster.innerHTML = category.staffIds.map((staffId) => {
+      const profile = mphStaffProfiles[staffId];
+      return `
+        <button class="mph-roster-card" type="button" data-mph-staff-id="${profile.id}">
+          <div class="mph-roster-avatar">${profile.initials}</div>
+          <div class="mph-roster-copy">
+            <strong>${profile.title}</strong>
+            <span>${profile.role}</span>
+            <small>${profile.liveNote}</small>
+          </div>
+          <div class="mph-roster-metric">
+            <b>${profile.productivity}</b>
+            <span>${profile.costPerHour}</span>
+          </div>
+          <span class="material-symbols-outlined mph-chevron">chevron_right</span>
+        </button>
+      `;
+    }).join("");
+  }
+  if (announce) showToast(`Categoría abierta: ${category.title}.`);
+}
+
+function renderMphStaffSheet(staffId) {
+  const profile = mphStaffProfiles[staffId];
+  if (!profile) return;
+  fillText("#mphStaffSheetTitle", profile.title);
+  fillText("#mphStaffName", profile.title);
+  fillText("#mphStaffRole", profile.role);
+  fillText("#mphStaffInitials", profile.initials);
+  fillText("#mphStaffProductivity", profile.productivity);
+  fillText("#mphStaffCostHour", profile.costPerHour);
+  const liveNote = document.getElementById("mphStaffLiveNote");
+  if (liveNote) liveNote.innerHTML = `<span class="material-symbols-outlined">arrow_upward</span>${profile.liveNote}`;
+  const statusNote = document.getElementById("mphStaffStatusNote");
+  if (statusNote) statusNote.innerHTML = `<span class="material-symbols-outlined">remove</span>${profile.statusNote}`;
+  const tags = document.getElementById("mphStaffTags");
+  if (tags) tags.innerHTML = (profile.tags || []).map((tag) => `<span>${tag}</span>`).join("");
+  renderMphSheetCardList("#mphStaffSummaryRows", profile.summaryRows);
+  renderMphSheetCardList("#mphStaffCostRows", profile.costRows);
+  renderMphSheetCardList("#mphStaffShiftRows", profile.shiftRows);
+  renderMphSheetCardList("#mphStaffControlRows", profile.controlRows);
+  renderMphSheetCardList("#mphStaffProfileRows", profile.profileRows);
+}
+
+function switchMphStaffTab(tab, announce = false) {
+  document.querySelectorAll("[data-mph-staff-panel]").forEach((panel) => {
+    panel.classList.toggle("active", panel.dataset.mphStaffPanel === tab);
+  });
+  document.querySelectorAll("[data-mph-staff-tab]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.mphStaffTab === tab);
+  });
+  if (announce) showToast(`Sheet abierta: ${tab}.`);
+}
+
+function openMphStaffSheet(staffId, announce = true) {
+  const profile = mphStaffProfiles[staffId];
+  if (!profile) return;
+  renderMphStaffSheet(staffId);
+  switchMphStaffTab("summary", false);
+  if (announce) showToast(`Perfil abierto: ${profile.title}.`);
+}
 
 function formatMoney(value) {
   return `${Number(value).toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;
@@ -674,12 +1121,20 @@ applyAccessMode("director", false);
   const trigger = document.getElementById("mobileModeTrigger");
   const closeBtn = document.getElementById("mphClose");
   const backBtn = document.getElementById("mphBackBtn");
+  const categoryBackBtn = document.getElementById("mphCategoryBackBtn");
+  const staffBackBtn = document.getElementById("mphStaffBackBtn");
   const scopeTrigger = document.getElementById("mphScopeTrigger");
   const dateTrigger = document.getElementById("mphDateTrigger");
   const scopeMenu = document.getElementById("mphScopeMenu");
   const dateMenu = document.getElementById("mphDateMenu");
   const scopeLabel = document.getElementById("mphScopeLabel");
   const dateLabel = document.getElementById("mphDateLabel");
+  const venueList = document.getElementById("mphVenueList");
+  const venueTabs = [...document.querySelectorAll(".mph-tab[data-mph-period]")];
+  const categoryTable = document.getElementById("mphCategoryTable");
+  const categoryRoster = document.getElementById("mphCategoryRoster");
+  const staffTabs = [...document.querySelectorAll("[data-mph-staff-tab]")];
+  let activeVenuePeriod = venueTabs.find((tab) => tab.classList.contains("active"))?.dataset.mphPeriod || "today";
 
   function closeInlineMenus() {
     scopeMenu && (scopeMenu.hidden = true);
@@ -717,9 +1172,18 @@ applyAccessMode("director", false);
     if (navBtn) navBtn.classList.add("active");
   }
 
+  function applyVenuePeriod(periodKey, announce = false) {
+    activeVenuePeriod = periodKey || "today";
+    venueTabs.forEach((tab) => tab.classList.toggle("active", tab.dataset.mphPeriod === activeVenuePeriod));
+    renderMphVenueRows(activeVenuePeriod);
+    if (announce) showToast(`Periodo ${venueTabs.find((tab) => tab.dataset.mphPeriod === activeVenuePeriod)?.textContent?.trim() || "Hoy"} aplicado.`);
+  }
+
   trigger?.addEventListener("click", openPreview);
   closeBtn?.addEventListener("click", closePreview);
   backBtn?.addEventListener("click", () => switchMphScreen("locales"));
+  categoryBackBtn?.addEventListener("click", () => switchMphScreen("personal"));
+  staffBackBtn?.addEventListener("click", () => switchMphScreen("category-detail"));
   scopeTrigger?.addEventListener("click", () => toggleInlineMenu(scopeMenu, scopeTrigger));
   dateTrigger?.addEventListener("click", () => toggleInlineMenu(dateMenu, dateTrigger));
 
@@ -739,11 +1203,37 @@ applyAccessMode("director", false);
     el.addEventListener("click", () => switchMphScreen(el.dataset.mphGoto));
   });
 
-  document.querySelectorAll(".mph-tab").forEach((tab) => {
+  venueList?.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return;
+    const trigger = event.target.closest(".mph-venue-row[data-mph-goto]");
+    if (!trigger) return;
+    switchMphScreen(trigger.dataset.mphGoto);
+  });
+
+  venueTabs.forEach((tab) => {
     tab.addEventListener("click", () => {
-      tab.closest(".mph-tab-row")?.querySelectorAll(".mph-tab").forEach((t) => t.classList.remove("active"));
-      tab.classList.add("active");
+      applyVenuePeriod(tab.dataset.mphPeriod || "today", true);
     });
+  });
+
+  categoryTable?.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return;
+    const trigger = event.target.closest(".mph-cat-row[data-mph-category]");
+    if (!trigger) return;
+    openMphCategoryDetail(trigger.dataset.mphCategory, true);
+    switchMphScreen("category-detail");
+  });
+
+  categoryRoster?.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return;
+    const trigger = event.target.closest("[data-mph-staff-id]");
+    if (!trigger) return;
+    openMphStaffSheet(trigger.dataset.mphStaffId, true);
+    switchMphScreen("staff-sheet");
+  });
+
+  staffTabs.forEach((tab) => {
+    tab.addEventListener("click", () => switchMphStaffTab(tab.dataset.mphStaffTab || "summary", true));
   });
 
   document.querySelectorAll(".mph-stock-tab").forEach((tab) => {
@@ -785,4 +1275,10 @@ applyAccessMode("director", false);
     ) return;
     closeInlineMenus();
   });
+
+  applyVenuePeriod(activeVenuePeriod, false);
+  renderMphCategoryTable();
+  openMphCategoryDetail("barra", false);
+  renderMphStaffSheet("carlos");
+  switchMphStaffTab("summary", false);
 })();
