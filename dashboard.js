@@ -11,6 +11,13 @@ const accessTrigger = document.querySelector("#accessSwitcherTrigger");
 const accessMenu = document.querySelector("#accessSwitcherMenu");
 const accessLabel = document.querySelector("#currentAccessLabel");
 
+const staffPhotos = {
+  carlos: "icons/staff/carlos.jpg",
+  elena:  "icons/staff/elena.jpg",
+  juan:   "icons/staff/juan.jpg",
+  lucas:  "icons/staff/lucas.jpg",
+};
+
 const staffData = {
   carlos: {
     title: "Carlos R.", initials: "CR", tags: ["Interno", "Barra Central", "Online", "Riesgo medio"], subtitle: "Perfil empleado · Barra Central", mainLabel: "Rendimiento barra central", main: "€1,840/h", mainText: "312 tickets · ticket medio €18.40 · velocidad media 18s · 98.7% cobros OK.", riskLabel: "Riesgo auditoría", risk: "Medio", riskText: "12 voids · 3 cajón abierto.", shiftCost: "€80", shiftText: "22:30–06:00 · fichaje NFC.", badge: "Live", sideTitle: "Fraude & control", sideAction: "Abrir timeline",
@@ -75,6 +82,12 @@ const sharedStaffModules = {
 
 for (const [key, modules] of Object.entries(sharedStaffModules)) {
   Object.assign(staffData[key], modules);
+}
+
+function staffAvatarHtml(id, initials, cssClass = "mph-roster-avatar") {
+  const photo = staffPhotos[id];
+  if (photo) return `<div class="${cssClass} mph-avatar-photo"><img src="${photo}" alt="${initials}" onerror="this.parentElement.innerHTML='${initials}'"/></div>`;
+  return `<div class="${cssClass}">${initials}</div>`;
 }
 
 function createMphExistingStaffProfile(id, config) {
@@ -598,7 +611,7 @@ function openMphCategoryDetail(categoryId, announce = true) {
       const profile = mphStaffProfiles[staffId];
       return `
         <button class="mph-roster-card" type="button" data-mph-staff-id="${profile.id}">
-          <div class="mph-roster-avatar">${profile.initials}</div>
+          ${staffAvatarHtml(profile.id, profile.initials, "mph-roster-avatar")}
           <div class="mph-roster-copy">
             <strong>${profile.title}</strong>
             <span>${profile.role}</span>
@@ -622,7 +635,21 @@ function renderMphStaffSheet(staffId) {
   fillText("#mphStaffSheetTitle", profile.title);
   fillText("#mphStaffName", profile.title);
   fillText("#mphStaffRole", profile.role);
-  fillText("#mphStaffInitials", profile.initials);
+  const avatarEl = document.getElementById("mphStaffInitials");
+  if (avatarEl) {
+    const photo = staffPhotos[staffId];
+    if (photo) {
+      avatarEl.innerHTML = "";
+      avatarEl.classList.add("mph-avatar-photo");
+      const img = document.createElement("img");
+      img.src = photo; img.alt = profile.initials;
+      img.onerror = () => { avatarEl.classList.remove("mph-avatar-photo"); avatarEl.textContent = profile.initials; };
+      avatarEl.appendChild(img);
+    } else {
+      avatarEl.classList.remove("mph-avatar-photo");
+      avatarEl.textContent = profile.initials;
+    }
+  }
   fillText("#mphStaffProductivity", profile.productivity);
   fillText("#mphStaffCostHour", profile.costPerHour);
   const liveNote = document.getElementById("mphStaffLiveNote");
@@ -1115,6 +1142,82 @@ document.querySelectorAll(".sidebar-footer a").forEach((link) => link.addEventLi
 bindActionButtons();
 applyAccessMode("director", false);
 
+// ── Panel Data ───────────────────────────────────────────
+const panelData = {
+  global: {
+    today:  { revenue: "€142,890", label: "Facturación total (hoy)",    vsLabel: "vs ayer",          trend: "up",   trendText: "12.4% (€15,920)", aforo: "96%", aforoReal: "5,746", aforoLegal: "/ 6,000", bars: "€85,420", barsTrend: "up",   barsTrendText: "10.8%", taquilla: "€57,470", taquillaTrend: "up",   taquillaTrendText: "14.3%", margin: "34.2%", marginTrend: "up",   marginTrendText: "2.1 pp" },
+    yesterday: { revenue: "€127,340", label: "Facturación total (ayer)", vsLabel: "vs mismo día sem. pasada", trend: "up",   trendText: "8.1% (€9,530)",  aforo: "89%", aforoReal: "5,340", aforoLegal: "/ 6,000", bars: "€74,810", barsTrend: "up",   barsTrendText: "7.4%",  taquilla: "€52,530", taquillaTrend: "up",   taquillaTrendText: "9.0%",  margin: "32.6%", marginTrend: "down", marginTrendText: "0.8 pp" },
+    "7d":   { revenue: "€891,250", label: "Facturación (7 días)",       vsLabel: "vs 7 días anteriores", trend: "up",   trendText: "9.3% (€75,820)", aforo: "91%", aforoReal: "5,460", aforoLegal: "/ 6,000", bars: "€538,200", barsTrend: "up",   barsTrendText: "8.7%",  taquilla: "€353,050", taquillaTrend: "up",   taquillaTrendText: "10.2%", margin: "33.8%", marginTrend: "up",   marginTrendText: "1.4 pp" },
+    mtd:    { revenue: "€3,214,600", label: "Facturación (mes actual)", vsLabel: "vs mes anterior",    trend: "up",   trendText: "11.2% (€324,800)", aforo: "88%", aforoReal: "5,280", aforoLegal: "/ 6,000", bars: "€1,928,760", barsTrend: "up",   barsTrendText: "10.1%", taquilla: "€1,285,840", taquillaTrend: "up",   taquillaTrendText: "12.7%", margin: "34.5%", marginTrend: "up",   marginTrendText: "1.9 pp" },
+  },
+  kapital: {
+    today:  { revenue: "€58,420", label: "Facturación total (hoy)",    vsLabel: "vs ayer",          trend: "up",   trendText: "14.1% (€7,240)",  aforo: "98%", aforoReal: "2,940", aforoLegal: "/ 3,000", bars: "€34,750", barsTrend: "up",   barsTrendText: "12.3%", taquilla: "€23,670", taquillaTrend: "up",   taquillaTrendText: "16.8%", margin: "36.4%", marginTrend: "up",   marginTrendText: "3.1 pp" },
+    yesterday: { revenue: "€51,180", label: "Facturación total (ayer)", vsLabel: "vs mismo día sem. pasada", trend: "up",   trendText: "6.8% (€3,270)",  aforo: "92%", aforoReal: "2,760", aforoLegal: "/ 3,000", bars: "€30,120", barsTrend: "up",   barsTrendText: "5.9%",  taquilla: "€21,060", taquillaTrend: "up",   taquillaTrendText: "7.9%",  margin: "34.1%", marginTrend: "up",   marginTrendText: "0.6 pp" },
+    "7d":   { revenue: "€362,940", label: "Facturación (7 días)",       vsLabel: "vs 7 días anteriores", trend: "up",   trendText: "10.2% (€33,570)", aforo: "94%", aforoReal: "2,820", aforoLegal: "/ 3,000", bars: "€217,760", barsTrend: "up",   barsTrendText: "9.4%",  taquilla: "€145,180", taquillaTrend: "up",   taquillaTrendText: "11.4%", margin: "35.8%", marginTrend: "up",   marginTrendText: "2.2 pp" },
+    mtd:    { revenue: "€1,312,800", label: "Facturación (mes actual)", vsLabel: "vs mes anterior",    trend: "up",   trendText: "12.4% (€145,200)", aforo: "91%", aforoReal: "2,730", aforoLegal: "/ 3,000", bars: "€787,680", barsTrend: "up",   barsTrendText: "11.2%", taquilla: "€525,120", taquillaTrend: "up",   taquillaTrendText: "13.9%", margin: "36.1%", marginTrend: "up",   marginTrendText: "2.7 pp" },
+  },
+  pacha: {
+    today:  { revenue: "€47,310", label: "Facturación total (hoy)",    vsLabel: "vs ayer",          trend: "up",   trendText: "10.8% (€4,580)",  aforo: "95%", aforoReal: "1,900", aforoLegal: "/ 2,000", bars: "€28,380", barsTrend: "up",   barsTrendText: "9.2%",  taquilla: "€18,930", taquillaTrend: "up",   taquillaTrendText: "12.7%", margin: "33.8%", marginTrend: "up",   marginTrendText: "1.8 pp" },
+    yesterday: { revenue: "€42,700", label: "Facturación total (ayer)", vsLabel: "vs mismo día sem. pasada", trend: "down", trendText: "2.1% (€913)",    aforo: "88%", aforoReal: "1,760", aforoLegal: "/ 2,000", bars: "€25,620", barsTrend: "down", barsTrendText: "1.8%",  taquilla: "€17,080", taquillaTrend: "down", taquillaTrendText: "2.5%",  margin: "31.9%", marginTrend: "down", marginTrendText: "1.3 pp" },
+    "7d":   { revenue: "€295,170", label: "Facturación (7 días)",       vsLabel: "vs 7 días anteriores", trend: "up",   trendText: "7.6% (€20,850)",  aforo: "91%", aforoReal: "1,820", aforoLegal: "/ 2,000", bars: "€177,100", barsTrend: "up",   barsTrendText: "6.9%",  taquilla: "€118,070", taquillaTrend: "up",   taquillaTrendText: "8.5%",  margin: "33.2%", marginTrend: "up",   marginTrendText: "1.0 pp" },
+    mtd:    { revenue: "€1,064,400", label: "Facturación (mes actual)", vsLabel: "vs mes anterior",    trend: "up",   trendText: "9.1% (€88,700)",  aforo: "87%", aforoReal: "1,740", aforoLegal: "/ 2,000", bars: "€638,640", barsTrend: "up",   barsTrendText: "8.3%",  taquilla: "€425,760", taquillaTrend: "up",   taquillaTrendText: "10.1%", margin: "33.9%", marginTrend: "up",   marginTrendText: "1.5 pp" },
+  },
+  opium: {
+    today:  { revenue: "€37,160", label: "Facturación total (hoy)",    vsLabel: "vs ayer",          trend: "down", trendText: "3.4% (€1,310)",   aforo: "87%", aforoReal: "870",   aforoLegal: "/ 1,000", bars: "€22,290", barsTrend: "down", barsTrendText: "4.1%",  taquilla: "€14,870", taquillaTrend: "down", taquillaTrendText: "2.5%",  margin: "28.4%", marginTrend: "down", marginTrendText: "1.6 pp" },
+    yesterday: { revenue: "€38,470", label: "Facturación total (ayer)", vsLabel: "vs mismo día sem. pasada", trend: "up",   trendText: "4.2% (€1,554)",   aforo: "91%", aforoReal: "910",   aforoLegal: "/ 1,000", bars: "€23,080", barsTrend: "up",   barsTrendText: "3.8%",  taquilla: "€15,390", taquillaTrend: "up",   taquillaTrendText: "4.7%",  margin: "30.0%", marginTrend: "up",   marginTrendText: "0.4 pp" },
+    "7d":   { revenue: "€233,140", label: "Facturación (7 días)",       vsLabel: "vs 7 días anteriores", trend: "up",   trendText: "5.8% (€12,790)",  aforo: "89%", aforoReal: "890",   aforoLegal: "/ 1,000", bars: "€139,880", barsTrend: "up",   barsTrendText: "5.1%",  taquilla: "€93,260", taquillaTrend: "up",   taquillaTrendText: "6.7%",  margin: "29.8%", marginTrend: "up",   marginTrendText: "0.8 pp" },
+    mtd:    { revenue: "€837,400", label: "Facturación (mes actual)",   vsLabel: "vs mes anterior",    trend: "down", trendText: "1.8% (€15,300)",  aforo: "85%", aforoReal: "850",   aforoLegal: "/ 1,000", bars: "€502,440", barsTrend: "down", barsTrendText: "2.2%",  taquilla: "€334,960", taquillaTrend: "down", taquillaTrendText: "1.3%",  margin: "29.1%", marginTrend: "down", marginTrendText: "0.7 pp" },
+  },
+};
+
+let activePanelVenue = "global";
+let activePanelDate  = "today";
+
+function updatePanelData(venue, dateKey) {
+  activePanelVenue = venue || activePanelVenue;
+  activePanelDate  = dateKey || activePanelDate;
+  const d = (panelData[activePanelVenue] || panelData.global)[activePanelDate] || panelData.global.today;
+
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  const setTrend = (id, dir, textId, text) => {
+    const el = document.getElementById(id);
+    if (el) { el.className = `mph-trend ${dir}`; }
+    set(textId, text);
+  };
+  const setTrendSm = (id, dir, textId, text) => {
+    const el = document.getElementById(id);
+    if (el) { el.className = `mph-trend-sm ${dir}`; }
+    if (textId) { const t = el?.querySelector("span:last-child"); if (t) t.textContent = text; }
+  };
+
+  set("mphPanelRevenueLabel", d.label);
+  set("mphPanelRevenue", d.revenue);
+  set("mphPanelVsLabel", d.vsLabel);
+  setTrend("mphPanelTrend", d.trend, "mphPanelTrendText", d.trendText);
+  set("mphPanelAforoPct", d.aforo);
+  set("mphPanelAforoReal", d.aforoReal);
+  set("mphPanelAforoLegal", d.aforoLegal);
+
+  const barsEl = document.getElementById("mphPanelBarsTrend");
+  if (barsEl) { barsEl.className = `mph-trend-sm ${d.barsTrend}`; const t = barsEl.querySelector("span:last-child"); if (t) t.textContent = d.barsTrendText; }
+  set("mphPanelBars", d.bars);
+
+  const taqEl = document.getElementById("mphPanelTaquillaTrend");
+  if (taqEl) { taqEl.className = `mph-trend-sm ${d.taquillaTrend}`; const t = taqEl.querySelector("span:last-child"); if (t) t.textContent = d.taquillaTrendText; }
+  set("mphPanelTaquilla", d.taquilla);
+
+  set("mphPanelMargin", d.margin);
+  set("mphPanelMarginVsLabel", d.vsLabel);
+  setTrend("mphPanelMarginTrend", d.marginTrend, "mphPanelMarginTrendText", d.marginTrendText);
+}
+
+const periodKeyMap = {
+  "Hoy, 24 may": "today",
+  "Ayer, 23 may": "yesterday",
+  "Últimos 7 días": "7d",
+  "Mes actual": "mtd",
+};
+
 // ── Mobile Preview Mode ──────────────────────────────────
 (function initMobilePreview() {
   const overlay = document.getElementById("mobilePreviewOverlay");
@@ -1134,7 +1237,74 @@ applyAccessMode("director", false);
   const categoryTable = document.getElementById("mphCategoryTable");
   const categoryRoster = document.getElementById("mphCategoryRoster");
   const staffTabs = [...document.querySelectorAll("[data-mph-staff-tab]")];
+  const stockDetailBackBtn = document.getElementById("mphStockDetailBackBtn");
   let activeVenuePeriod = venueTabs.find((tab) => tab.classList.contains("active"))?.dataset.mphPeriod || "today";
+
+  const mphStockProducts = {
+    "grey-goose": {
+      name: "Grey Goose", category: "Vodka", venue: "Kapital Madrid", status: "critical",
+      img: "https://www.pngplay.com/wp-content/uploads/15/Grey-Goose-Vodka-Transparent-Images.png",
+      current: "8 botellas", min: "20 botellas", optimal: "36 botellas", avgConsumption: "12 bot/noche",
+      supplier: "Bacardi-Martini Spain", lastOrder: "18 may 2026", leadTime: "48 h", orderUnit: "Caja 6 uds",
+      costPrice: "€22.40", pvp: "€14.00/copa", margin: "€9.80/copa", marginPct: "69.8%", revenue7d: "€4,312",
+    },
+    "moet-chandon": {
+      name: "Moët & Chandon", category: "Champagne", venue: "Pacha Ibiza", status: "critical",
+      img: "https://www.pngplay.com/wp-content/uploads/15/Moet-Chandon-Brut-Imperial-PNG-Free-File-Download.png",
+      current: "6 botellas", min: "15 botellas", optimal: "30 botellas", avgConsumption: "8 bot/noche",
+      supplier: "LVMH Moët Hennessy", lastOrder: "15 may 2026", leadTime: "72 h", orderUnit: "Caja 6 uds",
+      costPrice: "€36.20", pvp: "€180.00/botella", margin: "€143.80/bot", marginPct: "79.9%", revenue7d: "€6,840",
+    },
+    "johnnie-walker": {
+      name: "Johnnie Walker", category: "Black Label", venue: "Opium Barcelona", status: "critical",
+      img: "https://upload.wikimedia.org/wikipedia/commons/2/21/Johnnie_Walker_Black_Label.jpg",
+      current: "10 botellas", min: "25 botellas", optimal: "40 botellas", avgConsumption: "9 bot/noche",
+      supplier: "Diageo España", lastOrder: "20 may 2026", leadTime: "24 h", orderUnit: "Caja 12 uds",
+      costPrice: "€18.60", pvp: "€12.00/copa", margin: "€8.10/copa", marginPct: "67.5%", revenue7d: "€3,960",
+    },
+    "bombay-sapphire": {
+      name: "Bombay Sapphire", category: "Gin", venue: "Kapital Madrid", status: "low",
+      img: "https://upload.wikimedia.org/wikipedia/commons/f/f2/Bombay-sapphire.jpg",
+      current: "28 botellas", min: "20 botellas", optimal: "45 botellas", avgConsumption: "7 bot/noche",
+      supplier: "Bacardi-Martini Spain", lastOrder: "22 may 2026", leadTime: "48 h", orderUnit: "Caja 6 uds",
+      costPrice: "€14.80", pvp: "€11.00/copa", margin: "€7.20/copa", marginPct: "65.4%", revenue7d: "€2,750",
+    },
+  };
+
+  function openStockDetail(productId) {
+    const p = mphStockProducts[productId];
+    if (!p) return;
+    const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    const imgEl = document.getElementById("mphStockDetailImg");
+    if (imgEl) { imgEl.src = p.img; imgEl.alt = p.name; }
+    setText("mphStockDetailTitle", p.name);
+    setText("mphStockDetailName", p.name);
+    setText("mphStockDetailCategory", p.category);
+    setText("mphStockDetailVenue", p.venue);
+    setText("mphStockDetailCurrent", p.current);
+    setText("mphStockDetailMin", p.min);
+    setText("mphStockDetailOptimal", p.optimal);
+    setText("mphStockDetailAvgConsumption", p.avgConsumption);
+    setText("mphStockDetailSupplier", p.supplier);
+    setText("mphStockDetailLastOrder", p.lastOrder);
+    setText("mphStockDetailLeadTime", p.leadTime);
+    setText("mphStockDetailOrderUnit", p.orderUnit);
+    setText("mphStockDetailCostPrice", p.costPrice);
+    setText("mphStockDetailPvp", p.pvp);
+    setText("mphStockDetailMargin", p.margin);
+    setText("mphStockDetailMarginPct", p.marginPct);
+    setText("mphStockDetailRevenue7d", p.revenue7d);
+    const badge = document.getElementById("mphStockDetailStatusBadge");
+    if (badge) {
+      badge.textContent = p.status === "critical" ? "Crítico" : "Bajo";
+      badge.className = "mph-group-row-badge " + (p.status === "critical" ? "down" : "neutral");
+    }
+    const statusEl = document.getElementById("mphStockDetailStatus");
+    if (statusEl) {
+      statusEl.textContent = p.status === "critical" ? "Crítico" : "Bajo";
+      statusEl.className = "mph-stock-detail-status " + p.status;
+    }
+  }
 
   function closeInlineMenus() {
     scopeMenu && (scopeMenu.hidden = true);
@@ -1184,6 +1354,25 @@ applyAccessMode("director", false);
   backBtn?.addEventListener("click", () => switchMphScreen("locales"));
   categoryBackBtn?.addEventListener("click", () => switchMphScreen("personal"));
   staffBackBtn?.addEventListener("click", () => switchMphScreen("category-detail"));
+  stockDetailBackBtn?.addEventListener("click", () => switchMphScreen("stock"));
+
+  const drawerOverlay = document.getElementById("mphDrawerOverlay");
+  const drawer = document.getElementById("mphDrawer");
+  function openDrawer()  { if (drawerOverlay) drawerOverlay.hidden = false; }
+  function closeDrawer() { if (drawerOverlay) drawerOverlay.hidden = true; }
+  document.querySelectorAll(".mph-topbar .mph-icon-btn:first-child").forEach(btn => {
+    if (btn.querySelector(".material-symbols-outlined")?.textContent?.trim() === "menu") {
+      btn.addEventListener("click", openDrawer);
+    }
+  });
+  drawerOverlay?.addEventListener("click", (e) => { if (!drawer?.contains(e.target)) closeDrawer(); });
+
+  const notifOverlay = document.getElementById("mphNotifOverlay");
+  const notifClose   = document.getElementById("mphNotifClose");
+  const notifBell    = document.querySelector(".mph-screen[data-mph-screen='panel'] .mph-topbar .mph-icon-btn:last-child");
+  notifBell?.addEventListener("click", () => { if (notifOverlay) notifOverlay.hidden = false; });
+  notifClose?.addEventListener("click", () => { if (notifOverlay) notifOverlay.hidden = true; });
+  notifOverlay?.addEventListener("click", (e) => { if (e.target === notifOverlay) notifOverlay.hidden = true; });
   scopeTrigger?.addEventListener("click", () => toggleInlineMenu(scopeMenu, scopeTrigger));
   dateTrigger?.addEventListener("click", () => toggleInlineMenu(dateMenu, dateTrigger));
 
@@ -1243,13 +1432,85 @@ applyAccessMode("director", false);
     });
   });
 
+  const stockVenueTrigger = document.getElementById("mphStockVenueTrigger");
+  const stockVenueMenu    = document.getElementById("mphStockVenueMenu");
+  const stockVenueLabel   = document.getElementById("mphStockVenueLabel");
+  const stockVenueChevron = document.getElementById("mphStockVenueChevron");
+
+  stockVenueTrigger?.addEventListener("click", () => {
+    const open = stockVenueMenu.hidden === false;
+    stockVenueMenu.hidden = open;
+    stockVenueTrigger.setAttribute("aria-expanded", String(!open));
+  });
+
+  stockVenueMenu?.querySelectorAll("[data-stock-venue]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      stockVenueMenu.querySelectorAll("[data-stock-venue]").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      if (stockVenueLabel) stockVenueLabel.textContent = btn.textContent.trim();
+      stockVenueMenu.hidden = true;
+      stockVenueTrigger?.setAttribute("aria-expanded", "false");
+    });
+  });
+
+  document.addEventListener("click", (e) => {
+    if (stockVenueMenu && !stockVenueMenu.hidden && !stockVenueTrigger?.contains(e.target) && !stockVenueMenu.contains(e.target)) {
+      stockVenueMenu.hidden = true;
+      stockVenueTrigger?.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  const stockSearchBtn    = document.getElementById("mphStockSearchBtn");
+  const stockSearchbar    = document.getElementById("mphStockSearchbar");
+  const stockSearchInput  = document.getElementById("mphStockSearchInput");
+  const stockSearchCancel = document.getElementById("mphStockSearchCancel");
+  const stockTopbar       = document.getElementById("mphStockTopbar");
+  const stockEmpty        = document.getElementById("mphStockEmpty");
+
+  function filterStock(query) {
+    const q = query.trim().toLowerCase();
+    const items = document.querySelectorAll(".mph-stock-list .mph-stock-item");
+    let visible = 0;
+    items.forEach(item => {
+      const name = item.querySelector("strong")?.textContent?.toLowerCase() || "";
+      const cat  = item.querySelector("small")?.textContent?.toLowerCase()  || "";
+      const match = !q || name.includes(q) || cat.includes(q);
+      item.classList.toggle("mph-stock-item--hidden", !match);
+      if (match) visible++;
+    });
+    if (stockEmpty) stockEmpty.classList.toggle("visible", visible === 0 && q.length > 0);
+  }
+
+  stockSearchBtn?.addEventListener("click", () => {
+    if (!stockSearchbar) return;
+    stockSearchbar.hidden = false;
+    stockTopbar && (stockTopbar.hidden = true);
+    stockSearchInput?.focus();
+  });
+
+  stockSearchCancel?.addEventListener("click", () => {
+    stockSearchbar && (stockSearchbar.hidden = true);
+    stockTopbar && (stockTopbar.hidden = false);
+    if (stockSearchInput) stockSearchInput.value = "";
+    filterStock("");
+  });
+
+  stockSearchInput?.addEventListener("input", () => filterStock(stockSearchInput.value));
+
+  document.querySelector(".mph-stock-list")?.addEventListener("click", (e) => {
+    const item = e.target.closest(".mph-stock-item[data-product-id]");
+    if (!item) return;
+    openStockDetail(item.dataset.productId);
+    switchMphScreen("stock-detail");
+  });
+
   scopeMenu?.querySelectorAll("[data-mph-scope]").forEach((button) => {
     button.addEventListener("click", () => {
       scopeMenu.querySelectorAll("[data-mph-scope]").forEach((item) => item.classList.remove("active"));
       button.classList.add("active");
-      if (scopeLabel) scopeLabel.textContent = button.dataset.mphScope === "global"
-        ? "Global"
-        : button.textContent?.trim() || "Global";
+      const venueKey = button.dataset.mphScope || "global";
+      if (scopeLabel) scopeLabel.textContent = venueKey === "global" ? "Global" : button.textContent?.trim() || "Global";
+      updatePanelData(venueKey, null);
       closeInlineMenus();
       showToast(`Vista ${button.textContent?.trim() || "Global"} aplicada.`);
     });
@@ -1259,9 +1520,12 @@ applyAccessMode("director", false);
     button.addEventListener("click", () => {
       dateMenu.querySelectorAll("[data-mph-date]").forEach((item) => item.classList.remove("active"));
       button.classList.add("active");
-      if (dateLabel) dateLabel.textContent = button.dataset.mphDate || button.textContent?.trim() || "Hoy, 24 may";
+      const dateLabel2 = button.dataset.mphDate || button.textContent?.trim() || "Hoy, 24 may";
+      if (dateLabel) dateLabel.textContent = dateLabel2;
+      const periodKey = periodKeyMap[dateLabel2] || "today";
+      updatePanelData(null, periodKey);
       closeInlineMenus();
-      showToast(`Periodo ${button.dataset.mphDate || button.textContent?.trim() || "Hoy"} aplicado.`);
+      showToast(`Periodo ${dateLabel2} aplicado.`);
     });
   });
 
@@ -1277,6 +1541,7 @@ applyAccessMode("director", false);
   });
 
   applyVenuePeriod(activeVenuePeriod, false);
+  updatePanelData("global", "today");
   renderMphCategoryTable();
   openMphCategoryDetail("barra", false);
   renderMphStaffSheet("carlos");
