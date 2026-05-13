@@ -401,6 +401,122 @@ const mphVenueProfiles = [
   { id: "moma-valencia", name: "Moma Valencia", logo: "M", logoClass: "mph-logo-m", baseRevenue: 20880, baseOccupancy: 58, baseMargin: 21.2, seed: 5.4 },
 ];
 
+const mphVenueOperations = {
+  "kapital-madrid": {
+    city: "Madrid",
+    legalCapacity: 2100,
+    revenueMix: { bars: 0.62, taquilla: 0.21, vip: 0.13, guardarropia: 0.04 },
+    staffActiveBase: 42,
+    bars: [
+      { id: "b1", label: "B1", name: "Barra 1", subtitle: "Main room · lateral norte", share: 0.34, bank: "Sabadell", terminal: "Ingenico Move 5000", account: "ES91 **** 4820", operator: "Carlos R.", device: "Datáfono fijo + QR", mix: "62% NFC · 21% QR · 17% cashless", x: 18, y: 68 },
+      { id: "b2", label: "B2", name: "Barra 2", subtitle: "Main room · speed rail", share: 0.27, bank: "CaixaBank", terminal: "PAX A920", account: "ES66 **** 1045", operator: "Lucas V.", device: "PAX móvil + caja rápida", mix: "58% NFC · 24% QR · 18% cashless", x: 35, y: 74 },
+      { id: "b3", label: "B3", name: "Barra 3", subtitle: "VIP bridge", share: 0.21, bank: "Santander", terminal: "Verifone V400m", account: "ES54 **** 3398", operator: "Elena M.", device: "Verifone + split QR", mix: "49% QR · 39% NFC · 12% cashless", x: 64, y: 42 },
+      { id: "b4", label: "B4", name: "Barra 4", subtitle: "Terraza interior", share: 0.18, bank: "BBVA", terminal: "SumUp Solo", account: "ES27 **** 7712", operator: "Andrei K.", device: "Terminal móvil outdoor", mix: "67% NFC · 19% QR · 14% cashless", x: 80, y: 60 },
+    ],
+    taquilla: [
+      { id: "t1", label: "T1", name: "Taquilla 1", subtitle: "Walk-in principal", share: 0.58, bank: "CaixaBank", terminal: "PAX A920", account: "ES33 **** 9180", operator: "Andrea S.", device: "Terminal puerta 01", mix: "Walk-in 58% · anticipadas 34% · upgrades 8%", x: 12, y: 20 },
+      { id: "t2", label: "T2", name: "Taquilla 2", subtitle: "Invitados y RRPP", share: 0.42, bank: "Sabadell", terminal: "Ingenico Desk 3500", account: "ES91 **** 4820", operator: "Marta P.", device: "Desk + scanner QR", mix: "RRPP 41% · guestlist 33% · cashless 26%", x: 30, y: 18 },
+    ],
+    vip: [
+      { id: "v1", label: "V1", name: "VIP V1-V4", subtitle: "Botellas + mínimos", share: 0.57, bank: "Santander", terminal: "Verifone Carbon", account: "ES54 **** 3398", operator: "Elena M.", device: "Carbon + split pay", mix: "Botellas 72% · upgrades 18% · fees 10%", x: 70, y: 28 },
+      { id: "v2", label: "V2", name: "VIP V5-V10", subtitle: "Terraza + backstage", share: 0.43, bank: "BBVA", terminal: "Stripe Tap to Pay", account: "ES27 **** 7712", operator: "Juan G.", device: "iPhone POS + QR mesa", mix: "Botellas 63% · mínimos 24% · extras 13%", x: 84, y: 22 },
+    ],
+    guardarropia: [
+      { id: "g1", label: "G1", name: "Guardarropía principal", subtitle: "Chaquetas y fast-lane", share: 0.76, bank: "Sabadell", terminal: "SumUp Solo Lite", account: "ES91 **** 4820", operator: "Lucía T.", device: "Terminal móvil mostrador", mix: "Ticket físico 81% · QR 19%", x: 48, y: 84 },
+      { id: "g2", label: "G2", name: "Guardarropía VIP", subtitle: "Backstage y reservado", share: 0.24, bank: "Santander", terminal: "Zettle Reader 2", account: "ES54 **** 3398", operator: "Nora B.", device: "Reader portátil VIP", mix: "Fast-lane 64% · extra bags 36%", x: 72, y: 82 },
+    ],
+    aforo: [
+      { id: "a1", label: "E1", name: "Entrada principal", subtitle: "Picado general", share: 0.68, scannedBy: "Nuria P.", device: "iPhone Scanner 02", account: "Control acceso principal", mix: "Anticipadas 54% · RRPP 28% · walk-in 18%", x: 10, y: 16 },
+      { id: "a2", label: "E2", name: "Entrada VIP", subtitle: "Invitados y mesas", share: 0.19, scannedBy: "Raúl C.", device: "iPhone Scanner VIP 01", account: "Control acceso VIP", mix: "Mesas 61% · upgrades 22% · invitados 17%", x: 82, y: 14 },
+      { id: "a3", label: "E3", name: "Guest list / RRPP", subtitle: "Pulsera + validación", share: 0.13, scannedBy: "Andrea S.", device: "iPad Check-in 02", account: "Desk RRPP", mix: "RRPP 72% · guestlist 28%", x: 28, y: 12 },
+    ],
+  },
+  "barcelo-sevilla": {
+    city: "Sevilla",
+    legalCapacity: 1600,
+    revenueMix: { bars: 0.59, taquilla: 0.24, vip: 0.12, guardarropia: 0.05 },
+    staffActiveBase: 31,
+    bars: [
+      { id: "b1", label: "B1", name: "Barra 1", subtitle: "Pista central", share: 0.44, bank: "CaixaBank", terminal: "Ingenico Move 5000", account: "ES14 **** 5502", operator: "Javi M.", device: "Datáfono fijo + QR", mix: "NFC 66% · QR 14% · cashless 20%", x: 22, y: 70 },
+      { id: "b2", label: "B2", name: "Barra 2", subtitle: "Lateral escenario", share: 0.31, bank: "BBVA", terminal: "PAX A920 Pro", account: "ES81 **** 1904", operator: "Lola C.", device: "PAX móvil", mix: "NFC 61% · QR 22% · cashless 17%", x: 48, y: 62 },
+      { id: "b3", label: "B3", name: "Barra terraza", subtitle: "Patio interior", share: 0.25, bank: "Santander", terminal: "SumUp Solo", account: "ES77 **** 4308", operator: "Álex R.", device: "Terminal móvil terraza", mix: "NFC 58% · QR 27% · cashless 15%", x: 78, y: 72 },
+    ],
+    taquilla: [
+      { id: "t1", label: "T1", name: "Taquilla principal", subtitle: "Walk-in", share: 0.64, bank: "CaixaBank", terminal: "PAX A920", account: "ES14 **** 5502", operator: "Carla S.", device: "Terminal puerta", mix: "Walk-in 62% · anticipadas 24% · RRPP 14%", x: 14, y: 18 },
+      { id: "t2", label: "T2", name: "Lista y reservas", subtitle: "RRPP / invitados", share: 0.36, bank: "Sabadell", terminal: "Ingenico Desk 3500", account: "ES45 **** 8801", operator: "Mireia N.", device: "Desk + QR", mix: "RRPP 51% · invitados 49%", x: 32, y: 16 },
+    ],
+    vip: [
+      { id: "v1", label: "V1", name: "VIP Patio", subtitle: "Mesas premium", share: 0.63, bank: "Santander", terminal: "Verifone Carbon", account: "ES77 **** 4308", operator: "Sara G.", device: "POS VIP + split pay", mix: "Botellas 69% · mínimos 31%", x: 74, y: 28 },
+      { id: "v2", label: "V2", name: "VIP Escenario", subtitle: "Front stage", share: 0.37, bank: "BBVA", terminal: "Stripe Tap to Pay", account: "ES81 **** 1904", operator: "Mario T.", device: "iPhone Tap to Pay", mix: "Botellas 74% · extras 26%", x: 60, y: 26 },
+    ],
+    guardarropia: [
+      { id: "g1", label: "G1", name: "Guardarropía central", subtitle: "Acceso principal", share: 1, bank: "CaixaBank", terminal: "Zettle Reader 2", account: "ES14 **** 5502", operator: "Elisa D.", device: "Reader mostrador", mix: "Ticket físico 76% · QR 24%", x: 54, y: 84 },
+    ],
+    aforo: [
+      { id: "a1", label: "E1", name: "Entrada principal", subtitle: "Escaneo general", share: 0.71, scannedBy: "Nuria P.", device: "Scanner puerta 01", account: "Control principal", mix: "Anticipadas 47% · walk-in 31% · RRPP 22%", x: 12, y: 14 },
+      { id: "a2", label: "E2", name: "Acceso patio VIP", subtitle: "Control pulsera", share: 0.17, scannedBy: "Raúl C.", device: "Scanner VIP 02", account: "VIP patio", mix: "VIP 73% · invitados 27%", x: 78, y: 14 },
+      { id: "a3", label: "E3", name: "Lista lateral", subtitle: "RRPP", share: 0.12, scannedBy: "Mireia N.", device: "iPad RRPP", account: "Desk lateral", mix: "RRPP 82% · guestlist 18%", x: 28, y: 12 },
+    ],
+  },
+  "opium-barcelona": {
+    city: "Barcelona",
+    legalCapacity: 1000,
+    revenueMix: { bars: 0.57, taquilla: 0.23, vip: 0.16, guardarropia: 0.04 },
+    staffActiveBase: 24,
+    bars: [
+      { id: "b1", label: "B1", name: "Barra principal", subtitle: "Frente pista", share: 0.52, bank: "Santander", terminal: "Verifone V400m", account: "ES64 **** 4412", operator: "Claudia F.", device: "Verifone fijo", mix: "NFC 63% · QR 21% · cashless 16%", x: 24, y: 72 },
+      { id: "b2", label: "B2", name: "Barra beach", subtitle: "Zona terraza", share: 0.28, bank: "Sabadell", terminal: "SumUp Solo", account: "ES88 **** 1205", operator: "Bruno A.", device: "Terminal móvil terraza", mix: "NFC 59% · QR 26% · cashless 15%", x: 74, y: 74 },
+      { id: "b3", label: "B3", name: "Backstage bar", subtitle: "Artistas y staff", share: 0.20, bank: "BBVA", terminal: "PAX A920", account: "ES17 **** 3309", operator: "Mia K.", device: "PAX backstage", mix: "NFC 54% · QR 32% · cashless 14%", x: 66, y: 40 },
+    ],
+    taquilla: [
+      { id: "t1", label: "T1", name: "Puerta club", subtitle: "Walk-in y QR", share: 1, bank: "Santander", terminal: "Ingenico Move 5000", account: "ES64 **** 4412", operator: "David L.", device: "Desk puerta + scanner", mix: "Walk-in 49% · anticipadas 38% · RRPP 13%", x: 14, y: 18 },
+    ],
+    vip: [
+      { id: "v1", label: "V1", name: "VIP Sea View", subtitle: "Mesas premium", share: 0.61, bank: "BBVA", terminal: "Stripe Tap to Pay", account: "ES17 **** 3309", operator: "Elena M.", device: "Tap to Pay + QR mesa", mix: "Mínimos 64% · botellas 36%", x: 82, y: 26 },
+      { id: "v2", label: "V2", name: "VIP Stage", subtitle: "Front artist", share: 0.39, bank: "Sabadell", terminal: "Zettle Reader 2", account: "ES88 **** 1205", operator: "Juan G.", device: "Reader VIP", mix: "Botellas 72% · extras 28%", x: 62, y: 24 },
+    ],
+    guardarropia: [
+      { id: "g1", label: "G1", name: "Guardarropía club", subtitle: "Entrada única", share: 1, bank: "Santander", terminal: "SumUp Air", account: "ES64 **** 4412", operator: "Sara T.", device: "Reader mostrador", mix: "Físico 79% · QR 21%", x: 48, y: 84 },
+    ],
+    aforo: [
+      { id: "a1", label: "E1", name: "Entrada club", subtitle: "Scanner general", share: 0.76, scannedBy: "Nuria P.", device: "Scanner puerta 01", account: "Control general", mix: "Anticipadas 52% · walk-in 34% · RRPP 14%", x: 12, y: 14 },
+      { id: "a2", label: "E2", name: "VIP access", subtitle: "Pulsera y reservas", share: 0.24, scannedBy: "Raúl C.", device: "Scanner VIP 01", account: "Control VIP", mix: "VIP 68% · invitados 32%", x: 80, y: 14 },
+    ],
+  },
+  "moma-valencia": {
+    city: "Valencia",
+    legalCapacity: 900,
+    revenueMix: { bars: 0.55, taquilla: 0.26, vip: 0.13, guardarropia: 0.06 },
+    staffActiveBase: 19,
+    bars: [
+      { id: "b1", label: "B1", name: "Barra central", subtitle: "Sala principal", share: 0.49, bank: "CaixaBank", terminal: "PAX A920", account: "ES40 **** 2401", operator: "Leo S.", device: "PAX fijo", mix: "NFC 61% · QR 23% · cashless 16%", x: 28, y: 72 },
+      { id: "b2", label: "B2", name: "Barra lateral", subtitle: "Zona lounge", share: 0.29, bank: "Sabadell", terminal: "Ingenico Move 5000", account: "ES22 **** 8104", operator: "Paula H.", device: "Move + QR", mix: "NFC 57% · QR 28% · cashless 15%", x: 62, y: 66 },
+      { id: "b3", label: "B3", name: "Barra VIP", subtitle: "Reservados", share: 0.22, bank: "BBVA", terminal: "Stripe Tap to Pay", account: "ES18 **** 6607", operator: "Elena M.", device: "iPhone POS VIP", mix: "QR mesa 42% · NFC 46% · cashless 12%", x: 80, y: 34 },
+    ],
+    taquilla: [
+      { id: "t1", label: "T1", name: "Taquilla principal", subtitle: "Walk-in", share: 0.73, bank: "CaixaBank", terminal: "Desk 3500", account: "ES40 **** 2401", operator: "Andrea S.", device: "Desk + scanner", mix: "Walk-in 56% · anticipadas 29% · RRPP 15%", x: 16, y: 18 },
+      { id: "t2", label: "T2", name: "Taquilla RRPP", subtitle: "Listas", share: 0.27, bank: "Sabadell", terminal: "SumUp Solo", account: "ES22 **** 8104", operator: "Clara M.", device: "Solo mostrador", mix: "RRPP 69% · guestlist 31%", x: 30, y: 16 },
+    ],
+    vip: [
+      { id: "v1", label: "V1", name: "VIP Lounge", subtitle: "Mesas reservadas", share: 1, bank: "BBVA", terminal: "Verifone Carbon", account: "ES18 **** 6607", operator: "Juan G.", device: "Carbon VIP", mix: "Botellas 74% · extras 26%", x: 78, y: 24 },
+    ],
+    guardarropia: [
+      { id: "g1", label: "G1", name: "Guardarropía general", subtitle: "Fast check", share: 1, bank: "CaixaBank", terminal: "Zettle Reader 2", account: "ES40 **** 2401", operator: "Sonia V.", device: "Reader mostrador", mix: "Físico 74% · QR 26%", x: 52, y: 84 },
+    ],
+    aforo: [
+      { id: "a1", label: "E1", name: "Entrada principal", subtitle: "Control general", share: 0.81, scannedBy: "Nuria P.", device: "Scanner puerta", account: "Control principal", mix: "Anticipadas 49% · walk-in 36% · RRPP 15%", x: 12, y: 14 },
+      { id: "a2", label: "E2", name: "Acceso VIP", subtitle: "Pulseras", share: 0.19, scannedBy: "Raúl C.", device: "Scanner VIP", account: "Control VIP", mix: "VIP 71% · invitados 29%", x: 78, y: 14 },
+    ],
+  },
+};
+
+const mphLocalDetailState = {
+  venueId: "kapital-madrid",
+  section: "bars",
+  pointId: "b1",
+  selectedDate: new Date(),
+};
+
 const mphVenueSeries = mphVenueProfiles.reduce((acc, profile) => {
   acc[profile.id] = buildMphVenueSeries(profile);
   return acc;
@@ -423,12 +539,60 @@ function formatCompactCurrency(value) {
   return `€${Math.round(value).toLocaleString("es-ES")}`;
 }
 
+function formatPreciseCurrency(value) {
+  return new Intl.NumberFormat("es-ES", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(Number(value));
+}
+
 function formatSignedPercent(value) {
   const prefix = value > 0 ? "+" : value < 0 ? "-" : "";
   return `${prefix}${Math.abs(value).toLocaleString("es-ES", {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
   })}%`;
+}
+
+function formatSignedPoints(value) {
+  const prefix = value > 0 ? "+" : value < 0 ? "-" : "";
+  return `${prefix}${Math.abs(value).toLocaleString("es-ES", {
+    minimumFractionDigits: Math.abs(value) < 1 ? 1 : 0,
+    maximumFractionDigits: 1,
+  })} pp`;
+}
+
+function formatMphInputDate(date) {
+  return normalizeMphDate(date).toISOString().slice(0, 10);
+}
+
+function getMphTrendMeta(value, neutralThreshold = 0.15) {
+  if (Math.abs(value) < neutralThreshold) {
+    return { className: "flat", icon: "remove" };
+  }
+  return value > 0
+    ? { className: "up", icon: "arrow_upward" }
+    : { className: "down", icon: "arrow_downward" };
+}
+
+function setMphTrendNode(selector, text, value, neutralThreshold = 0.15) {
+  const node = document.querySelector(selector);
+  if (!node) return;
+  const meta = getMphTrendMeta(value, neutralThreshold);
+  const labelId = node.querySelector("span:last-child")?.id;
+  node.classList.remove("up", "down", "flat");
+  node.classList.add(meta.className);
+  node.innerHTML = `<span class="material-symbols-outlined">${meta.icon}</span><span${labelId ? ` id="${labelId}"` : ""}>${text}</span>`;
+}
+
+function setMphBadgeNode(selector, text, tone) {
+  const node = document.querySelector(selector);
+  if (!node) return;
+  node.textContent = text;
+  node.classList.remove("up", "down", "neutral");
+  node.classList.add(tone);
 }
 
 function buildMphVenueSeries(profile, days = 120) {
@@ -530,7 +694,7 @@ function renderMphVenueRows(periodKey = "today") {
     .sort((a, b) => b.score - a.score);
   const bestVenueId = venues[0]?.id;
   venueList.innerHTML = venues.map((venue) => `
-    <button class="mph-venue-row ${venue.id === bestVenueId ? "best" : ""}" data-mph-goto="local-detail" type="button">
+    <button class="mph-venue-row ${venue.id === bestVenueId ? "best" : ""}" data-mph-goto="local-detail" data-mph-venue-id="${venue.id}" type="button">
       <div class="mph-venue-logo ${venue.logoClass}">${venue.logo}</div>
       <div class="mph-venue-info">
         <div class="mph-venue-name-row">
@@ -549,6 +713,378 @@ function renderMphVenueRows(periodKey = "today") {
       <span class="mph-venue-chevron" aria-hidden="true">&gt;</span>
     </button>
   `).join("");
+}
+
+function getMphVenueProfileById(venueId) {
+  return mphVenueProfiles.find((profile) => profile.id === venueId) || mphVenueProfiles[0];
+}
+
+function normalizeMphDate(date) {
+  const normalized = new Date(date);
+  normalized.setHours(12, 0, 0, 0);
+  return normalized;
+}
+
+function getMphDayIndex(date) {
+  const baseDate = new Date(2024, 0, 1, 12, 0, 0, 0);
+  return Math.round((normalizeMphDate(date) - baseDate) / 86400000);
+}
+
+function getEquivalentWeekdayLastYear(date) {
+  const source = normalizeMphDate(date);
+  const nthWeek = Math.floor((source.getDate() - 1) / 7) + 1;
+  const year = source.getFullYear() - 1;
+  const month = source.getMonth();
+  const weekday = source.getDay();
+  const firstDay = new Date(year, month, 1);
+  const offset = (weekday - firstDay.getDay() + 7) % 7;
+  let day = 1 + offset + ((nthWeek - 1) * 7);
+  const lastDay = new Date(year, month + 1, 0).getDate();
+  if (day > lastDay) day -= 7;
+  return normalizeMphDate(new Date(year, month, day));
+}
+
+function formatMphShortDate(date) {
+  return new Intl.DateTimeFormat("es-ES", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  }).format(normalizeMphDate(date));
+}
+
+function formatMphMonthYear(date) {
+  return new Intl.DateTimeFormat("es-ES", {
+    month: "long",
+    year: "numeric",
+  }).format(normalizeMphDate(date));
+}
+
+function formatMphEquivalentComparison(date, compareDate) {
+  const normalized = normalizeMphDate(date);
+  const nthWeek = Math.floor((normalized.getDate() - 1) / 7) + 1;
+  const weekday = new Intl.DateTimeFormat("es-ES", { weekday: "long" }).format(normalized);
+  const weekLabel = `${nthWeek}a semana de ${formatMphMonthYear(compareDate)}`;
+  return `vs ${weekday} equivalente · ${weekLabel}`;
+}
+
+function computeMphVenueDayMetrics(venueId, rawDate) {
+  const venueProfile = getMphVenueProfileById(venueId);
+  const opsProfile = mphVenueOperations[venueId] || mphVenueOperations["kapital-madrid"];
+  const date = normalizeMphDate(rawDate);
+  const index = getMphDayIndex(date);
+  const weekDay = date.getDay();
+  const weeklyBoost = [0.9, 0.93, 0.98, 1.02, 1.08, 1.18, 1.12][weekDay];
+  const wave = 1 + Math.sin((index + venueProfile.seed) * 0.33) * 0.06 + Math.cos((index + venueProfile.seed) * 0.17) * 0.04;
+  const yearGrowthFactor = 1 + ((date.getFullYear() - 2025) * 0.08);
+  const revenue = Math.round(venueProfile.baseRevenue * weeklyBoost * wave * yearGrowthFactor);
+  const occupancyPct = clamp(
+    Math.round(venueProfile.baseOccupancy + (weeklyBoost - 1) * 34 + Math.sin((index + venueProfile.seed) * 0.45) * 4 + Math.cos((index + venueProfile.seed) * 0.14) * 2),
+    42,
+    98
+  );
+  const margin = clamp(
+    Number((venueProfile.baseMargin + (weeklyBoost - 1) * 4.5 + Math.cos((index + venueProfile.seed) * 0.39) * 1.2).toFixed(1)),
+    18,
+    39.5
+  );
+  const realCapacity = Math.round((opsProfile.legalCapacity * occupancyPct) / 100);
+  const barsRevenue = Math.round(revenue * opsProfile.revenueMix.bars);
+  const taquillaRevenue = Math.round(revenue * opsProfile.revenueMix.taquilla);
+  const vipRevenue = Math.round(revenue * opsProfile.revenueMix.vip);
+  const guardarropiaRevenue = Math.round(revenue * opsProfile.revenueMix.guardarropia);
+  const avgTicket = revenue / Math.max(realCapacity, 1);
+  const queueMinutes = Math.max(4, Math.round(8 + ((weeklyBoost - 1) * 36) + Math.sin((index + 2) * 0.18) * 4));
+  const staffActive = Math.max(opsProfile.staffActiveBase, Math.round(opsProfile.staffActiveBase + ((weeklyBoost - 1) * 24) + Math.cos((index + venueProfile.seed) * 0.16) * 2));
+  return {
+    venueProfile,
+    opsProfile,
+    date,
+    revenue,
+    occupancyPct,
+    margin,
+    realCapacity,
+    avgTicket,
+    queueMinutes,
+    staffActive,
+    sections: {
+      bars: barsRevenue,
+      taquilla: taquillaRevenue,
+      vip: vipRevenue,
+      guardarropia: guardarropiaRevenue,
+    },
+  };
+}
+
+function getMphLocalDateOptions() {
+  const today = normalizeMphDate(new Date());
+  const options = [0, 1, 7, 14, 30].map((offset) => {
+    const optionDate = new Date(today);
+    optionDate.setDate(today.getDate() - offset);
+    const label = offset === 0
+      ? `Hoy · ${formatMphShortDate(optionDate)}`
+      : offset === 1
+        ? `Ayer · ${formatMphShortDate(optionDate)}`
+        : `${offset} días · ${formatMphShortDate(optionDate)}`;
+    return {
+      key: normalizeMphDate(optionDate).toISOString(),
+      date: normalizeMphDate(optionDate),
+      label,
+    };
+  });
+  const selectedKey = normalizeMphDate(mphLocalDetailState.selectedDate).toISOString();
+  if (!options.some((option) => option.key === selectedKey)) {
+    options.unshift({
+      key: selectedKey,
+      date: normalizeMphDate(mphLocalDetailState.selectedDate),
+      label: formatMphShortDate(mphLocalDetailState.selectedDate),
+    });
+  }
+  return options;
+}
+
+function buildMphRevenueTimeline(snapshot) {
+  const checkpoints = [0, 4, 8, 12, 16, 20, 24];
+  const seed = getMphDayIndex(snapshot.date) + snapshot.venueProfile.seed;
+  const baseSegments = [0, 0.02, 0.05, 0.12, 0.22, 0.34, 0.25];
+  const dynamicSegments = baseSegments.map((weight, index) => index === 0
+    ? 0
+    : Math.max(0.01, weight * (1 + Math.sin((seed + index) * 0.28) * 0.18 + Math.cos((seed + index) * 0.17) * 0.08))
+  );
+  const totalWeight = dynamicSegments.slice(1).reduce((sum, weight) => sum + weight, 0);
+  let runningShare = 0;
+  return checkpoints.map((hour, index) => {
+    runningShare = index === 0 ? 0 : runningShare + (dynamicSegments[index] / totalWeight);
+    return {
+      hour,
+      value: Math.round(snapshot.revenue * clamp(runningShare, 0, 1)),
+    };
+  });
+}
+
+function renderMphLocalChart(snapshot, compareSnapshot) {
+  const chart = document.getElementById("mphLocalChart");
+  if (!chart) return;
+  const currentSeries = buildMphRevenueTimeline(snapshot);
+  const compareSeries = buildMphRevenueTimeline(compareSnapshot);
+  const xStart = 32;
+  const xEnd = 298;
+  const yTop = 6;
+  const yBottom = 68;
+  const maxValue = Math.max(
+    currentSeries[currentSeries.length - 1]?.value || snapshot.revenue,
+    compareSeries[compareSeries.length - 1]?.value || compareSnapshot.revenue,
+    20000
+  );
+  const axisMax = Math.ceil(maxValue / 5000) * 5000;
+  const mapX = (hour) => xStart + ((xEnd - xStart) * hour) / 24;
+  const mapY = (value) => yBottom - ((yBottom - yTop) * value) / axisMax;
+  const buildLinePath = (series) => series.map((point, index) => `${index === 0 ? "M" : "L"}${mapX(point.hour)},${mapY(point.value)}`).join(" ");
+  const currentPath = buildLinePath(currentSeries);
+  const comparePath = buildLinePath(compareSeries);
+  const currentArea = `${currentPath} L${mapX(24)},${yBottom} L${mapX(0)},${yBottom} Z`;
+  const yTicks = [0, axisMax / 3, (axisMax / 3) * 2, axisMax];
+  const xLabels = [
+    { hour: 0, label: "00:00" },
+    { hour: 6, label: "06:00" },
+    { hour: 12, label: "12:00" },
+    { hour: 18, label: "18:00" },
+    { hour: 24, label: "00:00" },
+  ];
+  chart.innerHTML = `
+    <defs>
+      <linearGradient id="mphChartGrad2" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#34c759" stop-opacity="0.18"/>
+        <stop offset="100%" stop-color="#34c759" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    ${yTicks.map((value) => `
+      <line x1="${xStart}" y1="${mapY(value)}" x2="${xEnd}" y2="${mapY(value)}" stroke="#f0f0f2" stroke-width="0.8"/>
+      <text x="28" y="${mapY(value) + 3}" font-size="8" fill="#c7c7cc" font-family="-apple-system,sans-serif" text-anchor="end">${value === 0 ? "0" : `${Math.round(value / 1000)}K`}</text>
+    `).join("")}
+    <path d="${comparePath}" stroke="#c7c7cc" stroke-width="1.6" stroke-dasharray="4 4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="${currentArea}" fill="url(#mphChartGrad2)"/>
+    <path d="${currentPath}" stroke="#34c759" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    ${xLabels.map((item) => `
+      <text x="${mapX(item.hour)}" y="82" font-size="8" fill="#c7c7cc" font-family="-apple-system,sans-serif" text-anchor="middle">${item.label}</text>
+    `).join("")}
+  `;
+}
+
+function buildMphLocalSectionRows(sectionKey, point, snapshot, categoryTotal) {
+  if (sectionKey === "aforo") {
+    const scannedCount = Math.round(snapshot.realCapacity * point.share);
+    const legalQuota = Math.round(snapshot.opsProfile.legalCapacity * point.share);
+    return {
+      metrics: [
+        { label: "Picados", value: scannedCount.toLocaleString("es-ES") },
+        { label: "Cupo legal", value: legalQuota.toLocaleString("es-ES") },
+        { label: "Ritmo", value: `${Math.round((scannedCount / Math.max(legalQuota, 1)) * 100)}%` },
+      ],
+      rows: [
+        ["Picado por", point.scannedBy, "Live"],
+        ["Dispositivo", point.device, "OK"],
+        ["Canal", point.account, "Control"],
+        ["Mix acceso", point.mix, "Detalle"],
+      ],
+    };
+  }
+  const amount = Number((categoryTotal * point.share).toFixed(2));
+  const tickets = Math.max(12, Math.round(amount / Math.max(snapshot.avgTicket * (sectionKey === "vip" ? 3.8 : sectionKey === "guardarropia" ? 6.4 : 1), 1)));
+  return {
+    metrics: [
+      { label: "Facturación", value: formatPreciseCurrency(amount) },
+      { label: "Tickets", value: tickets.toLocaleString("es-ES") },
+      { label: "Mix", value: `${Math.round(point.share * 100)}%` },
+    ],
+    rows: [
+      ["Datáfono", point.terminal, "Live"],
+      ["Banco", point.bank, "OK"],
+      ["Cuenta asociada", point.account, "Cuenta"],
+      ["Dónde se cobra", point.device, "Operativo"],
+      ["Responsable", point.operator, "Staff"],
+      ["Mix cobro", point.mix, "Detalle"],
+    ],
+  };
+}
+
+function renderMphLocalDateMenu() {
+  const menu = document.getElementById("mphLocalDateMenu");
+  if (!menu) return;
+  const selectedKey = normalizeMphDate(mphLocalDetailState.selectedDate).toISOString();
+  menu.innerHTML = getMphLocalDateOptions().map((option) => `
+    <button class="${option.key === selectedKey ? "active" : ""}" type="button" data-mph-local-date="${option.key}">
+      ${option.label}
+    </button>
+  `).join("");
+}
+
+function renderMphLocalMap() {
+  const venueId = mphLocalDetailState.venueId;
+  const opsProfile = mphVenueOperations[venueId] || mphVenueOperations["kapital-madrid"];
+  const map = document.getElementById("mphLocalOpsMap");
+  const detail = document.getElementById("mphLocalOpsDetail");
+  if (!map || !detail) return;
+  const sectionKey = mphLocalDetailState.section;
+  const items = opsProfile[sectionKey] || [];
+  if (!items.length) {
+    map.innerHTML = "";
+    detail.innerHTML = "";
+    return;
+  }
+  if (!items.some((item) => item.id === mphLocalDetailState.pointId)) {
+    mphLocalDetailState.pointId = items[0].id;
+  }
+  map.innerHTML = `
+    <div class="mph-venue-map-shell">
+      <div class="mph-venue-map-stage">DJ / cabina</div>
+      <div class="mph-venue-map-entry">Entrada principal</div>
+      <div class="mph-venue-map-zone">Main room</div>
+      ${items.map((item) => `
+        <button
+          class="mph-map-hotspot ${item.id === mphLocalDetailState.pointId ? "active" : ""}"
+          type="button"
+          data-mph-map-point="${item.id}"
+          style="left:${item.x}%;top:${item.y}%"
+        >
+          ${item.label}
+        </button>
+      `).join("")}
+    </div>
+  `;
+  const snapshot = computeMphVenueDayMetrics(venueId, mphLocalDetailState.selectedDate);
+  const point = items.find((item) => item.id === mphLocalDetailState.pointId) || items[0];
+  const categoryTotal = sectionKey === "aforo" ? snapshot.realCapacity : snapshot.sections[sectionKey];
+  const detailData = buildMphLocalSectionRows(sectionKey, point, snapshot, categoryTotal);
+  detail.innerHTML = `
+    <div class="mph-local-spotlight-head">
+      <div>
+        <strong>${point.name}</strong>
+        <span>${point.subtitle}</span>
+      </div>
+      <span class="mph-local-spotlight-badge">${sectionKey === "aforo" ? "Control" : "Live"}</span>
+    </div>
+    <div class="mph-local-spotlight-grid">
+      ${detailData.metrics.map((metric) => `
+        <article>
+          <small>${metric.label}</small>
+          <b>${metric.value}</b>
+        </article>
+      `).join("")}
+    </div>
+    <div class="mph-sheet-card-list">
+      ${detailData.rows.map(([title, detailText, status]) => `
+        <article class="mph-sheet-row">
+          <div>
+            <strong>${title}</strong>
+            <span>${detailText}</span>
+          </div>
+          <b>${status}</b>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderMphLocalDetail() {
+  const venueId = mphLocalDetailState.venueId;
+  const venueProfile = getMphVenueProfileById(venueId);
+  const snapshot = computeMphVenueDayMetrics(venueId, mphLocalDetailState.selectedDate);
+  const compareDate = getEquivalentWeekdayLastYear(mphLocalDetailState.selectedDate);
+  const compareSnapshot = computeMphVenueDayMetrics(venueId, compareDate);
+  const revenueDelta = compareSnapshot.revenue ? ((snapshot.revenue - compareSnapshot.revenue) / compareSnapshot.revenue) * 100 : 0;
+  const barsDelta = compareSnapshot.sections.bars ? ((snapshot.sections.bars - compareSnapshot.sections.bars) / compareSnapshot.sections.bars) * 100 : 0;
+  const taquillaDelta = compareSnapshot.sections.taquilla ? ((snapshot.sections.taquilla - compareSnapshot.sections.taquilla) / compareSnapshot.sections.taquilla) * 100 : 0;
+  const occupancyDelta = snapshot.occupancyPct - compareSnapshot.occupancyPct;
+  const marginDelta = Number((snapshot.margin - compareSnapshot.margin).toFixed(1));
+  const queueTone = snapshot.queueMinutes >= 20 ? "down" : snapshot.queueMinutes >= 13 ? "neutral" : "up";
+  const queueLabel = snapshot.queueMinutes >= 20 ? "Alta" : snapshot.queueMinutes >= 13 ? "Atenta" : "Fluida";
+  const comparisonCopy = formatMphEquivalentComparison(mphLocalDetailState.selectedDate, compareDate);
+  fillText("#mphLocalTitle", venueProfile.name);
+  fillText("#mphLocalDateLabel", formatMphShortDate(mphLocalDetailState.selectedDate));
+  fillText("#mphLocalRevenue", formatCompactCurrency(snapshot.revenue));
+  fillText("#mphLocalBarsRevenue", formatCompactCurrency(snapshot.sections.bars));
+  fillText("#mphLocalTaquillaRevenue", formatCompactCurrency(snapshot.sections.taquilla));
+  fillText("#mphLocalOccupancy", `${snapshot.occupancyPct}%`);
+  fillText("#mphLocalMarginMetric", `${snapshot.margin.toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`);
+  fillText("#mphLocalChartTrendText", `${formatSignedPercent(revenueDelta)} ${comparisonCopy}`);
+  fillText("#mphLocalChartTrendTextHeader", formatSignedPercent(revenueDelta));
+  fillText("#mphLocalCompareNote", comparisonCopy);
+  fillText("#mphLocalBarsRowValue", formatCompactCurrency(snapshot.sections.bars));
+  fillText("#mphLocalTaquillaRowValue", formatCompactCurrency(snapshot.sections.taquilla));
+  fillText("#mphLocalVipRowValue", formatCompactCurrency(snapshot.sections.vip));
+  fillText("#mphLocalGuardarropiaRowValue", formatCompactCurrency(snapshot.sections.guardarropia));
+  fillText("#mphLocalLegalCapacity", snapshot.opsProfile.legalCapacity.toLocaleString("es-ES"));
+  fillText("#mphLocalRealCapacity", snapshot.realCapacity.toLocaleString("es-ES"));
+  fillText("#mphLocalRealCapacityPct", `${snapshot.occupancyPct}%`);
+  fillText("#mphLocalTicketAvg", formatPreciseCurrency(snapshot.avgTicket));
+  fillText("#mphLocalQueue", `~${snapshot.queueMinutes} min`);
+  fillText("#mphLocalStaffActive", `${snapshot.staffActive} personas`);
+  setMphTrendNode("#mphLocalRevenueTrend", `${formatSignedPercent(revenueDelta)} ${comparisonCopy}`, revenueDelta);
+  setMphTrendNode("#mphLocalChartHeaderTrend", formatSignedPercent(revenueDelta), revenueDelta);
+  setMphTrendNode("#mphLocalBarsTrend", formatSignedPercent(barsDelta), barsDelta);
+  setMphTrendNode("#mphLocalTaquillaTrend", formatSignedPercent(taquillaDelta), taquillaDelta);
+  setMphTrendNode("#mphLocalOccupancyTrend", formatSignedPoints(occupancyDelta), occupancyDelta, 0.4);
+  setMphTrendNode("#mphLocalMarginTrend", formatSignedPoints(marginDelta), marginDelta, 0.2);
+  setMphBadgeNode("#mphLocalQueueStatus", queueLabel, queueTone);
+  const localDateNative = document.getElementById("mphLocalDateNative");
+  if (localDateNative instanceof HTMLInputElement) {
+    localDateNative.value = formatMphInputDate(mphLocalDetailState.selectedDate);
+    localDateNative.max = formatMphInputDate(new Date());
+  }
+  document.querySelectorAll("[data-mph-local-section]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.mphLocalSection === mphLocalDetailState.section);
+  });
+  renderMphLocalDateMenu();
+  renderMphLocalChart(snapshot, compareSnapshot);
+  renderMphLocalMap();
+}
+
+function openMphLocalDetail(venueId, date = mphLocalDetailState.selectedDate || new Date()) {
+  mphLocalDetailState.venueId = venueId;
+  mphLocalDetailState.selectedDate = normalizeMphDate(date);
+  mphLocalDetailState.section = "bars";
+  mphLocalDetailState.pointId = (mphVenueOperations[venueId]?.bars || [])[0]?.id || null;
+  renderMphLocalDetail();
 }
 
 function renderMphSheetCardList(selector, rows) {
@@ -1226,6 +1762,13 @@ const periodKeyMap = {
   const backBtn = document.getElementById("mphBackBtn");
   const categoryBackBtn = document.getElementById("mphCategoryBackBtn");
   const staffBackBtn = document.getElementById("mphStaffBackBtn");
+  const localDateTrigger = document.getElementById("mphLocalDateTrigger");
+  const localDatePickerBtn = document.getElementById("mphLocalDatePickerBtn");
+  const localDateNative = document.getElementById("mphLocalDateNative");
+  const localDateMenu = document.getElementById("mphLocalDateMenu");
+  const localCapacityInfoBtn = document.getElementById("mphLocalCapacityInfoBtn");
+  const localMap = document.getElementById("mphLocalOpsMap");
+  const localSectionTabs = [...document.querySelectorAll(".mph-local-section-tab, .mph-group-row--button[data-mph-local-section]")];
   const scopeTrigger = document.getElementById("mphScopeTrigger");
   const dateTrigger = document.getElementById("mphDateTrigger");
   const scopeMenu = document.getElementById("mphScopeMenu");
@@ -1309,8 +1852,10 @@ const periodKeyMap = {
   function closeInlineMenus() {
     scopeMenu && (scopeMenu.hidden = true);
     dateMenu && (dateMenu.hidden = true);
+    localDateMenu && (localDateMenu.hidden = true);
     scopeTrigger?.setAttribute("aria-expanded", "false");
     dateTrigger?.setAttribute("aria-expanded", "false");
+    localDateTrigger?.setAttribute("aria-expanded", "false");
   }
 
   function toggleInlineMenu(menu, triggerButton) {
@@ -1319,6 +1864,17 @@ const periodKeyMap = {
     closeInlineMenus();
     menu.hidden = !willOpen;
     triggerButton.setAttribute("aria-expanded", willOpen ? "true" : "false");
+  }
+
+  function openLocalDatePicker() {
+    if (!(localDateNative instanceof HTMLInputElement)) return;
+    closeInlineMenus();
+    if (typeof localDateNative.showPicker === "function") {
+      localDateNative.showPicker();
+      return;
+    }
+    localDateNative.focus();
+    localDateNative.click();
   }
 
   function openPreview() {
@@ -1355,6 +1911,13 @@ const periodKeyMap = {
   categoryBackBtn?.addEventListener("click", () => switchMphScreen("personal"));
   staffBackBtn?.addEventListener("click", () => switchMphScreen("category-detail"));
   stockDetailBackBtn?.addEventListener("click", () => switchMphScreen("stock"));
+  localDateTrigger?.addEventListener("click", () => toggleInlineMenu(localDateMenu, localDateTrigger));
+  localDatePickerBtn?.addEventListener("click", openLocalDatePicker);
+  localCapacityInfoBtn?.addEventListener("click", () => {
+    mphLocalDetailState.section = "aforo";
+    mphLocalDetailState.pointId = (mphVenueOperations[mphLocalDetailState.venueId]?.aforo || [])[0]?.id || null;
+    renderMphLocalDetail();
+  });
 
   const drawerOverlay = document.getElementById("mphDrawerOverlay");
   const drawer = document.getElementById("mphDrawer");
@@ -1396,6 +1959,7 @@ const periodKeyMap = {
     if (!(event.target instanceof Element)) return;
     const trigger = event.target.closest(".mph-venue-row[data-mph-goto]");
     if (!trigger) return;
+    openMphLocalDetail(trigger.dataset.mphVenueId || "kapital-madrid");
     switchMphScreen(trigger.dataset.mphGoto);
   });
 
@@ -1423,6 +1987,39 @@ const periodKeyMap = {
 
   staffTabs.forEach((tab) => {
     tab.addEventListener("click", () => switchMphStaffTab(tab.dataset.mphStaffTab || "summary", true));
+  });
+
+  localSectionTabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      mphLocalDetailState.section = tab.dataset.mphLocalSection || "bars";
+      mphLocalDetailState.pointId = (mphVenueOperations[mphLocalDetailState.venueId]?.[mphLocalDetailState.section] || [])[0]?.id || null;
+      renderMphLocalDetail();
+    });
+  });
+
+  localMap?.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return;
+    const trigger = event.target.closest("[data-mph-map-point]");
+    if (!trigger) return;
+    mphLocalDetailState.pointId = trigger.dataset.mphMapPoint;
+    renderMphLocalDetail();
+  });
+
+  localDateMenu?.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return;
+    const trigger = event.target.closest("[data-mph-local-date]");
+    if (!trigger) return;
+    mphLocalDetailState.selectedDate = normalizeMphDate(trigger.dataset.mphLocalDate);
+    closeInlineMenus();
+    renderMphLocalDetail();
+    showToast(`Fecha aplicada: ${formatMphShortDate(mphLocalDetailState.selectedDate)}.`);
+  });
+
+  localDateNative?.addEventListener("change", () => {
+    if (!(localDateNative instanceof HTMLInputElement) || !localDateNative.value) return;
+    mphLocalDetailState.selectedDate = normalizeMphDate(`${localDateNative.value}T12:00:00`);
+    renderMphLocalDetail();
+    showToast(`Fecha aplicada: ${formatMphShortDate(mphLocalDetailState.selectedDate)}.`);
   });
 
   document.querySelectorAll(".mph-stock-tab").forEach((tab) => {
@@ -1534,14 +2131,17 @@ const periodKeyMap = {
     if (
       scopeMenu?.contains(event.target) ||
       dateMenu?.contains(event.target) ||
+      localDateMenu?.contains(event.target) ||
       scopeTrigger?.contains(event.target) ||
-      dateTrigger?.contains(event.target)
+      dateTrigger?.contains(event.target) ||
+      localDateTrigger?.contains(event.target)
     ) return;
     closeInlineMenus();
   });
 
   applyVenuePeriod(activeVenuePeriod, false);
   updatePanelData("global", "today");
+  openMphLocalDetail("kapital-madrid");
   renderMphCategoryTable();
   openMphCategoryDetail("barra", false);
   renderMphStaffSheet("carlos");

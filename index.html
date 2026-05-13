@@ -164,6 +164,10 @@
       <header class="desktop-topbar">
         <div class="desktop-header-left"><span class="desktop-logo">OPSNIGHT</span><button class="venue-chip js-action" type="button"><span class="material-symbols-outlined">storefront</span>Kapital Madrid<span class="material-symbols-outlined small-symbol">expand_more</span></button></div>
         <div class="desktop-header-right">
+          <button class="mobile-mode-btn" id="mobileModeTrigger" type="button">
+            <span class="material-symbols-outlined">smartphone</span>
+            Modo App
+          </button>
           <div class="access-switcher">
             <button class="access-switcher-trigger" id="accessSwitcherTrigger" type="button" aria-expanded="false" aria-controls="accessSwitcherMenu">
               <span class="material-symbols-outlined">switch_account</span>
@@ -1420,7 +1424,7 @@
             <section class="mph-screen" data-mph-screen="local-detail">
               <div class="mph-topbar">
                 <button class="mph-icon-btn mph-back-btn" id="mphBackBtn" type="button"><span class="material-symbols-outlined">arrow_back</span></button>
-                <h1>Kapital Madrid</h1>
+                <h1 id="mphLocalTitle">Kapital Madrid</h1>
                 <button class="mph-icon-btn" type="button"><span class="material-symbols-outlined">more_horiz</span></button>
               </div>
               <div class="mph-content">
@@ -1429,108 +1433,115 @@
                   <span>Live update</span>
                   <span class="mph-updated">Actualizado ahora</span>
                 </div>
-                <div class="mph-date-row">
-                  <span class="mph-date-pill">Hoy, 24 may <span class="material-symbols-outlined">calendar_today</span></span>
+                <div class="mph-date-row mph-date-row--local">
+                  <button class="mph-date-pill mph-date-pill--interactive" id="mphLocalDateTrigger" type="button" aria-expanded="false">
+                    <span id="mphLocalDateLabel">mié, 13 may</span>
+                    <span class="material-symbols-outlined">expand_more</span>
+                  </button>
+                  <button class="mph-date-mini-btn" id="mphLocalDatePickerBtn" type="button">
+                    <span class="material-symbols-outlined">calendar_month</span>
+                    <span>Elegir</span>
+                  </button>
+                  <input class="mph-native-date-input" id="mphLocalDateNative" type="date" aria-hidden="true" tabindex="-1">
+                </div>
+                <div class="mph-inline-menu-wrap mph-inline-menu-wrap--local">
+                  <div class="mph-inline-menu mph-inline-menu--date" id="mphLocalDateMenu" hidden></div>
                 </div>
                 <div class="mph-hero-block">
-                  <p class="mph-label">Facturación (hoy)</p>
-                  <strong class="mph-hero-num">€42,890.00</strong>
+                  <p class="mph-label">Facturación del día seleccionado</p>
+                  <strong class="mph-hero-num" id="mphLocalRevenue">€42,890</strong>
                   <div class="mph-trend-row">
-                    <span class="mph-trend up"><span class="material-symbols-outlined">arrow_upward</span>15.6% (€5,780.00)</span>
-                    <span class="mph-trend-label">vs ayer</span>
+                    <span class="mph-trend up" id="mphLocalRevenueTrend"><span class="material-symbols-outlined">arrow_upward</span><span id="mphLocalChartTrendText">+12.4% vs viernes equivalente</span></span>
                   </div>
+                  <span class="mph-trend-label" id="mphLocalCompareNote">vs viernes equivalente · 2a semana de mayo 2025</span>
                 </div>
                 <div class="mph-two-col">
                   <div class="mph-metric-box">
                     <p class="mph-label">Ingresos barras</p>
-                    <strong>€26,450</strong>
-                    <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>13.2%</span>
+                    <strong id="mphLocalBarsRevenue">€26,450</strong>
+                    <span class="mph-trend-sm up" id="mphLocalBarsTrend"><span class="material-symbols-outlined">arrow_upward</span>13.2%</span>
                   </div>
                   <div class="mph-metric-box">
                     <p class="mph-label">Ingresos taquilla</p>
-                    <strong>€16,440</strong>
-                    <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>18.3%</span>
+                    <strong id="mphLocalTaquillaRevenue">€16,440</strong>
+                    <span class="mph-trend-sm up" id="mphLocalTaquillaTrend"><span class="material-symbols-outlined">arrow_upward</span>18.3%</span>
                   </div>
                 </div>
                 <div class="mph-two-col">
                   <div class="mph-metric-box">
                     <p class="mph-label">Ocupación</p>
-                    <strong>78%</strong>
-                    <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>6 pp</span>
+                    <strong id="mphLocalOccupancy">78%</strong>
+                    <span class="mph-trend-sm up" id="mphLocalOccupancyTrend"><span class="material-symbols-outlined">arrow_upward</span>6 pp</span>
                   </div>
                   <div class="mph-metric-box">
                     <p class="mph-label">Margen operativo</p>
-                    <strong>28.4%</strong>
-                    <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>3.1 pp</span>
+                    <strong id="mphLocalMarginMetric">28.4%</strong>
+                    <span class="mph-trend-sm up" id="mphLocalMarginTrend"><span class="material-symbols-outlined">arrow_upward</span>3.1 pp</span>
                   </div>
                 </div>
 
                 <div class="mph-chart-card">
                   <div class="mph-chart-header">
                     <p class="mph-label" style="margin:0">Evolución facturación</p>
-                    <span class="mph-trend up" style="font-size:11px"><span class="material-symbols-outlined">arrow_upward</span>15.6% vs ayer</span>
+                    <span class="mph-trend up" id="mphLocalChartHeaderTrend" style="font-size:11px"><span class="material-symbols-outlined">arrow_upward</span><span id="mphLocalChartTrendTextHeader">+12.4%</span></span>
                   </div>
-                  <svg class="mph-chart-svg" viewBox="0 0 300 100" preserveAspectRatio="none">
-                    <defs>
-                      <linearGradient id="mphChartGrad2" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#34c759" stop-opacity="0.18"/>
-                        <stop offset="100%" stop-color="#34c759" stop-opacity="0"/>
-                      </linearGradient>
-                    </defs>
-                    <!-- grid lines (chart area: x=32–298, y=6–68) -->
-                    <line x1="32" y1="68" x2="298" y2="68" stroke="#f0f0f2" stroke-width="0.8"/>
-                    <line x1="32" y1="47" x2="298" y2="47" stroke="#f0f0f2" stroke-width="0.8"/>
-                    <line x1="32" y1="27" x2="298" y2="27" stroke="#f0f0f2" stroke-width="0.8"/>
-                    <line x1="32" y1="6"  x2="298" y2="6"  stroke="#f0f0f2" stroke-width="0.8"/>
-                    <!-- y-axis labels -->
-                    <text x="28" y="71" font-size="8" fill="#c7c7cc" font-family="-apple-system,sans-serif" text-anchor="end">0</text>
-                    <text x="28" y="50" font-size="8" fill="#c7c7cc" font-family="-apple-system,sans-serif" text-anchor="end">20K</text>
-                    <text x="28" y="30" font-size="8" fill="#c7c7cc" font-family="-apple-system,sans-serif" text-anchor="end">40K</text>
-                    <text x="28" y="9"  font-size="8" fill="#c7c7cc" font-family="-apple-system,sans-serif" text-anchor="end">60K</text>
-                    <!-- data line (smooth bezier) -->
-                    <path d="M32,67 C60,64 80,60 105,55 S145,43 170,34 S215,16 250,10 S280,6 298,4" stroke="#34c759" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M32,67 C60,64 80,60 105,55 S145,43 170,34 S215,16 250,10 S280,6 298,4 L298,68 L32,68 Z" fill="url(#mphChartGrad2)"/>
-                    <!-- x-axis labels -->
-                    <text x="32"  y="82" font-size="8" fill="#c7c7cc" font-family="-apple-system,sans-serif" text-anchor="middle">00:00</text>
-                    <text x="98"  y="82" font-size="8" fill="#c7c7cc" font-family="-apple-system,sans-serif" text-anchor="middle">06:00</text>
-                    <text x="165" y="82" font-size="8" fill="#c7c7cc" font-family="-apple-system,sans-serif" text-anchor="middle">12:00</text>
-                    <text x="231" y="82" font-size="8" fill="#c7c7cc" font-family="-apple-system,sans-serif" text-anchor="middle">18:00</text>
-                    <text x="298" y="82" font-size="8" fill="#c7c7cc" font-family="-apple-system,sans-serif" text-anchor="middle">00:00</text>
-                  </svg>
+                  <svg class="mph-chart-svg" id="mphLocalChart" viewBox="0 0 300 100" preserveAspectRatio="none"></svg>
                 </div>
 
                 <!-- Desglose ingresos -->
                 <div class="mph-section-group">
                   <p class="mph-section-title">Desglose ingresos</p>
                   <div class="mph-group-card">
-                    <div class="mph-group-row">
+                    <button class="mph-group-row mph-group-row--button" type="button" data-mph-local-section="bars">
                       <span class="mph-group-row-label">Barras</span>
                       <div class="mph-group-row-right">
-                        <span class="mph-group-row-value">€26,450</span>
-                        <span class="mph-group-row-badge up">↑13.2%</span>
+                        <span class="mph-group-row-value" id="mphLocalBarsRowValue">€26,450</span>
+                        <span class="mph-group-row-badge up">Mapa</span>
+                        <span class="material-symbols-outlined mph-group-row-icon">chevron_right</span>
                       </div>
-                    </div>
-                    <div class="mph-group-row">
+                    </button>
+                    <button class="mph-group-row mph-group-row--button" type="button" data-mph-local-section="taquilla">
                       <span class="mph-group-row-label">Taquilla</span>
                       <div class="mph-group-row-right">
-                        <span class="mph-group-row-value">€16,440</span>
-                        <span class="mph-group-row-badge up">↑18.3%</span>
+                        <span class="mph-group-row-value" id="mphLocalTaquillaRowValue">€16,440</span>
+                        <span class="mph-group-row-badge neutral">Terminales</span>
+                        <span class="material-symbols-outlined mph-group-row-icon">chevron_right</span>
                       </div>
-                    </div>
-                    <div class="mph-group-row">
+                    </button>
+                    <button class="mph-group-row mph-group-row--button" type="button" data-mph-local-section="vip">
                       <span class="mph-group-row-label">VIP / Reservados</span>
                       <div class="mph-group-row-right">
-                        <span class="mph-group-row-value">€8,200</span>
-                        <span class="mph-group-row-badge up">↑5.1%</span>
+                        <span class="mph-group-row-value" id="mphLocalVipRowValue">€8,200</span>
+                        <span class="mph-group-row-badge neutral">Mesas</span>
+                        <span class="material-symbols-outlined mph-group-row-icon">chevron_right</span>
                       </div>
-                    </div>
-                    <div class="mph-group-row">
+                    </button>
+                    <button class="mph-group-row mph-group-row--button" type="button" data-mph-local-section="guardarropia">
                       <span class="mph-group-row-label">Guardarropa / Otros</span>
                       <div class="mph-group-row-right">
-                        <span class="mph-group-row-value">€1,800</span>
-                        <span class="mph-group-row-badge neutral">—</span>
+                        <span class="mph-group-row-value" id="mphLocalGuardarropiaRowValue">€1,800</span>
+                        <span class="mph-group-row-badge neutral">Detalle</span>
+                        <span class="material-symbols-outlined mph-group-row-icon">chevron_right</span>
                       </div>
-                    </div>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="mph-section-group">
+                  <div class="mph-local-section-head">
+                    <p class="mph-section-title">Mapa operativo interactivo</p>
+                    <span class="mph-local-section-caption">Pulsa una barra, taquilla o acceso para ver terminal, banco y cuenta</span>
+                  </div>
+                  <div class="mph-local-section-tabs">
+                    <button class="mph-local-section-tab active" type="button" data-mph-local-section="bars">Barras</button>
+                    <button class="mph-local-section-tab" type="button" data-mph-local-section="taquilla">Taquilla</button>
+                    <button class="mph-local-section-tab" type="button" data-mph-local-section="vip">VIP</button>
+                    <button class="mph-local-section-tab" type="button" data-mph-local-section="guardarropia">Guardarropía</button>
+                    <button class="mph-local-section-tab" type="button" data-mph-local-section="aforo">Aforo</button>
+                  </div>
+                  <div class="mph-local-map-card">
+                    <div class="mph-local-map" id="mphLocalOpsMap"></div>
+                    <div class="mph-local-spotlight-card" id="mphLocalOpsDetail"></div>
                   </div>
                 </div>
 
@@ -1540,29 +1551,35 @@
                   <div class="mph-group-card">
                     <div class="mph-group-row">
                       <span class="mph-group-row-label">Aforo legal</span>
-                      <span class="mph-group-row-value">2,100</span>
+                      <div class="mph-group-row-right">
+                        <span class="mph-group-row-value" id="mphLocalLegalCapacity">2,100</span>
+                        <button class="mph-inline-info-btn" id="mphLocalCapacityInfoBtn" type="button">
+                          <span class="material-symbols-outlined">query_stats</span>
+                          <span>Ver control</span>
+                        </button>
+                      </div>
                     </div>
                     <div class="mph-group-row">
                       <span class="mph-group-row-label">Aforo real</span>
                       <div class="mph-group-row-right">
-                        <span class="mph-group-row-value">1,638</span>
-                        <span class="mph-group-row-badge up">78%</span>
+                        <span class="mph-group-row-value" id="mphLocalRealCapacity">1,638</span>
+                        <span class="mph-group-row-badge up" id="mphLocalRealCapacityPct">78%</span>
                       </div>
                     </div>
                     <div class="mph-group-row">
                       <span class="mph-group-row-label">Ticket medio</span>
-                      <span class="mph-group-row-value">€26.18</span>
+                      <span class="mph-group-row-value" id="mphLocalTicketAvg">€26</span>
                     </div>
                     <div class="mph-group-row">
                       <span class="mph-group-row-label">Cola puerta</span>
                       <div class="mph-group-row-right">
-                        <span class="mph-group-row-value">~14 min</span>
-                        <span class="mph-group-row-badge neutral">Normal</span>
+                        <span class="mph-group-row-value" id="mphLocalQueue">~14 min</span>
+                        <span class="mph-group-row-badge neutral" id="mphLocalQueueStatus">Normal</span>
                       </div>
                     </div>
                     <div class="mph-group-row">
                       <span class="mph-group-row-label">Staff activo</span>
-                      <span class="mph-group-row-value">42 personas</span>
+                      <span class="mph-group-row-value" id="mphLocalStaffActive">42 personas</span>
                     </div>
                   </div>
                 </div>
