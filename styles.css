@@ -642,7 +642,8 @@ html.dark .mobile-mode-btn:hover { background: var(--primary); color: #000; bord
   justify-content: center;
   gap: 3px;
   padding: 14px 18px;
-  background: #f5f5f7;
+  background: #ffffff;
+  border: 1px solid #000000;
   border-radius: 16px;
   min-width: 88px;
   flex-shrink: 0;
