@@ -24,10 +24,34 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <section class="mph-auth-gate" id="authGate" aria-label="Acceso con Supabase">
+      <div class="mph-auth-backdrop"></div>
+      <div class="mph-auth-card">
+        <div class="mph-auth-copy">
+          <span class="mph-auth-eyebrow">Supabase Auth</span>
+          <h1>Accede a OPSNIGHT</h1>
+          <p id="authStatus">Inicia sesión con uno de los perfiles que vas a crear en Supabase Auth.</p>
+        </div>
+        <form class="mph-auth-form" id="authForm">
+          <label class="mph-auth-field">
+            <span>Email</span>
+            <input id="authEmail" type="email" name="email" autocomplete="email" placeholder="equipo@opsnight.app" required />
+          </label>
+          <label class="mph-auth-field">
+            <span>Contraseña</span>
+            <input id="authPassword" type="password" name="password" autocomplete="current-password" placeholder="••••••••" required />
+          </label>
+          <button class="mph-auth-submit" id="authSubmit" type="submit">Entrar</button>
+          <p class="mph-auth-error" id="authError" hidden></p>
+          <div class="mph-auth-roles" id="authRoles" hidden></div>
+        </form>
+      </div>
+    </section>
+
     <section class="mobile-owner" aria-label="OPSNIGHT mobile owner dashboard">
       <header class="mobile-topbar glass-header">
         <div class="mobile-brand">
-          <div class="profile-avatar"><span>PG</span></div>
+          <div class="profile-avatar" id="mobileAuthAvatar"><span>PG</span></div>
           <h1>OPSNIGHT</h1>
         </div>
         <button class="icon-only settings-trigger" type="button" aria-label="Ajustes"><span class="material-symbols-outlined">tune</span></button>
@@ -178,12 +202,13 @@
               <button class="access-option active" type="button" data-access="director"><span class="material-symbols-outlined">shield</span><div><strong>Director</strong><small>Overview general</small></div></button>
               <button class="access-option" type="button" data-access="barra"><span class="material-symbols-outlined">point_of_sale</span><div><strong>Barra TPV</strong><small>Cobro barra conversacional</small></div></button>
               <button class="access-option" type="button" data-access="taquilla"><span class="material-symbols-outlined">confirmation_number</span><div><strong>Taquilla</strong><small>Entradas y control puerta</small></div></button>
+              <button class="access-option" type="button" data-access="guardarropia"><span class="material-symbols-outlined">checkroom</span><div><strong>Guardarropía</strong><small>Tickets y recogidas</small></div></button>
               <button class="access-option" type="button" data-access="vip"><span class="material-symbols-outlined">liquor</span><div><strong>VIP</strong><small>Mesa, botellas y sala</small></div></button>
               <button class="access-option" type="button" data-access="office"><span class="material-symbols-outlined">receipt_long</span><div><strong>Office</strong><small>Finanzas y cierre</small></div></button>
             </div>
           </div>
           <button class="language-button js-action" type="button">Español</button>
-          <div class="header-actions"><button class="material-symbols-outlined js-action" type="button" aria-label="Notificaciones">notifications</button><button class="material-symbols-outlined settings-trigger" type="button" aria-label="Ajustes">settings</button><div class="desktop-avatar">PG</div></div>
+          <div class="header-actions"><button class="material-symbols-outlined js-action" type="button" aria-label="Notificaciones">notifications</button><button class="material-symbols-outlined settings-trigger" type="button" aria-label="Ajustes">settings</button><div class="desktop-avatar" id="desktopAuthAvatar">PG</div></div>
         </div>
       </header>
 
@@ -195,7 +220,7 @@
           <a href="#" data-page="personal"><span class="material-symbols-outlined">groups</span>Personal</a>
           <a href="#" data-page="inventario"><span class="material-symbols-outlined">inventory_2</span>Stock</a>
         </nav>
-        <div class="sidebar-footer"><a href="#"><span class="material-symbols-outlined">help</span>Soporte</a><a href="#"><span class="material-symbols-outlined">logout</span>Cerrar Sesión</a></div>
+        <div class="sidebar-footer"><a href="#"><span class="material-symbols-outlined">help</span>Soporte</a><a href="#" data-auth-logout><span class="material-symbols-outlined">logout</span>Cerrar Sesión</a></div>
       </aside>
 
       <main class="desktop-main">
@@ -531,8 +556,8 @@
                 <div class="tpv-ticket-items" id="tpvTicketItems"></div>
                 <div class="tpv-empty-state" id="tpvEmptyState">Pulsa un producto o entrada para añadirlo al ticket.</div>
                 <div class="tpv-payment-grid">
-                  <button class="tpv-pay-card js-action" type="button"><span class="material-symbols-outlined">credit_card</span>Tarjeta</button>
-                  <button class="tpv-pay-cash js-action" type="button"><span class="material-symbols-outlined">payments</span>Efectivo</button>
+                  <button class="tpv-pay-card" id="tpvPayCardButton" type="button"><span class="material-symbols-outlined">credit_card</span>Tarjeta</button>
+                  <button class="tpv-pay-cash" id="tpvPayCashButton" type="button"><span class="material-symbols-outlined">payments</span>Efectivo</button>
                 </div>
                 <button class="tpv-clear-button" id="tpvClearButton" type="button">Vaciar ticket</button>
               </aside>
@@ -547,6 +572,7 @@
                     <div class="tpv-segmented">
                       <button class="active" type="button" data-pos-catalog="taquilla">Taquilla</button>
                       <button type="button" data-pos-catalog="barra">Catálogo</button>
+                      <button type="button" data-pos-catalog="guardarropia">Guardarropía</button>
                     </div>
                     <div class="tpv-filter-bar">
                       <span>Ordenar</span>
@@ -863,6 +889,44 @@
                     <button type="button" data-mph-date="Ayer, 23 may">Ayer, 23 may</button>
                     <button type="button" data-mph-date="Últimos 7 días">Últimos 7 días</button>
                     <button type="button" data-mph-date="Mes actual">Mes actual</button>
+                  </div>
+                </div>
+                <div class="mph-quick-access-card">
+                  <div class="mph-card-head mph-card-head--compact">
+                    <p class="mph-section-title mph-section-title--caps">Accesos rápidos</p>
+                    <span class="mph-quick-access-note">Entrar directo</span>
+                  </div>
+                  <div class="mph-quick-access-grid">
+                    <button class="mph-quick-access-btn" type="button" data-mph-panel-access="bars">
+                      <span class="material-symbols-outlined">sports_bar</span>
+                      <strong>Barras</strong>
+                      <small>TPV barra</small>
+                    </button>
+                    <button class="mph-quick-access-btn" type="button" data-mph-panel-access="taquilla">
+                      <span class="material-symbols-outlined">confirmation_number</span>
+                      <strong>Taquilla</strong>
+                      <small>Entradas</small>
+                    </button>
+                    <button class="mph-quick-access-btn" type="button" data-mph-panel-access="vip">
+                      <span class="material-symbols-outlined">diamond</span>
+                      <strong>VIP</strong>
+                      <small>Mesas</small>
+                    </button>
+                    <button class="mph-quick-access-btn" type="button" data-mph-panel-access="guardarropia">
+                      <span class="material-symbols-outlined">checkroom</span>
+                      <strong>Guardarropía</strong>
+                      <small>Tickets</small>
+                    </button>
+                    <button class="mph-quick-access-btn" type="button" data-mph-panel-access="aforo">
+                      <span class="material-symbols-outlined">how_to_reg</span>
+                      <strong>Aforo</strong>
+                      <small>Pica</small>
+                    </button>
+                    <button class="mph-quick-access-btn" type="button" data-mph-panel-access="finanzas">
+                      <span class="material-symbols-outlined">monitoring</span>
+                      <strong>Finanzas</strong>
+                      <small>Office</small>
+                    </button>
                   </div>
                 </div>
                 <div class="mph-hero-block">
@@ -1235,77 +1299,12 @@
                   </div>
                 </div>
                 <div class="mph-stock-tabs">
-                  <button class="mph-stock-tab active" type="button">Crítico <span class="mph-badge mph-badge--red">3</span></button>
-                  <button class="mph-stock-tab" type="button">Bajo <span class="mph-badge mph-badge--amber">7</span></button>
-                  <button class="mph-stock-tab" type="button">Todos</button>
+                  <button class="mph-stock-tab active" type="button" data-stock-filter="critical">Crítico <span class="mph-badge mph-badge--red">3</span></button>
+                  <button class="mph-stock-tab" type="button" data-stock-filter="low">Bajo <span class="mph-badge mph-badge--amber">7</span></button>
+                  <button class="mph-stock-tab" type="button" data-stock-filter="all">Todos</button>
                 </div>
                 <div class="mph-stock-search-empty" id="mphStockEmpty">Sin resultados para esa búsqueda.</div>
-                <div class="mph-stock-list">
-                  <div class="mph-stock-item critical" data-product-id="grey-goose" style="cursor:pointer">
-                    <div class="mph-product-accent"></div>
-                    <div class="mph-product-img">
-                      <img alt="Grey Goose Vodka" src="https://www.pngplay.com/wp-content/uploads/15/Grey-Goose-Vodka-Transparent-Images.png"/>
-                    </div>
-                    <div class="mph-product-info">
-                      <div class="mph-product-header">
-                        <div><strong>Grey Goose</strong><small>Vodka · Kapital Madrid</small></div>
-                        <span class="material-symbols-outlined mph-warning-icon">warning</span>
-                      </div>
-                      <div class="mph-product-stock">
-                        <div><small>Stock actual</small><b class="mph-critical-val">8 botellas</b></div>
-                        <div><small>Mínimo</small><b>20 botellas</b></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="mph-stock-item critical" data-product-id="moet-chandon" style="cursor:pointer">
-                    <div class="mph-product-accent"></div>
-                    <div class="mph-product-img">
-                      <img alt="Moet & Chandon Brut" src="https://www.pngplay.com/wp-content/uploads/15/Moet-Chandon-Brut-Imperial-PNG-Free-File-Download.png"/>
-                    </div>
-                    <div class="mph-product-info">
-                      <div class="mph-product-header">
-                        <div><strong>Moët & Chandon</strong><small>Champagne · Pacha Ibiza</small></div>
-                        <span class="material-symbols-outlined mph-warning-icon">warning</span>
-                      </div>
-                      <div class="mph-product-stock">
-                        <div><small>Stock actual</small><b class="mph-critical-val">6 botellas</b></div>
-                        <div><small>Mínimo</small><b>15 botellas</b></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="mph-stock-item critical" data-product-id="johnnie-walker" style="cursor:pointer">
-                    <div class="mph-product-accent"></div>
-                    <div class="mph-product-img">
-                      <img alt="Johnnie Walker Black Label" src="https://upload.wikimedia.org/wikipedia/commons/2/21/Johnnie_Walker_Black_Label.jpg"/>
-                    </div>
-                    <div class="mph-product-info">
-                      <div class="mph-product-header">
-                        <div><strong>Johnnie Walker</strong><small>Black Label · Opium Barcelona</small></div>
-                        <span class="material-symbols-outlined mph-warning-icon">warning</span>
-                      </div>
-                      <div class="mph-product-stock">
-                        <div><small>Stock actual</small><b class="mph-critical-val">10 botellas</b></div>
-                        <div><small>Mínimo</small><b>25 botellas</b></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="mph-stock-item low" data-product-id="bombay-sapphire" style="cursor:pointer">
-                    <div class="mph-product-accent"></div>
-                    <div class="mph-product-img">
-                      <img alt="Bombay Sapphire Gin" src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Bombay-sapphire.jpg"/>
-                    </div>
-                    <div class="mph-product-info">
-                      <div class="mph-product-header">
-                        <div><strong>Bombay Sapphire</strong><small>Gin · Kapital Madrid</small></div>
-                        <span class="material-symbols-outlined mph-warning-icon mph-warning-icon--amber">warning</span>
-                      </div>
-                      <div class="mph-product-stock">
-                        <div><small>Stock actual</small><b>28 botellas</b></div>
-                        <div><small>Mínimo</small><b>20 botellas</b></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <div class="mph-stock-list"></div>
               </div>
               <div class="mph-stock-cta">
                 <button class="mph-cta-btn js-action" type="button">
@@ -1586,6 +1585,22 @@
               </div>
             </section>
 
+            <section class="mph-screen" data-mph-screen="role-view">
+              <div class="mph-topbar">
+                <button class="mph-icon-btn mph-back-btn" id="mphRoleBackBtn" type="button"><span class="material-symbols-outlined">arrow_back</span></button>
+                <h1 id="mphRoleTitle">Vista operativa</h1>
+                <button class="mph-icon-btn" type="button"><span class="material-symbols-outlined">apps</span></button>
+              </div>
+              <div class="mph-content">
+                <div class="mph-live-row">
+                  <span class="mph-live-dot"></span>
+                  <span id="mphRoleVenueLabel">Kapital Madrid</span>
+                  <span class="mph-updated" id="mphRoleSubtitle">Operativa en directo</span>
+                </div>
+                <div id="mphRoleViewContent"></div>
+              </div>
+            </section>
+
             <!-- Pantalla: Finanzas -->
             <section class="mph-screen" data-mph-screen="finanzas">
               <div class="mph-topbar">
@@ -1595,19 +1610,67 @@
               </div>
               <div class="mph-content">
                 <div class="mph-tab-row">
-                  <button class="mph-tab active" type="button">Hoy</button>
-                  <button class="mph-tab" type="button">7 días</button>
-                  <button class="mph-tab" type="button">30 días</button>
-                  <button class="mph-tab" type="button">MTD</button>
+                  <button class="mph-tab active" type="button" data-mph-finance-period="today">Hoy</button>
+                  <button class="mph-tab" type="button" data-mph-finance-period="7d">7 días</button>
+                  <button class="mph-tab" type="button" data-mph-finance-period="30d">30 días</button>
+                  <button class="mph-tab" type="button" data-mph-finance-period="mtd">MTD</button>
+                </div>
+                <div class="mph-date-row mph-date-row--local">
+                  <button class="mph-date-pill mph-date-pill--interactive" id="mphFinanceDateTrigger" type="button">
+                    <span id="mphFinanceDateLabel">sáb, 24 may</span>
+                    <span class="material-symbols-outlined">calendar_today</span>
+                  </button>
+                  <button class="mph-date-mini-btn" id="mphFinanceDatePickerBtn" type="button">
+                    <span class="material-symbols-outlined">calendar_month</span>
+                    <span>Elegir</span>
+                  </button>
+                  <input class="mph-native-date-input" id="mphFinanceDateNative" type="date" aria-hidden="true" tabindex="-1">
                 </div>
 
                 <!-- Hero P&L -->
                 <div class="mph-hero-block">
-                  <p class="mph-label">Resultado operativo (hoy)</p>
-                  <strong class="mph-hero-num">€38,420.00</strong>
+                  <p class="mph-label" id="mphFinanceHeroLabel">Resultado operativo (hoy)</p>
+                  <strong class="mph-hero-num" id="mphFinanceHeroValue">€38,420.00</strong>
                   <div class="mph-trend-row">
-                    <span class="mph-trend up"><span class="material-symbols-outlined">arrow_upward</span>9.2% (€3,230.00)</span>
-                    <span class="mph-trend-label">vs ayer</span>
+                    <span class="mph-trend up" id="mphFinanceHeroTrend"><span class="material-symbols-outlined">arrow_upward</span><span id="mphFinanceHeroTrendText">9.2% (€3,230.00)</span></span>
+                    <span class="mph-trend-label" id="mphFinanceHeroVsLabel">vs ayer</span>
+                  </div>
+                </div>
+
+                <div class="mph-section-group">
+                  <p class="mph-section-title">Señales clave</p>
+                  <div class="mph-finance-summary-grid">
+                    <article class="mph-finance-mini-card">
+                      <small>Facturación neta</small>
+                      <strong id="mphFinanceNetRevenueValue">€138,420</strong>
+                      <span id="mphFinanceNetRevenueNote">Sin devoluciones ni fees.</span>
+                    </article>
+                    <article class="mph-finance-mini-card">
+                      <small>EBITDA sesión</small>
+                      <strong id="mphFinanceSessionMarginValue">34.2%</strong>
+                      <span id="mphFinanceSessionMarginNote">+2.4 pp vs tramo anterior.</span>
+                    </article>
+                    <article class="mph-finance-mini-card">
+                      <small>Cash disponible</small>
+                      <strong id="mphFinanceCashValue">€86.2K</strong>
+                      <span id="mphFinanceCashNote">Liquidación instantánea.</span>
+                    </article>
+                    <article class="mph-finance-mini-card mph-finance-mini-card--warning">
+                      <small>Pagos pendientes</small>
+                      <strong id="mphFinancePendingPaymentsValue">€18.7K</strong>
+                      <span id="mphFinancePendingPaymentsNote">Facturas y proveedores.</span>
+                    </article>
+                  </div>
+                </div>
+
+                <div class="mph-section-group">
+                  <p class="mph-section-title">Ecuación rápida</p>
+                  <div class="mph-finance-equation">
+                    <span>Ventas <b id="mphFinanceEquationRevenue">€142,890</b></span>
+                    <span>Producto <b id="mphFinanceEquationProduct">-€32,570</b></span>
+                    <span>Personal <b id="mphFinanceEquationStaff">-€8,920</b></span>
+                    <span>Fees <b id="mphFinanceEquationFees">-€1,820</b></span>
+                    <span>Otros <b id="mphFinanceEquationOther">-€640</b></span>
                   </div>
                 </div>
 
@@ -1618,37 +1681,88 @@
                     <div class="mph-group-row">
                       <span class="mph-group-row-label">Ingresos totales</span>
                       <div class="mph-group-row-right">
-                        <span class="mph-group-row-value">€142,890</span>
-                        <span class="mph-group-row-badge up">↑12.4%</span>
+                        <span class="mph-group-row-value" id="mphFinanceRevenueValue">€142,890</span>
+                        <span class="mph-group-row-badge up" id="mphFinanceRevenueBadge">↑12.4%</span>
                       </div>
                     </div>
                     <div class="mph-group-row">
                       <span class="mph-group-row-label">Coste de ventas</span>
                       <div class="mph-group-row-right">
-                        <span class="mph-group-row-value">€28,580</span>
-                        <span class="mph-group-row-badge neutral">20.0%</span>
+                        <span class="mph-group-row-value" id="mphFinanceCostSalesValue">€28,580</span>
+                        <span class="mph-group-row-badge neutral" id="mphFinanceCostSalesBadge">20.0%</span>
                       </div>
                     </div>
                     <div class="mph-group-row">
                       <span class="mph-group-row-label">Margen bruto</span>
                       <div class="mph-group-row-right">
-                        <span class="mph-group-row-value">€114,310</span>
-                        <span class="mph-group-row-badge up">80.0%</span>
+                        <span class="mph-group-row-value" id="mphFinanceGrossMarginValue">€114,310</span>
+                        <span class="mph-group-row-badge up" id="mphFinanceGrossMarginBadge">80.0%</span>
                       </div>
                     </div>
                     <div class="mph-group-row">
                       <span class="mph-group-row-label">Costes operativos</span>
                       <div class="mph-group-row-right">
-                        <span class="mph-group-row-value">€75,890</span>
-                        <span class="mph-group-row-badge neutral">53.1%</span>
+                        <span class="mph-group-row-value" id="mphFinanceOperatingCostsValue">€75,890</span>
+                        <span class="mph-group-row-badge neutral" id="mphFinanceOperatingCostsBadge">53.1%</span>
                       </div>
                     </div>
                     <div class="mph-group-row mph-finanzas-result-row">
                       <span class="mph-group-row-label" style="font-weight:700;color:#1c1c1e">EBITDA</span>
                       <div class="mph-group-row-right">
-                        <span class="mph-group-row-value" style="font-weight:800">€38,420</span>
-                        <span class="mph-group-row-badge up">26.9%</span>
+                        <span class="mph-group-row-value" id="mphFinanceEbitdaValue" style="font-weight:800">€38,420</span>
+                        <span class="mph-group-row-badge up" id="mphFinanceEbitdaBadge">26.9%</span>
                       </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mph-section-group">
+                  <div class="mph-finance-section-head">
+                    <p class="mph-section-title">P&L en tiempo real</p>
+                    <span class="mph-finance-inline-action">Ajustar costes</span>
+                  </div>
+                  <div class="mph-group-card">
+                    <div class="mph-group-row">
+                      <div class="mph-staff-info">
+                        <span class="mph-group-row-label">Ingresos barras</span>
+                        <span class="mph-staff-sub">TPV, QR y cashless</span>
+                      </div>
+                      <span class="mph-group-row-value" id="mphFinanceBarsValue">€98,420</span>
+                    </div>
+                    <div class="mph-group-row">
+                      <div class="mph-staff-info">
+                        <span class="mph-group-row-label">Ingresos taquilla</span>
+                        <span class="mph-staff-sub">Walk-in, anticipadas y upgrades VIP</span>
+                      </div>
+                      <span class="mph-group-row-value" id="mphFinanceTaquillaValue">€44,470</span>
+                    </div>
+                    <div class="mph-group-row">
+                      <div class="mph-staff-info">
+                        <span class="mph-group-row-label">Coste de producto</span>
+                        <span class="mph-staff-sub">Escandallos cerrados desde Stock</span>
+                      </div>
+                      <span class="mph-group-row-value" id="mphFinanceProductCostValue">-€32,570</span>
+                    </div>
+                    <div class="mph-group-row">
+                      <div class="mph-staff-info">
+                        <span class="mph-group-row-label">Coste personal</span>
+                        <span class="mph-staff-sub" id="mphFinanceStaffCostNote">46 fichados · coste vivo €812/h</span>
+                      </div>
+                      <span class="mph-group-row-value" id="mphFinanceStaffRowValue">-€8,920</span>
+                    </div>
+                    <div class="mph-group-row">
+                      <div class="mph-staff-info">
+                        <span class="mph-group-row-label">Comisiones pago</span>
+                        <span class="mph-staff-sub">NFC, QR, cashless y adquirencia</span>
+                      </div>
+                      <span class="mph-group-row-value" id="mphFinanceFeesValue">-€1,820</span>
+                    </div>
+                    <div class="mph-group-row">
+                      <div class="mph-staff-info">
+                        <span class="mph-group-row-label">Otros operativos</span>
+                        <span class="mph-staff-sub">Incidencias, reposición y soportes</span>
+                      </div>
+                      <span class="mph-group-row-value" id="mphFinanceOtherValue">-€640</span>
                     </div>
                   </div>
                 </div>
@@ -1660,36 +1774,36 @@
                     <div class="mph-group-row">
                       <span class="mph-group-row-label">Personal</span>
                       <div class="mph-group-row-right">
-                        <span class="mph-group-row-value">€9,840</span>
-                        <span class="mph-group-row-badge neutral">6.9%</span>
+                        <span class="mph-group-row-value" id="mphFinanceStaffCostValue">€9,840</span>
+                        <span class="mph-group-row-badge neutral" id="mphFinanceStaffCostBadge">6.9%</span>
                       </div>
                     </div>
                     <div class="mph-group-row">
                       <span class="mph-group-row-label">Proveedores / Stock</span>
                       <div class="mph-group-row-right">
-                        <span class="mph-group-row-value">€28,580</span>
-                        <span class="mph-group-row-badge neutral">20.0%</span>
+                        <span class="mph-group-row-value" id="mphFinanceSupplierCostValue">€28,580</span>
+                        <span class="mph-group-row-badge neutral" id="mphFinanceSupplierCostBadge">20.0%</span>
                       </div>
                     </div>
                     <div class="mph-group-row">
                       <span class="mph-group-row-label">Alquiler y suministros</span>
                       <div class="mph-group-row-right">
-                        <span class="mph-group-row-value">€18,200</span>
-                        <span class="mph-group-row-badge neutral">12.7%</span>
+                        <span class="mph-group-row-value" id="mphFinanceRentCostValue">€18,200</span>
+                        <span class="mph-group-row-badge neutral" id="mphFinanceRentCostBadge">12.7%</span>
                       </div>
                     </div>
                     <div class="mph-group-row">
                       <span class="mph-group-row-label">Marketing y RRPP</span>
                       <div class="mph-group-row-right">
-                        <span class="mph-group-row-value">€11,430</span>
-                        <span class="mph-group-row-badge neutral">8.0%</span>
+                        <span class="mph-group-row-value" id="mphFinanceMarketingCostValue">€11,430</span>
+                        <span class="mph-group-row-badge neutral" id="mphFinanceMarketingCostBadge">8.0%</span>
                       </div>
                     </div>
                     <div class="mph-group-row">
                       <span class="mph-group-row-label">Seguridad externa</span>
                       <div class="mph-group-row-right">
-                        <span class="mph-group-row-value">€7,840</span>
-                        <span class="mph-group-row-badge neutral">5.5%</span>
+                        <span class="mph-group-row-value" id="mphFinanceSecurityCostValue">€7,840</span>
+                        <span class="mph-group-row-badge neutral" id="mphFinanceSecurityCostBadge">5.5%</span>
                       </div>
                     </div>
                   </div>
@@ -1701,54 +1815,154 @@
                   <div class="mph-kpi-trio">
                     <div class="mph-kpi-item">
                       <small>Ticket medio</small>
-                      <strong>€24.8</strong>
+                      <strong id="mphFinanceAvgTicketValue">€24.8</strong>
                       <span class="mph-vs">por persona</span>
                     </div>
                     <div class="mph-kpi-item">
                       <small>Rev. por m²</small>
-                      <strong>€68</strong>
-                      <span class="mph-vs">vs €58 ayer</span>
+                      <strong id="mphFinanceRevPerSqmValue">€68</strong>
+                      <span class="mph-vs" id="mphFinanceRevPerSqmVsLabel">vs €58 ayer</span>
                     </div>
                     <div class="mph-kpi-item">
                       <small>Margen neto</small>
-                      <strong>26.9%</strong>
-                      <span class="mph-trend-sm up"><span class="material-symbols-outlined">arrow_upward</span>2.1pp</span>
+                      <strong id="mphFinanceNetMarginValue">26.9%</strong>
+                      <span class="mph-trend-sm up" id="mphFinanceNetMarginTrend"><span class="material-symbols-outlined">arrow_upward</span><span>2.1pp</span></span>
                     </div>
                   </div>
                 </div>
 
-                <!-- Facturas pendientes -->
                 <div class="mph-section-group">
-                  <p class="mph-section-title">Pendiente de pago</p>
+                  <div class="mph-finance-section-head">
+                    <p class="mph-section-title">Cierre de caja</p>
+                    <span class="mph-finance-status-pill">Live</span>
+                  </div>
+                  <div class="mph-group-card">
+                    <div class="mph-group-row">
+                      <span class="material-symbols-outlined mph-finance-row-icon">point_of_sale</span>
+                      <div class="mph-staff-info">
+                        <span class="mph-group-row-label">TPV registrado</span>
+                        <span class="mph-staff-sub" id="mphFinanceCloseTpvNote">€98,420.00 · 4 barras</span>
+                      </div>
+                      <span class="mph-group-row-value" id="mphFinanceCloseTpvValue">€98,420</span>
+                    </div>
+                    <div class="mph-group-row">
+                      <span class="material-symbols-outlined mph-finance-row-icon">payments</span>
+                      <div class="mph-staff-info">
+                        <span class="mph-group-row-label">Efectivo contado</span>
+                        <span class="mph-staff-sub" id="mphFinanceCloseCashNote">€13,920.00 · diferencia €0</span>
+                      </div>
+                      <span class="mph-group-row-value" id="mphFinanceCloseCashValue">€13,920</span>
+                    </div>
+                    <div class="mph-group-row">
+                      <span class="material-symbols-outlined mph-finance-row-icon">qr_code_2</span>
+                      <div class="mph-staff-info">
+                        <span class="mph-group-row-label">QR / Split-bill</span>
+                        <span class="mph-staff-sub" id="mphFinanceCloseQrNote">€18,420.00 · liquidado</span>
+                      </div>
+                      <span class="mph-group-row-value" id="mphFinanceCloseQrValue">€18,420</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mph-section-group">
+                  <div class="mph-finance-section-head">
+                    <p class="mph-section-title">Facturas y proveedores</p>
+                    <span class="mph-finance-inline-action">Registrar</span>
+                  </div>
                   <div class="mph-group-card">
                     <div class="mph-group-row">
                       <div class="mph-staff-info">
-                        <span class="mph-group-row-label">LVMH Moët Hennessy</span>
-                        <span class="mph-staff-sub">Vence 28 may · factura #INV-2248</span>
+                        <span class="mph-group-row-label">Distribuciones Norte</span>
+                        <span class="mph-staff-sub">Compra bebidas · vencimiento lunes</span>
                       </div>
                       <div class="mph-group-row-right">
-                        <span class="mph-group-row-value">€4,320</span>
+                        <span class="mph-group-row-value" id="mphFinanceInvoiceOneValue">€12,840</span>
                         <span class="mph-group-row-badge down">Urgente</span>
                       </div>
                     </div>
                     <div class="mph-group-row">
                       <div class="mph-staff-info">
-                        <span class="mph-group-row-label">Diageo España</span>
-                        <span class="mph-staff-sub">Vence 02 jun · factura #INV-2251</span>
+                        <span class="mph-group-row-label">Seguridad externa</span>
+                        <span class="mph-staff-sub">62 horas · validado por personal</span>
                       </div>
                       <div class="mph-group-row-right">
-                        <span class="mph-group-row-value">€7,180</span>
+                        <span class="mph-group-row-value" id="mphFinanceInvoiceTwoValue">€3,960</span>
                         <span class="mph-group-row-badge neutral">Pendiente</span>
                       </div>
                     </div>
                     <div class="mph-group-row">
                       <div class="mph-staff-info">
-                        <span class="mph-group-row-label">Alquiler local · junio</span>
-                        <span class="mph-staff-sub">Vence 01 jun · domiciliado</span>
+                        <span class="mph-group-row-label">Producción DJ</span>
+                        <span class="mph-staff-sub">Contrato evento · retención aplicada</span>
                       </div>
                       <div class="mph-group-row-right">
-                        <span class="mph-group-row-value">€7,260</span>
+                        <span class="mph-group-row-value" id="mphFinanceInvoiceThreeValue">€8,400</span>
                         <span class="mph-group-row-badge neutral">Programado</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mph-section-group">
+                  <div class="mph-finance-section-head">
+                    <p class="mph-section-title">Conciliación bancaria</p>
+                    <span class="mph-finance-inline-action">Movimientos</span>
+                  </div>
+                  <div class="mph-finance-stat-grid">
+                    <article class="mph-finance-stat-card">
+                      <span>Conciliado</span>
+                      <strong id="mphFinanceRecoPct">98%</strong>
+                      <small id="mphFinanceRecoNote">143/146 movimientos</small>
+                    </article>
+                    <article class="mph-finance-stat-card">
+                      <span>Pendiente</span>
+                      <strong id="mphFinancePendingMoveCount">3</strong>
+                      <small id="mphFinancePendingMoveNote">2 proveedores · 1 efectivo</small>
+                    </article>
+                    <article class="mph-finance-stat-card">
+                      <span>Descuadre</span>
+                      <strong id="mphFinanceMismatchValue">€0</strong>
+                      <small id="mphFinanceMismatchNote">Caja cerrada sin diferencia</small>
+                    </article>
+                  </div>
+                </div>
+
+                <div class="mph-section-group">
+                  <p class="mph-section-title">Fiscalidad estimada</p>
+                  <div class="mph-finance-stat-grid">
+                    <article class="mph-finance-stat-card">
+                      <span>IVA repercutido</span>
+                      <strong id="mphFinanceVatOutValue">€25,140</strong>
+                    </article>
+                    <article class="mph-finance-stat-card">
+                      <span>IVA soportado</span>
+                      <strong id="mphFinanceVatInValue">-€3,300</strong>
+                    </article>
+                    <article class="mph-finance-stat-card mph-finance-stat-card--accent">
+                      <span>IVA a liquidar</span>
+                      <strong id="mphFinanceVatDueValue">€21,840</strong>
+                    </article>
+                  </div>
+                </div>
+
+                <div class="mph-section-group">
+                  <div class="mph-finance-section-head">
+                    <p class="mph-section-title">Informe de cierre</p>
+                    <span class="mph-finance-inline-action">Enviar ahora</span>
+                  </div>
+                  <div class="mph-group-card">
+                    <div class="mph-group-row">
+                      <span class="material-symbols-outlined mph-finance-row-icon">mail</span>
+                      <div class="mph-staff-info">
+                        <span class="mph-group-row-label">Email automático 06:30</span>
+                        <span class="mph-staff-sub">P&L, caja, facturas, impuestos, staff y rentabilidad.</span>
+                      </div>
+                    </div>
+                    <div class="mph-group-row">
+                      <span class="material-symbols-outlined mph-finance-row-icon">description</span>
+                      <div class="mph-staff-info">
+                        <span class="mph-group-row-label">PDF dirección</span>
+                        <span class="mph-staff-sub">Resumen ejecutivo + detalle contable exportable.</span>
                       </div>
                     </div>
                   </div>
@@ -1860,11 +2074,11 @@
 
               <!-- Perfil usuario -->
               <div class="mph-drawer-profile">
-                <div class="mph-drawer-avatar">PG</div>
+                <div class="mph-drawer-avatar" id="mphDrawerAvatar">PG</div>
                 <div class="mph-drawer-profile-info">
-                  <strong>Pablo G.</strong>
-                  <span>Director General</span>
-                  <span class="mph-drawer-role-badge">Owner</span>
+                  <strong id="mphDrawerName">Pablo G.</strong>
+                  <span id="mphDrawerSubtitle">Director General</span>
+                  <span class="mph-drawer-role-badge" id="mphDrawerRoleBadge">Owner</span>
                 </div>
               </div>
 
@@ -1876,11 +2090,11 @@
                   <div class="mph-group-card">
                     <div class="mph-group-row">
                       <span class="mph-group-row-label">Nombre completo</span>
-                      <span class="mph-group-row-value" style="color:#8e8e93">Pablo Grau</span>
+                      <span class="mph-group-row-value" id="mphDrawerAccountName" style="color:#8e8e93">Pablo Grau</span>
                     </div>
                     <div class="mph-group-row">
                       <span class="mph-group-row-label">Email</span>
-                      <span class="mph-group-row-value" style="color:#8e8e93;font-size:12px">pablo@opsnight.com</span>
+                      <span class="mph-group-row-value" id="mphDrawerAccountEmail" style="color:#8e8e93;font-size:12px">pablo@opsnight.com</span>
                     </div>
                     <div class="mph-group-row">
                       <span class="mph-group-row-label">Teléfono</span>
@@ -1888,7 +2102,7 @@
                     </div>
                     <div class="mph-group-row">
                       <span class="mph-group-row-label">Rol</span>
-                      <span class="mph-group-row-value">Director General</span>
+                      <span class="mph-group-row-value" id="mphDrawerAccountRole">Director General</span>
                     </div>
                   </div>
                 </div>
@@ -1897,28 +2111,28 @@
                 <div class="mph-section-group">
                   <p class="mph-section-title">Preferencias</p>
                   <div class="mph-group-card">
-                    <div class="mph-group-row">
+                    <div class="mph-group-row mph-group-row--button" data-mph-drawer-action="venue">
                       <span class="mph-group-row-label">Local por defecto</span>
                       <div class="mph-group-row-right">
                         <span class="mph-group-row-value" style="color:#8e8e93">Kapital Madrid</span>
                         <span class="material-symbols-outlined mph-group-row-icon">chevron_right</span>
                       </div>
                     </div>
-                    <div class="mph-group-row">
+                    <div class="mph-group-row mph-group-row--button" data-mph-drawer-action="language">
                       <span class="mph-group-row-label">Idioma</span>
                       <div class="mph-group-row-right">
                         <span class="mph-group-row-value" style="color:#8e8e93">Español</span>
                         <span class="material-symbols-outlined mph-group-row-icon">chevron_right</span>
                       </div>
                     </div>
-                    <div class="mph-group-row">
+                    <div class="mph-group-row mph-group-row--button" data-mph-drawer-action="currency">
                       <span class="mph-group-row-label">Moneda</span>
                       <div class="mph-group-row-right">
                         <span class="mph-group-row-value" style="color:#8e8e93">EUR · Euro</span>
                         <span class="material-symbols-outlined mph-group-row-icon">chevron_right</span>
                       </div>
                     </div>
-                    <div class="mph-group-row">
+                    <div class="mph-group-row mph-group-row--button" data-mph-drawer-action="appearance">
                       <span class="mph-group-row-label">Apariencia</span>
                       <div class="mph-group-row-right">
                         <span class="mph-group-row-value" style="color:#8e8e93">Claro</span>
@@ -1940,11 +2154,11 @@
                       <span class="mph-group-row-label">Doble factor (2FA)</span>
                       <label class="mph-toggle"><input type="checkbox" checked/><span></span></label>
                     </div>
-                    <div class="mph-group-row">
+                    <div class="mph-group-row mph-group-row--button" data-mph-drawer-action="password">
                       <span class="mph-group-row-label">Cambiar contraseña</span>
                       <span class="material-symbols-outlined mph-group-row-icon">chevron_right</span>
                     </div>
-                    <div class="mph-group-row">
+                    <div class="mph-group-row mph-group-row--button" data-mph-drawer-action="sessions">
                       <span class="mph-group-row-label">Sesiones activas</span>
                       <div class="mph-group-row-right">
                         <span class="mph-group-row-value" style="color:#8e8e93">2 dispositivos</span>
@@ -1972,7 +2186,7 @@
                 <!-- Cerrar sesión -->
                 <div class="mph-section-group">
                   <div class="mph-group-card">
-                    <div class="mph-group-row" style="justify-content:center;cursor:pointer">
+                    <div class="mph-group-row mph-group-row--button" data-auth-logout style="justify-content:center;cursor:pointer">
                       <span style="font-size:13px;font-weight:600;color:#ff3b30">Cerrar sesión</span>
                     </div>
                   </div>
@@ -1987,6 +2201,9 @@
     </div><!-- mobile-preview-overlay -->
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase/config.js"></script>
+    <script src="supabase/bridge.js"></script>
     <script src="dashboard.js"></script>
     <script>
       if ("serviceWorker" in navigator) {

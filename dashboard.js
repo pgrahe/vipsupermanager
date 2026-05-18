@@ -10,6 +10,39 @@ const desktopAdmin = document.querySelector(".desktop-admin");
 const accessTrigger = document.querySelector("#accessSwitcherTrigger");
 const accessMenu = document.querySelector("#accessSwitcherMenu");
 const accessLabel = document.querySelector("#currentAccessLabel");
+const accessOptions = [...document.querySelectorAll(".access-option")];
+const desktopSidebarLinks = [...document.querySelectorAll(".desktop-sidebar a[data-page]")];
+const mobileModeTrigger = document.querySelector("#mobileModeTrigger");
+const authGate = document.querySelector("#authGate");
+const authForm = document.querySelector("#authForm");
+const authEmailInput = document.querySelector("#authEmail");
+const authPasswordInput = document.querySelector("#authPassword");
+const authSubmit = document.querySelector("#authSubmit");
+const authStatus = document.querySelector("#authStatus");
+const authError = document.querySelector("#authError");
+const authRoles = document.querySelector("#authRoles");
+const desktopAuthAvatar = document.querySelector("#desktopAuthAvatar");
+const mobileAuthAvatar = document.querySelector("#mobileAuthAvatar");
+const logoutLinks = [...document.querySelectorAll("[data-auth-logout]")];
+const drawerAvatar = document.querySelector("#mphDrawerAvatar");
+const drawerName = document.querySelector("#mphDrawerName");
+const drawerSubtitle = document.querySelector("#mphDrawerSubtitle");
+const drawerRoleBadge = document.querySelector("#mphDrawerRoleBadge");
+const drawerAccountName = document.querySelector("#mphDrawerAccountName");
+const drawerAccountEmail = document.querySelector("#mphDrawerAccountEmail");
+const drawerAccountRole = document.querySelector("#mphDrawerAccountRole");
+
+const mphAuthState = {
+  roles: [],
+  pending: true,
+  booted: false,
+  userId: null,
+  activeRoleKey: null,
+  isManager: false,
+  defaultDesktopMode: "director",
+  allowedDesktopModes: new Set(["director"]),
+  appliedSignature: "",
+};
 
 const staffPhotos = {
   carlos: "icons/staff/carlos.jpg",
@@ -338,6 +371,7 @@ const accessModes = {
   director: { label: "Director", page: "overview" },
   barra: { label: "Barra TPV", page: "tpv", catalog: "barra" },
   taquilla: { label: "Taquilla", page: "tpv", catalog: "taquilla" },
+  guardarropia: { label: "Guardarropía", page: "tpv", catalog: "guardarropia" },
   vip: { label: "VIP", page: "personal", staff: "elena" },
   office: { label: "Office", page: "finanzas" },
 };
@@ -379,6 +413,11 @@ const tpvCatalogs = {
     { id: "tequila-shot", name: "Tequila Shot", price: 8, tag: "Shot", tone: "green", icon: "liquor", category: "Tequila" },
     { id: "shisha", name: "Shisha Love 66", price: 45, tag: "Shisha", tone: "pink", icon: "air", category: "Snack & Fun" },
   ],
+  guardarropia: [
+    { id: "cloak-basic", name: "Ticket guardarropía", price: 3, tag: "Ticket", tone: "slate", icon: "checkroom", category: "Guardarropía" },
+    { id: "cloak-fastlane", name: "Fast lane guardarropía", price: 5, tag: "Fast lane", tone: "amber", icon: "checkroom", category: "Guardarropía" },
+    { id: "cloak-vip", name: "Guardarropía VIP", price: 8, tag: "VIP", tone: "violet", icon: "checkroom", category: "Guardarropía" },
+  ],
 };
 
 const tpvProductsById = Object.values(tpvCatalogs).flat().reduce((acc, product) => {
@@ -392,6 +431,18 @@ const tpvState = {
   sort: "price-asc",
   search: "",
   category: "all",
+};
+
+const mphSupabaseRuntime = {
+  productsBySection: {
+    barra: [],
+    taquilla: [],
+    guardarropia: [],
+    vip: [],
+  },
+  vipTables: [],
+  vipReservations: [],
+  capacityCounters: [],
 };
 
 const mphVenueProfiles = [
@@ -548,6 +599,17 @@ function formatPreciseCurrency(value) {
   }).format(Number(value));
 }
 
+function formatFinanceKpiCurrency(value) {
+  const amount = Math.abs(Number(value) || 0);
+  if (amount >= 1000000) {
+    return `€${(amount / 1000000).toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`;
+  }
+  if (amount >= 10000) {
+    return `€${(amount / 1000).toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}K`;
+  }
+  return formatCompactCurrency(amount);
+}
+
 function formatSignedPercent(value) {
   const prefix = value > 0 ? "+" : value < 0 ? "-" : "";
   return `${prefix}${Math.abs(value).toLocaleString("es-ES", {
@@ -566,6 +628,25 @@ function formatSignedPoints(value) {
 
 function formatMphInputDate(date) {
   return normalizeMphDate(date).toISOString().slice(0, 10);
+}
+
+function escapeHtml(value = "") {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function parseMphNumber(value, fallback = 0) {
+  const parsed = Number(String(value ?? "").replace(",", "."));
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function isMphSameCalendarDate(value, date) {
+  if (!value) return false;
+  return String(value).slice(0, 10) === formatMphInputDate(date);
 }
 
 function getMphTrendMeta(value, neutralThreshold = 0.15) {
@@ -815,6 +896,124 @@ function computeMphVenueDayMetrics(venueId, rawDate) {
   };
 }
 
+function getMphRangeDates(periodKey, rawDate) {
+  const referenceDate = normalizeMphDate(rawDate);
+  const range = resolveMphRange(periodKey, referenceDate);
+  let startDate = normalizeMphDate(referenceDate);
+  if (range.key === "mtd") {
+    startDate = normalizeMphDate(new Date(referenceDate.getFullYear(), referenceDate.getMonth(), 1));
+  } else {
+    startDate.setDate(referenceDate.getDate() - range.days + 1);
+  }
+  const dates = [];
+  for (let cursor = normalizeMphDate(startDate); cursor <= referenceDate; cursor.setDate(cursor.getDate() + 1)) {
+    dates.push(normalizeMphDate(cursor));
+  }
+  return {
+    ...range,
+    dates,
+    startDate: normalizeMphDate(startDate),
+    endDate: referenceDate,
+    days: dates.length,
+  };
+}
+
+function aggregateMphFinanceSnapshot(dates) {
+  if (!dates.length) {
+    return {
+      revenue: 0,
+      legalCapacity: 0,
+      realCapacity: 0,
+      avgTicket: 0,
+      avgMarginPct: 0,
+      grossMarginPct: 0,
+      grossMarginValue: 0,
+      ebitdaPct: 0,
+      ebitdaValue: 0,
+      costOfSalesPct: 0,
+      costOfSalesValue: 0,
+      operatingCostsPct: 0,
+      operatingCostsValue: 0,
+      revPerSqm: 0,
+      breakdown: {
+        staff: 0,
+        suppliers: 0,
+        rent: 0,
+        marketing: 0,
+        security: 0,
+      },
+    };
+  }
+
+  const totals = dates.reduce((acc, date) => {
+    mphVenueProfiles.forEach((profile) => {
+      const snapshot = computeMphVenueDayMetrics(profile.id, date);
+      acc.revenue += snapshot.revenue;
+      acc.legalCapacity += snapshot.opsProfile.legalCapacity;
+      acc.realCapacity += snapshot.realCapacity;
+      acc.marginWeighted += snapshot.margin * snapshot.revenue;
+      acc.daySeed += getMphDayIndex(date) + profile.seed;
+    });
+    return acc;
+  }, {
+    revenue: 0,
+    legalCapacity: 0,
+    realCapacity: 0,
+    marginWeighted: 0,
+    daySeed: 0,
+  });
+
+  const avgMarginPct = totals.revenue ? totals.marginWeighted / totals.revenue : 0;
+  const occupancyPct = totals.legalCapacity ? (totals.realCapacity / totals.legalCapacity) * 100 : 0;
+  const smoothingSeed = totals.daySeed / Math.max(1, dates.length * mphVenueProfiles.length);
+  const grossMarginPct = clamp(76.5 + (occupancyPct * 0.042) + Math.sin(smoothingSeed * 0.11) * 1.6, 74.5, 82.8);
+  const ebitdaPct = clamp(avgMarginPct + 2.4 + Math.cos(smoothingSeed * 0.09) * 0.8, 21.5, grossMarginPct - 4.2);
+  const costOfSalesPct = 100 - grossMarginPct;
+  const revenue = totals.revenue;
+  const grossMarginValue = revenue * (grossMarginPct / 100);
+  const ebitdaValue = revenue * (ebitdaPct / 100);
+  const operatingCostsValue = Math.max(0, grossMarginValue - ebitdaValue);
+  const operatingCostsPct = revenue ? (operatingCostsValue / revenue) * 100 : 0;
+  const averageArea = totals.legalCapacity * 0.35;
+  const avgTicket = totals.realCapacity ? revenue / totals.realCapacity : 0;
+  const revPerSqm = averageArea ? revenue / averageArea : 0;
+  const breakdown = {
+    staff: operatingCostsValue * 0.26,
+    suppliers: revenue * (costOfSalesPct / 100),
+    rent: operatingCostsValue * 0.42,
+    marketing: operatingCostsValue * 0.18,
+    security: operatingCostsValue * 0.14,
+  };
+
+  return {
+    revenue,
+    legalCapacity: totals.legalCapacity,
+    realCapacity: totals.realCapacity,
+    avgTicket,
+    avgMarginPct,
+    grossMarginPct,
+    grossMarginValue,
+    ebitdaPct,
+    ebitdaValue,
+    costOfSalesPct,
+    costOfSalesValue: breakdown.suppliers,
+    operatingCostsPct,
+    operatingCostsValue,
+    revPerSqm,
+    breakdown,
+  };
+}
+
+function computeMphFinanceMetrics(periodKey, rawDate) {
+  const currentRange = getMphRangeDates(periodKey, rawDate);
+  const previousEnd = normalizeMphDate(new Date(currentRange.startDate));
+  previousEnd.setDate(previousEnd.getDate() - 1);
+  const previousRange = getMphRangeDates(`${currentRange.days}d`, previousEnd);
+  const current = aggregateMphFinanceSnapshot(currentRange.dates);
+  const previous = aggregateMphFinanceSnapshot(previousRange.dates);
+  return { currentRange, previousRange, current, previous };
+}
+
 function getMphLocalDateOptions() {
   const today = normalizeMphDate(new Date());
   const options = [0, 1, 7, 14, 30].map((offset) => {
@@ -912,7 +1111,7 @@ function renderMphLocalChart(snapshot, compareSnapshot) {
 
 function buildMphLocalSectionRows(sectionKey, point, snapshot, categoryTotal) {
   if (sectionKey === "aforo") {
-    const scannedCount = Math.round(snapshot.realCapacity * point.share);
+    const scannedCount = Number.isFinite(point.counterValue) ? point.counterValue : Math.round(snapshot.realCapacity * point.share);
     const legalQuota = Math.round(snapshot.opsProfile.legalCapacity * point.share);
     return {
       metrics: [
@@ -925,6 +1124,24 @@ function buildMphLocalSectionRows(sectionKey, point, snapshot, categoryTotal) {
         ["Dispositivo", point.device, "OK"],
         ["Canal", point.account, "Control"],
         ["Mix acceso", point.mix, "Detalle"],
+      ],
+    };
+  }
+  if (sectionKey === "vip" && point.status) {
+    return {
+      metrics: [
+        { label: "Mesa", value: point.label },
+        { label: "Mínimo", value: formatPreciseCurrency(point.reservationMinimum || point.minimumSpend || 0) },
+        { label: "Estado", value: point.statusLabel || point.status },
+      ],
+      rows: [
+        ["Reserva", point.reservationClient || "Sin reserva activa", point.reservationStatus ? point.reservationStatus.toUpperCase() : "Libre"],
+        ["Comensales", point.reservationGuests ? `${point.reservationGuests} pax` : "Pendiente", "Mesa"],
+        ["Señal", formatPreciseCurrency(point.reservationDeposit || 0), point.reservationDeposit ? "Cobro" : "Pendiente"],
+        ["Zona", point.device || point.subtitle, "Live"],
+        ["Responsable", point.operator || "VIP", "Staff"],
+        ["Referencia", point.account || "Control VIP", "Control"],
+        ["Mix servicio", point.mix || "Detalle VIP", "Detalle"],
       ],
     };
   }
@@ -947,6 +1164,108 @@ function buildMphLocalSectionRows(sectionKey, point, snapshot, categoryTotal) {
   };
 }
 
+function getTpvCatalogProducts(catalogKey) {
+  const remoteProducts = mphSupabaseRuntime.productsBySection[catalogKey];
+  if (Array.isArray(remoteProducts) && remoteProducts.length) return remoteProducts;
+  return tpvCatalogs[catalogKey] || [];
+}
+
+function getTpvProductById(id) {
+  const remoteMatch = Object.values(mphSupabaseRuntime.productsBySection)
+    .flat()
+    .find((product) => product.id === id);
+  return remoteMatch || tpvProductsById[id];
+}
+
+function buildMphVipMapSeed(index, count) {
+  const columns = count <= 4 ? 2 : count <= 8 ? 4 : 5;
+  const row = Math.floor(index / columns);
+  const col = index % columns;
+  const x = Math.min(86, 18 + (col * (62 / Math.max(columns - 1, 1))));
+  const y = Math.min(72, 24 + (row * 18));
+  return { x, y };
+}
+
+function getVipActiveReservation(tableId, date = mphLocalDetailState.selectedDate) {
+  return mphSupabaseRuntime.vipReservations.find((item) =>
+    item.vip_table_id === tableId
+    && isMphSameCalendarDate(item.reservation_date, date)
+    && ["pending", "confirmed", "seated"].includes(item.status)
+  );
+}
+
+function getMphLocalSectionItems(venueId, sectionKey) {
+  const opsProfile = mphVenueOperations[venueId] || mphVenueOperations["kapital-madrid"];
+  const appVenueId = window.mphSupabase?.config?.appVenueId || "kapital-madrid";
+
+  if (venueId === appVenueId && sectionKey === "vip" && mphSupabaseRuntime.vipTables.length) {
+    return mphSupabaseRuntime.vipTables.map((table, index, array) => {
+      const meta = table.metadata || {};
+      const reservation = getVipActiveReservation(table.id, mphLocalDetailState.selectedDate);
+      const fallback = buildMphVipMapSeed(index, array.length);
+      return {
+        id: table.id,
+        label: table.code,
+        name: table.name,
+        subtitle: meta.group || table.zone || "Mesa VIP",
+        share: 1 / Math.max(array.length, 1),
+        capacity: Number(table.capacity || 0),
+        status: table.status,
+        statusLabel: ({
+          available: "Libre",
+          reserved: "Reservada",
+          occupied: "Ocupada",
+          blocked: "Bloqueada",
+          closed: "Cerrada",
+        })[table.status] || table.status,
+        reservationId: reservation?.id || null,
+        reservationStatus: reservation?.status || null,
+        reservationClient: reservation?.client_name || null,
+        reservationGuests: Number(reservation?.guests_count || 0),
+        reservationMinimum: Number(reservation?.minimum_spend ?? table.minimum_spend ?? 0),
+        reservationDeposit: Number(reservation?.deposit_amount || 0),
+        reservationNotes: reservation?.notes || "",
+        minimumSpend: Number(table.minimum_spend || 0),
+        bank: meta.bank || "Cobro central VIP",
+        terminal: meta.terminal || "POS VIP",
+        account: meta.account || `Min. ${formatPreciseCurrency(table.minimum_spend || 0)}`,
+        operator: meta.operator || "Floor VIP",
+        device: meta.device || table.zone || "Servicio en mesa",
+        mix: meta.mix || `Estado ${table.status}`,
+        x: typeof meta.x === "number" ? meta.x : fallback.x,
+        y: typeof meta.y === "number" ? meta.y : fallback.y,
+      };
+    });
+  }
+
+  if (venueId === appVenueId && sectionKey === "aforo" && mphSupabaseRuntime.capacityCounters.length) {
+    return mphSupabaseRuntime.capacityCounters.map((counter, index) => {
+      const meta = counter.metadata || {};
+      const fallback = [
+        { x: 10, y: 16 },
+        { x: 82, y: 14 },
+        { x: 28, y: 12 },
+      ][index] || { x: 18 + (index * 14), y: 16 };
+      return {
+        id: counter.id,
+        label: meta.label || counter.code,
+        name: counter.name,
+        subtitle: meta.subtitle || "Control acceso",
+        share: 1 / Math.max(mphSupabaseRuntime.capacityCounters.length, 1),
+        counterValue: Number(counter.counter_value || 0),
+        scannedBy: meta.operator || "Control acceso",
+        device: meta.device || "Scanner acceso",
+        account: meta.account || counter.direction_mode,
+        mix: meta.mix || `${counter.counter_value.toLocaleString("es-ES")} registrados`,
+        x: typeof meta.x === "number" ? meta.x : fallback.x,
+        y: typeof meta.y === "number" ? meta.y : fallback.y,
+      };
+    });
+  }
+
+  return opsProfile[sectionKey] || [];
+}
+
 function renderMphLocalDateMenu() {
   const menu = document.getElementById("mphLocalDateMenu");
   if (!menu) return;
@@ -960,12 +1279,11 @@ function renderMphLocalDateMenu() {
 
 function renderMphLocalMap() {
   const venueId = mphLocalDetailState.venueId;
-  const opsProfile = mphVenueOperations[venueId] || mphVenueOperations["kapital-madrid"];
   const map = document.getElementById("mphLocalOpsMap");
   const detail = document.getElementById("mphLocalOpsDetail");
   if (!map || !detail) return;
   const sectionKey = mphLocalDetailState.section;
-  const items = opsProfile[sectionKey] || [];
+  const items = getMphLocalSectionItems(venueId, sectionKey);
   if (!items.length) {
     map.innerHTML = "";
     detail.innerHTML = "";
@@ -975,26 +1293,97 @@ function renderMphLocalMap() {
     mphLocalDetailState.pointId = items[0].id;
   }
   map.innerHTML = `
-    <div class="mph-venue-map-shell">
+    <div class="mph-venue-map-shell mph-venue-map-shell--${sectionKey}">
       <div class="mph-venue-map-stage">DJ / cabina</div>
       <div class="mph-venue-map-entry">Entrada principal</div>
       <div class="mph-venue-map-zone">Main room</div>
-      ${items.map((item) => `
-        <button
-          class="mph-map-hotspot ${item.id === mphLocalDetailState.pointId ? "active" : ""}"
-          type="button"
-          data-mph-map-point="${item.id}"
-          style="left:${item.x}%;top:${item.y}%"
-        >
-          ${item.label}
-        </button>
-      `).join("")}
+      <div class="mph-venue-map-field">
+        <div class="mph-venue-map-lane mph-venue-map-lane--north" aria-hidden="true"></div>
+        <div class="mph-venue-map-lane mph-venue-map-lane--center" aria-hidden="true"></div>
+        <div class="mph-venue-map-lane mph-venue-map-lane--south" aria-hidden="true"></div>
+        ${items.map((item) => `
+          <button
+            class="mph-map-hotspot ${item.id === mphLocalDetailState.pointId ? "active" : ""}"
+            type="button"
+            data-mph-map-point="${item.id}"
+            style="left:${item.x}%;top:${item.y}%"
+          >
+            ${item.label}
+          </button>
+        `).join("")}
+      </div>
     </div>
   `;
   const snapshot = computeMphVenueDayMetrics(venueId, mphLocalDetailState.selectedDate);
   const point = items.find((item) => item.id === mphLocalDetailState.pointId) || items[0];
   const categoryTotal = sectionKey === "aforo" ? snapshot.realCapacity : snapshot.sections[sectionKey];
   const detailData = buildMphLocalSectionRows(sectionKey, point, snapshot, categoryTotal);
+  const vipStatusLabel = ({
+    pending: "Pendiente",
+    confirmed: "Confirmada",
+    seated: "Sentada",
+    completed: "Completada",
+    cancelled: "Cancelada",
+    no_show: "No show",
+  })[point.reservationStatus] || "Nueva";
+  const actionMarkup = sectionKey === "aforo"
+    ? `
+      <div class="mph-local-ops-actions">
+        <button class="mph-finance-inline-action" type="button" data-mph-capacity-delta="-1">Salida -1</button>
+        <button class="mph-finance-status-pill" type="button" data-mph-capacity-delta="1">Entrada +1</button>
+      </div>
+    `
+    : sectionKey === "vip" && point.status
+      ? `
+        <div class="mph-local-ops-actions">
+          <button class="mph-finance-status-pill" type="button" data-mph-vip-cycle="${point.id}">
+            ${point.status === "occupied" ? "Liberar mesa" : point.status === "reserved" ? "Sentar mesa" : point.status === "blocked" ? "Desbloquear mesa" : "Reservar mesa"}
+          </button>
+          ${point.reservationId ? `<button class="mph-finance-inline-action" type="button" data-mph-vip-cancel="${point.id}">Cancelar</button>` : ""}
+        </div>
+      `
+      : "";
+  const vipReservationMarkup = sectionKey === "vip" && point.status
+    ? `
+      <section class="mph-vip-reservation-card">
+        <div class="mph-vip-reservation-head">
+          <div>
+            <strong>${point.reservationId ? "Reserva activa" : "Preparar reserva"}</strong>
+            <span>${formatMphShortDate(mphLocalDetailState.selectedDate)} · ${point.statusLabel || "Mesa VIP"}</span>
+          </div>
+          <b class="mph-vip-reservation-status">${vipStatusLabel}</b>
+        </div>
+        <form class="mph-vip-reservation-form" data-mph-vip-form="${point.id}">
+          <div class="mph-vip-reservation-grid">
+            <label class="mph-vip-field mph-vip-field--full">
+              <span>Cliente</span>
+              <input name="client_name" type="text" placeholder="Nombre de la reserva" value="${escapeHtml(point.reservationClient || "")}" />
+            </label>
+            <label class="mph-vip-field">
+              <span>Pax</span>
+              <input name="guests_count" type="number" min="1" step="1" value="${Math.max(1, point.reservationGuests || point.capacity || 4)}" />
+            </label>
+            <label class="mph-vip-field">
+              <span>Mínimo</span>
+              <input name="minimum_spend" type="number" min="0" step="0.01" inputmode="decimal" value="${Number(point.reservationMinimum || point.minimumSpend || 0).toFixed(2)}" />
+            </label>
+            <label class="mph-vip-field">
+              <span>Señal</span>
+              <input name="deposit_amount" type="number" min="0" step="0.01" inputmode="decimal" value="${Number(point.reservationDeposit || 0).toFixed(2)}" />
+            </label>
+            <label class="mph-vip-field mph-vip-field--full">
+              <span>Notas</span>
+              <textarea name="notes" rows="3" placeholder="Horario, preferencias, botella o notas RRPP">${escapeHtml(point.reservationNotes || "")}</textarea>
+            </label>
+          </div>
+          <div class="mph-vip-reservation-footer">
+            <small>${point.reservationId ? "Actualiza la ficha antes de sentar o liberar la mesa." : "Guardar reserva también deja la mesa en estado reservada."}</small>
+            <button class="mph-finance-status-pill" type="submit">Guardar reserva</button>
+          </div>
+        </form>
+      </section>
+    `
+    : "";
   detail.innerHTML = `
     <div class="mph-local-spotlight-head">
       <div>
@@ -1003,6 +1392,7 @@ function renderMphLocalMap() {
       </div>
       <span class="mph-local-spotlight-badge">${sectionKey === "aforo" ? "Control" : "Live"}</span>
     </div>
+    ${actionMarkup}
     <div class="mph-local-spotlight-grid">
       ${detailData.metrics.map((metric) => `
         <article>
@@ -1022,6 +1412,7 @@ function renderMphLocalMap() {
         </article>
       `).join("")}
     </div>
+    ${vipReservationMarkup}
   `;
 }
 
@@ -1083,7 +1474,7 @@ function openMphLocalDetail(venueId, date = mphLocalDetailState.selectedDate || 
   mphLocalDetailState.venueId = venueId;
   mphLocalDetailState.selectedDate = normalizeMphDate(date);
   mphLocalDetailState.section = "bars";
-  mphLocalDetailState.pointId = (mphVenueOperations[venueId]?.bars || [])[0]?.id || null;
+  mphLocalDetailState.pointId = getMphLocalSectionItems(venueId, "bars")[0]?.id || null;
   renderMphLocalDetail();
 }
 
@@ -1231,6 +1622,232 @@ function showToast(message) {
   showToast.timer = setTimeout(() => toast.classList.remove("show"), 1800);
 }
 
+function getAuthRoleLabel(roleKey) {
+  return {
+    manager: "Director",
+    barra: "Barra",
+    taquilla: "Taquilla",
+    guardarropia: "Guardarropía",
+    vip: "VIP",
+    pica: "Pica",
+    office: "Office",
+    director: "Director",
+  }[String(roleKey || "").toLowerCase()] || roleKey || "Sin rol";
+}
+
+function getPrimaryAuthRole(roles = []) {
+  const activeRoles = roles
+    .filter((role) => role && role.is_active !== false)
+    .map((role) => String(role.role_key || "").toLowerCase())
+    .filter(Boolean);
+
+  if (!activeRoles.length) return null;
+
+  const rolePriority = ["manager", "office", "vip", "barra", "taquilla", "guardarropia", "pica"];
+  return rolePriority.find((roleKey) => activeRoles.includes(roleKey)) || activeRoles[0];
+}
+
+function getDesktopAccessModeForRole(roleKey) {
+  return {
+    manager: "director",
+    barra: "barra",
+    taquilla: "taquilla",
+    guardarropia: "guardarropia",
+    vip: "vip",
+    office: "office",
+    pica: "director",
+  }[String(roleKey || "").toLowerCase()] || "director";
+}
+
+function applyRoleChrome(roleKey) {
+  const isManager = roleKey === "manager";
+  const desktopMode = getDesktopAccessModeForRole(roleKey);
+  const allowedPages = isManager
+    ? null
+    : new Set([accessModes[desktopMode]?.page || "overview"]);
+
+  if (accessTrigger) accessTrigger.hidden = !isManager;
+  if (mobileModeTrigger) mobileModeTrigger.hidden = !isManager;
+
+  accessOptions.forEach((button) => {
+    const allowed = isManager || button.dataset.access === desktopMode;
+    button.hidden = !allowed;
+  });
+
+  desktopSidebarLinks.forEach((link) => {
+    const allowed = isManager || allowedPages?.has(link.dataset.page || "");
+    link.hidden = !allowed;
+  });
+}
+
+function getAuthDisplayName(user) {
+  if (!user) return "Usuario";
+  const fullName = user.user_metadata?.full_name || user.user_metadata?.name;
+  if (typeof fullName === "string" && fullName.trim()) return fullName.trim();
+  if (typeof user.email === "string" && user.email.trim()) return user.email.trim();
+  return "Usuario";
+}
+
+function getAuthInitials(user) {
+  const label = getAuthDisplayName(user);
+  if (!label) return "OP";
+  const cleanLabel = label.includes("@") ? label.split("@")[0] : label;
+  const parts = cleanLabel
+    .replace(/[^a-zA-Z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter(Boolean);
+  if (!parts.length) return "OP";
+  return parts.slice(0, 2).map((part) => part[0]?.toUpperCase() || "").join("") || "OP";
+}
+
+function setAvatarInitials(node, initials) {
+  if (!node) return;
+  const target = node.querySelector("span") || node;
+  target.textContent = initials;
+}
+
+function getRoleSubtitle(roleKey) {
+  return {
+    manager: "Director General",
+    barra: "Operativa de barra",
+    taquilla: "Operativa de taquilla",
+    guardarropia: "Operativa de guardarropía",
+    vip: "Operativa VIP",
+    pica: "Control de aforo",
+    office: "Office y finanzas",
+  }[String(roleKey || "").toLowerCase()] || "Equipo OPSNIGHT";
+}
+
+function syncDrawerProfile(user, roleKey) {
+  const displayName = getAuthDisplayName(user);
+  const email = typeof user?.email === "string" && user.email.trim() ? user.email.trim() : "sin-email@opsnight.com";
+  const roleLabel = getAuthRoleLabel(roleKey || "manager");
+  const subtitle = getRoleSubtitle(roleKey || "manager");
+  const initials = getAuthInitials(user);
+
+  setAvatarInitials(drawerAvatar, initials);
+  if (drawerName) drawerName.textContent = displayName;
+  if (drawerSubtitle) drawerSubtitle.textContent = subtitle;
+  if (drawerRoleBadge) drawerRoleBadge.textContent = roleLabel;
+  if (drawerAccountName) drawerAccountName.textContent = displayName;
+  if (drawerAccountEmail) drawerAccountEmail.textContent = email;
+  if (drawerAccountRole) drawerAccountRole.textContent = subtitle;
+}
+
+function setAuthBusy(isBusy, label) {
+  if (!authSubmit) return;
+  authSubmit.disabled = Boolean(isBusy);
+  authSubmit.textContent = label || (isBusy ? "Entrando..." : "Entrar");
+}
+
+function setAuthError(message = "") {
+  if (!authError) return;
+  authError.hidden = !message;
+  authError.textContent = message || "";
+}
+
+function renderAuthRoles(roles = []) {
+  if (!authRoles) return;
+  if (!roles.length) {
+    authRoles.hidden = true;
+    authRoles.innerHTML = "";
+    return;
+  }
+  authRoles.hidden = false;
+  authRoles.innerHTML = roles.map((role) => `<span>${getAuthRoleLabel(role.role_key)}</span>`).join("");
+}
+
+async function syncAuthUi() {
+  const api = window.mphSupabase;
+  const supabaseState = api?.state || {};
+  const user = api?.getCurrentUser?.() || supabaseState.user || null;
+  const isPending = !["connected", "error", "sdk-missing", "unconfigured"].includes(supabaseState.status || "idle");
+
+  mphAuthState.pending = isPending;
+  mphAuthState.booted = supabaseState.status !== "idle";
+
+  setAvatarInitials(desktopAuthAvatar, getAuthInitials(user));
+  setAvatarInitials(mobileAuthAvatar, getAuthInitials(user));
+
+  if (user?.id && mphAuthState.userId !== user.id) {
+    mphAuthState.userId = user.id;
+    mphAuthState.roles = api?.listUserVenueRoles ? await api.listUserVenueRoles() : [];
+  } else if (!user) {
+    mphAuthState.userId = null;
+    mphAuthState.roles = [];
+    mphAuthState.activeRoleKey = null;
+    mphAuthState.isManager = false;
+    mphAuthState.defaultDesktopMode = "director";
+    mphAuthState.allowedDesktopModes = new Set(["director"]);
+    mphAuthState.appliedSignature = "";
+  }
+
+  if (!user) renderAuthRoles([]);
+  else renderAuthRoles(mphAuthState.roles);
+  syncDrawerProfile(user, mphAuthState.activeRoleKey || getPrimaryAuthRole(mphAuthState.roles) || "manager");
+
+  if (isPending) {
+    if (authGate) authGate.hidden = false;
+    if (authStatus) authStatus.textContent = "Conectando con Supabase y restaurando la sesión...";
+    setAuthError("");
+    setAuthBusy(true, "Conectando...");
+    return;
+  }
+
+  const primaryRoleKey = getPrimaryAuthRole(mphAuthState.roles);
+  if (user && !primaryRoleKey) {
+    if (authGate) authGate.hidden = false;
+    document.body.classList.add("auth-locked");
+    if (authStatus) authStatus.textContent = `Sesión iniciada como ${getAuthDisplayName(user)}, pero todavía no tiene un rol asignado en este local.`;
+    setAuthBusy(false, "Entrar");
+    setAuthError("Asigna un rol en venue_user_roles para desbloquear la app.");
+    return;
+  }
+
+  mphAuthState.activeRoleKey = primaryRoleKey;
+  mphAuthState.isManager = primaryRoleKey === "manager";
+  mphAuthState.defaultDesktopMode = getDesktopAccessModeForRole(primaryRoleKey);
+  mphAuthState.allowedDesktopModes = new Set(
+    mphAuthState.isManager ? Object.keys(accessModes) : [mphAuthState.defaultDesktopMode]
+  );
+  applyRoleChrome(primaryRoleKey);
+  syncDrawerProfile(user, primaryRoleKey);
+
+  if (user) {
+    if (authGate) authGate.hidden = true;
+    document.body.classList.remove("auth-locked");
+    if (authStatus) authStatus.textContent = `Sesión activa como ${getAuthDisplayName(user)} · ${getAuthRoleLabel(primaryRoleKey)}.`;
+    setAuthBusy(false, "Entrar");
+    setAuthError("");
+    if (authPasswordInput) authPasswordInput.value = "";
+    const roleSignature = `${user.id}|${primaryRoleKey}|${mphAuthState.roles.map((role) => role.role_key).sort().join(",")}`;
+    if (mphAuthState.appliedSignature !== roleSignature) {
+      applyAccessMode(mphAuthState.defaultDesktopMode, false);
+      window.mphApplyAuthView?.(primaryRoleKey);
+      mphAuthState.appliedSignature = roleSignature;
+    }
+    return;
+  }
+
+  if (authGate) authGate.hidden = false;
+  document.body.classList.add("auth-locked");
+  applyRoleChrome("manager");
+  if (authStatus) authStatus.textContent = "Inicia sesión con uno de los perfiles creados en Supabase Auth para desbloquear la app.";
+  setAuthBusy(false, "Entrar");
+}
+
+async function handleAuthLogout() {
+  const api = window.mphSupabase;
+  if (!api?.signOut) return;
+  window.mphCloseDrawer?.();
+  const result = await api.signOut();
+  if (result?.error) {
+    showToast("No se pudo cerrar la sesión.");
+    return;
+  }
+  setAuthError("");
+}
+
 function resolveTheme(mode) {
   if (mode === "system") return systemTheme.matches ? "dark" : "light";
   return mode === "dark" ? "dark" : "light";
@@ -1270,6 +1887,7 @@ function bindActionButtons(root = document) {
 }
 
 function openAccessMenu() {
+  if (!mphAuthState.isManager) return;
   if (!accessMenu || !accessTrigger) return;
   accessMenu.hidden = false;
   accessTrigger.setAttribute("aria-expanded", "true");
@@ -1305,7 +1923,7 @@ function renderTPVCatalog() {
   const categoryTabs = document.querySelector("#tpvCategoryTabs");
   const sortButton = document.querySelector("#tpvSortButton");
   if (!grid) return;
-  const catalogProducts = tpvCatalogs[tpvState.catalog] || [];
+  const catalogProducts = getTpvCatalogProducts(tpvState.catalog);
   const isBarra = tpvState.catalog === "barra";
   const sortMode = tpvState.sort || (isBarra ? "featured" : "price-asc");
   let products = [...catalogProducts];
@@ -1318,15 +1936,21 @@ function renderTPVCatalog() {
       [product.name, product.category, product.tag].filter(Boolean).some((value) => value.toLowerCase().includes(query))
     );
   }
+  const catalogLabels = {
+    taquilla: { title: "Entradas Taquilla", user: "Taquilla", access: "Usuario Taquilla" },
+    barra: { title: "Catálogo Barra", user: "Barra", access: "Usuario Barra" },
+    guardarropia: { title: "Tickets Guardarropía", user: "Guardarropía", access: "Usuario Guardarropía" },
+  };
+  const catalogLabel = catalogLabels[tpvState.catalog] || catalogLabels.taquilla;
   products.sort((a, b) => {
     if (sortMode === "name-asc") return a.name.localeCompare(b.name, "es");
     if (sortMode === "name-desc") return b.name.localeCompare(a.name, "es");
     if (sortMode === "price-desc") return b.price - a.price || a.name.localeCompare(b.name, "es");
     return a.price - b.price || a.name.localeCompare(b.name, "es");
   });
-  fillText("#tpvContextTitle", tpvState.catalog === "taquilla" ? "Entradas Taquilla" : "Catálogo Barra");
-  fillText("#tpvUserLabel", tpvState.catalog === "taquilla" ? "Taquilla" : "Barra");
-  fillText("#tpvAccessModeLabel", tpvState.catalog === "taquilla" ? "Usuario Taquilla" : "Usuario Barra");
+  fillText("#tpvContextTitle", catalogLabel.title);
+  fillText("#tpvUserLabel", catalogLabel.user);
+  fillText("#tpvAccessModeLabel", catalogLabel.access);
   document.querySelectorAll("[data-pos-catalog]").forEach((button) => button.classList.toggle("active", button.dataset.posCatalog === tpvState.catalog));
   if (searchWrap) searchWrap.hidden = !isBarra;
   if (categoryTabs) categoryTabs.hidden = !isBarra;
@@ -1408,7 +2032,7 @@ function renderTPVTicket() {
 }
 
 function addTPVItem(id) {
-  const product = tpvProductsById[id];
+  const product = getTpvProductById(id);
   if (!product) return;
   const existing = tpvState.ticket.find((item) => item.id === id);
   if (existing) existing.qty += 1;
@@ -1425,7 +2049,8 @@ function removeTPVItem(id) {
 }
 
 function setTPVCatalog(catalog, announce = true) {
-  tpvState.catalog = catalog in tpvCatalogs ? catalog : "taquilla";
+  const allowedCatalogs = new Set([...Object.keys(tpvCatalogs), ...Object.keys(mphSupabaseRuntime.productsBySection)]);
+  tpvState.catalog = allowedCatalogs.has(catalog) ? catalog : "taquilla";
   tpvState.search = "";
   tpvState.category = "all";
   tpvState.sort = tpvState.catalog === "barra" ? "price-asc" : "price-asc";
@@ -1434,11 +2059,12 @@ function setTPVCatalog(catalog, announce = true) {
 }
 
 function applyAccessMode(mode, announce = true) {
-  const config = accessModes[mode] || accessModes.director;
+  const requestedMode = mphAuthState.allowedDesktopModes?.has(mode) ? mode : mphAuthState.defaultDesktopMode || "director";
+  const config = accessModes[requestedMode] || accessModes.director;
   if (accessLabel) accessLabel.textContent = config.label;
-  document.querySelectorAll(".access-option").forEach((button) => button.classList.toggle("active", button.dataset.access === mode));
+  accessOptions.forEach((button) => button.classList.toggle("active", button.dataset.access === requestedMode));
   desktopAdmin?.classList.toggle("pos-access", config.page === "tpv");
-  desktopAdmin?.setAttribute("data-access-mode", mode);
+  desktopAdmin?.setAttribute("data-access-mode", requestedMode);
   closeVenueDetail();
   closeStaffDetail();
   switchPage(config.page, "desktop");
@@ -1754,6 +2380,13 @@ const periodKeyMap = {
   "Mes actual": "mtd",
 };
 
+const panelScopeVenueMap = {
+  global: window.mphSupabase?.config?.appVenueId || "kapital-madrid",
+  kapital: "kapital-madrid",
+  pacha: window.mphSupabase?.config?.appVenueId || "kapital-madrid",
+  opium: "opium-barcelona",
+};
+
 // ── Mobile Preview Mode ──────────────────────────────────
 (function initMobilePreview() {
   const overlay = document.getElementById("mobilePreviewOverlay");
@@ -1769,6 +2402,21 @@ const periodKeyMap = {
   const localCapacityInfoBtn = document.getElementById("mphLocalCapacityInfoBtn");
   const localMap = document.getElementById("mphLocalOpsMap");
   const localSectionTabs = [...document.querySelectorAll(".mph-local-section-tab, .mph-group-row--button[data-mph-local-section]")];
+  const financeDateTrigger = document.getElementById("mphFinanceDateTrigger");
+  const financeDatePickerBtn = document.getElementById("mphFinanceDatePickerBtn");
+  const financeDateNative = document.getElementById("mphFinanceDateNative");
+  const financePeriodTabs = [...document.querySelectorAll("[data-mph-finance-period]")];
+  const quickAccessButtons = [...document.querySelectorAll("[data-mph-panel-access]")];
+  const bottomNavButtons = [...document.querySelectorAll(".mph-bottom-nav button[data-mph-screen]")];
+  const tpvPayCardButton = document.getElementById("tpvPayCardButton");
+  const tpvPayCashButton = document.getElementById("tpvPayCashButton");
+  const localOpsDetail = document.getElementById("mphLocalOpsDetail");
+  const roleBackBtn = document.getElementById("mphRoleBackBtn");
+  const roleTitle = document.getElementById("mphRoleTitle");
+  const roleVenueLabel = document.getElementById("mphRoleVenueLabel");
+  const roleSubtitle = document.getElementById("mphRoleSubtitle");
+  const roleViewContent = document.getElementById("mphRoleViewContent");
+  const roleAppsButton = document.querySelector('.mph-screen[data-mph-screen="role-view"] .mph-topbar .mph-icon-btn:last-child');
   const scopeTrigger = document.getElementById("mphScopeTrigger");
   const dateTrigger = document.getElementById("mphDateTrigger");
   const scopeMenu = document.getElementById("mphScopeMenu");
@@ -1782,37 +2430,412 @@ const periodKeyMap = {
   const staffTabs = [...document.querySelectorAll("[data-mph-staff-tab]")];
   const stockDetailBackBtn = document.getElementById("mphStockDetailBackBtn");
   let activeVenuePeriod = venueTabs.find((tab) => tab.classList.contains("active"))?.dataset.mphPeriod || "today";
+  const mphFinanceState = {
+    period: financePeriodTabs.find((tab) => tab.classList.contains("active"))?.dataset.mphFinancePeriod || "today",
+    selectedDate: normalizeMphDate(new Date()),
+  };
+  const mphRoleViewState = {
+    role: "taquilla",
+    venueId: window.mphSupabase?.config?.appVenueId || "kapital-madrid",
+    focusId: null,
+  };
+  let mphFinanceRemoteSnapshot = null;
+  let mphFinanceRemoteSnapshotKey = "";
+  let mphFinanceRemoteSyncToken = 0;
+
+  function setFinanceBadge(id, text, tone = "neutral") {
+    const node = document.getElementById(id);
+    if (!node) return;
+    node.textContent = text;
+    node.classList.remove("up", "down", "neutral");
+    node.classList.add(tone);
+  }
+
+  function formatFinanceHeroLabel(periodKey, date) {
+    if (periodKey === "today") {
+      const todayKey = formatMphInputDate(new Date());
+      return formatMphInputDate(date) === todayKey
+        ? "Resultado operativo (hoy)"
+        : `Resultado operativo (${formatMphShortDate(date)})`;
+    }
+    if (periodKey === "7d") return `Resultado operativo (7 días)`;
+    if (periodKey === "30d") return `Resultado operativo (30 días)`;
+    if (periodKey === "mtd") return "Resultado operativo (mes actual)";
+    return "Resultado operativo";
+  }
+
+  function getMphFinanceSnapshotKey() {
+    return `${formatMphInputDate(mphFinanceState.selectedDate)}|${mphFinanceState.period}`;
+  }
+
+  async function hydrateFinanceSnapshotFromSupabase() {
+    const api = window.mphSupabase;
+    const requestKey = getMphFinanceSnapshotKey();
+    const requestToken = ++mphFinanceRemoteSyncToken;
+
+    if (!api?.isConfigured?.()) {
+      mphFinanceRemoteSnapshot = null;
+      mphFinanceRemoteSnapshotKey = "";
+      return;
+    }
+
+    const snapshot = await api.getFinanceSnapshot(formatMphInputDate(mphFinanceState.selectedDate), mphFinanceState.period);
+    if (requestToken !== mphFinanceRemoteSyncToken) return;
+
+    mphFinanceRemoteSnapshot = snapshot;
+    mphFinanceRemoteSnapshotKey = snapshot ? requestKey : "";
+    renderMphFinanceScreen();
+  }
+
+  function renderMphFinanceScreen() {
+    const financeDateLabel = document.getElementById("mphFinanceDateLabel");
+    if (financeDateLabel) financeDateLabel.textContent = formatMphShortDate(mphFinanceState.selectedDate);
+    if (financeDateNative instanceof HTMLInputElement) {
+      financeDateNative.value = formatMphInputDate(mphFinanceState.selectedDate);
+      financeDateNative.max = formatMphInputDate(new Date());
+    }
+    financePeriodTabs.forEach((tab) => {
+      tab.classList.toggle("active", tab.dataset.mphFinancePeriod === mphFinanceState.period);
+    });
+
+    const { currentRange, current, previous } = computeMphFinanceMetrics(mphFinanceState.period, mphFinanceState.selectedDate);
+    const revenueDelta = previous.revenue ? ((current.revenue - previous.revenue) / previous.revenue) * 100 : 0;
+    const ebitdaDelta = current.ebitdaPct - previous.ebitdaPct;
+    const comparisonLabel = currentRange.comparisonLabel;
+    const financeSeed = getMphDayIndex(mphFinanceState.selectedDate) + currentRange.days;
+    const feesValue = current.revenue * clamp(0.011 + (currentRange.days * 0.00004), 0.011, 0.018);
+    const otherValue = Math.max(120 * currentRange.days, current.operatingCostsValue * 0.035);
+    const barsShare = clamp(0.62 + Math.sin(financeSeed * 0.05) * 0.035, 0.57, 0.68);
+    const taquillaShare = clamp(0.31 + Math.cos(financeSeed * 0.07) * 0.025, 0.24, 0.35);
+    const barsValue = current.revenue * barsShare;
+    const taquillaValue = current.revenue * taquillaShare;
+    const netRevenueValue = Math.max(0, current.revenue - feesValue);
+    const cashAvailableValue = Math.max(0, current.ebitdaValue * 0.87 + current.breakdown.staff * 0.22);
+    const pendingPaymentsValue = (current.breakdown.suppliers * 0.31) + (current.breakdown.rent * 0.42) + (current.breakdown.marketing * 0.28);
+    const tpvRegisteredValue = current.revenue * 0.69;
+    const cashCountedValue = current.revenue * 0.097;
+    const qrSettledValue = current.revenue * 0.129;
+    const movementTotal = Math.max(18, Math.round(currentRange.days * 21));
+    const pendingMovements = Math.max(1, Math.round(movementTotal * clamp(0.018 + Math.sin(financeSeed * 0.03) * 0.008, 0.01, 0.05)));
+    const reconciledMovements = Math.max(0, movementTotal - pendingMovements);
+    const reconciledPct = movementTotal ? Math.round((reconciledMovements / movementTotal) * 100) : 0;
+    const mismatchValue = Math.abs(Math.round(Math.sin(financeSeed * 0.17) * 120));
+    const vatOutValue = current.revenue * 0.176;
+    const vatInValue = (current.breakdown.suppliers * 0.12) + (current.breakdown.marketing * 0.08) + (current.breakdown.security * 0.06);
+    const vatDueValue = Math.max(0, vatOutValue - vatInValue);
+    const invoiceOneValue = pendingPaymentsValue * 0.52;
+    const invoiceTwoValue = pendingPaymentsValue * 0.16;
+    const invoiceThreeValue = pendingPaymentsValue * 0.32;
+    const remoteSnapshot = mphFinanceRemoteSnapshotKey === getMphFinanceSnapshotKey() ? mphFinanceRemoteSnapshot : null;
+    const displayRevenueValue = remoteSnapshot?.gross_revenue ?? current.revenue;
+    const displayNetRevenueValue = remoteSnapshot?.net_revenue ?? netRevenueValue;
+    const displayProductCostValue = remoteSnapshot?.product_cost ?? current.costOfSalesValue;
+    const displayStaffCostValue = remoteSnapshot?.staff_cost ?? current.breakdown.staff;
+    const displayFeesValue = remoteSnapshot?.fees_cost ?? feesValue;
+    const displayOtherValue = remoteSnapshot?.other_cost ?? otherValue;
+    const displayOperatingProfitValue = remoteSnapshot?.operating_profit ?? current.ebitdaValue;
+    const displayCashValue = remoteSnapshot?.cash_available ?? cashAvailableValue;
+    const displayPendingPaymentsValue = remoteSnapshot?.pending_payments ?? pendingPaymentsValue;
+    const displayMarginPct = remoteSnapshot?.margin_pct ?? current.ebitdaPct;
+    const displayCostOfSalesPct = displayRevenueValue ? (displayProductCostValue / displayRevenueValue) * 100 : current.costOfSalesPct;
+    const displayStaffPct = displayRevenueValue ? (displayStaffCostValue / displayRevenueValue) * 100 : 0;
+    const displaySourceNote = remoteSnapshot ? "Sincronizado con Supabase." : "Sin devoluciones ni fees.";
+
+    fillText("#mphFinanceHeroLabel", formatFinanceHeroLabel(mphFinanceState.period, mphFinanceState.selectedDate));
+    fillText("#mphFinanceHeroValue", formatPreciseCurrency(displayOperatingProfitValue));
+    fillText("#mphFinanceHeroTrendText", `${formatSignedPercent(revenueDelta)} (${formatPreciseCurrency(current.revenue - previous.revenue)})`);
+    fillText("#mphFinanceHeroVsLabel", comparisonLabel);
+    setMphTrendNode("#mphFinanceHeroTrend", `${formatSignedPercent(revenueDelta)} (${formatPreciseCurrency(current.revenue - previous.revenue)})`, revenueDelta);
+
+    fillText("#mphFinanceNetRevenueValue", formatFinanceKpiCurrency(displayNetRevenueValue));
+    fillText("#mphFinanceNetRevenueNote", displaySourceNote);
+    fillText("#mphFinanceSessionMarginValue", `${displayMarginPct.toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`);
+    fillText("#mphFinanceSessionMarginNote", `${formatSignedPoints(ebitdaDelta)} vs tramo anterior.`);
+    fillText("#mphFinanceCashValue", formatFinanceKpiCurrency(displayCashValue));
+    fillText("#mphFinanceCashNote", "Liquidación instantánea.");
+    fillText("#mphFinancePendingPaymentsValue", formatFinanceKpiCurrency(displayPendingPaymentsValue));
+    fillText("#mphFinancePendingPaymentsNote", "Facturas y proveedores.");
+
+    fillText("#mphFinanceEquationRevenue", formatCompactCurrency(displayRevenueValue));
+    fillText("#mphFinanceEquationProduct", `-${formatCompactCurrency(displayProductCostValue)}`);
+    fillText("#mphFinanceEquationStaff", `-${formatCompactCurrency(displayStaffCostValue)}`);
+    fillText("#mphFinanceEquationFees", `-${formatCompactCurrency(displayFeesValue)}`);
+    fillText("#mphFinanceEquationOther", `-${formatCompactCurrency(displayOtherValue)}`);
+
+    fillText("#mphFinanceRevenueValue", formatCompactCurrency(displayRevenueValue));
+    setFinanceBadge("mphFinanceRevenueBadge", `${getMphTrendMeta(revenueDelta).icon === "remove" ? "·" : revenueDelta >= 0 ? "↑" : "↓"}${Math.abs(revenueDelta).toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`, getMphTrendMeta(revenueDelta).className === "flat" ? "neutral" : getMphTrendMeta(revenueDelta).className);
+
+    fillText("#mphFinanceCostSalesValue", formatCompactCurrency(displayProductCostValue));
+    setFinanceBadge("mphFinanceCostSalesBadge", `${displayCostOfSalesPct.toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`);
+
+    fillText("#mphFinanceGrossMarginValue", formatCompactCurrency(displayRevenueValue - displayProductCostValue));
+    setFinanceBadge("mphFinanceGrossMarginBadge", `${(displayRevenueValue ? (((displayRevenueValue - displayProductCostValue) / displayRevenueValue) * 100) : current.grossMarginPct).toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`, "up");
+
+    fillText("#mphFinanceOperatingCostsValue", formatCompactCurrency(displayStaffCostValue + displayFeesValue + displayOtherValue));
+    setFinanceBadge("mphFinanceOperatingCostsBadge", `${(displayRevenueValue ? (((displayStaffCostValue + displayFeesValue + displayOtherValue) / displayRevenueValue) * 100) : current.operatingCostsPct).toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`);
+
+    fillText("#mphFinanceEbitdaValue", formatCompactCurrency(displayOperatingProfitValue));
+    setFinanceBadge("mphFinanceEbitdaBadge", `${displayMarginPct.toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`, getMphTrendMeta(ebitdaDelta, 0.2).className === "flat" ? "neutral" : getMphTrendMeta(ebitdaDelta, 0.2).className);
+
+    fillText("#mphFinanceStaffCostValue", formatCompactCurrency(displayStaffCostValue));
+    setFinanceBadge("mphFinanceStaffCostBadge", `${displayStaffPct.toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`);
+    fillText("#mphFinanceSupplierCostValue", formatCompactCurrency(current.breakdown.suppliers));
+    setFinanceBadge("mphFinanceSupplierCostBadge", `${((current.breakdown.suppliers / current.revenue) * 100).toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`);
+    fillText("#mphFinanceRentCostValue", formatCompactCurrency(current.breakdown.rent));
+    setFinanceBadge("mphFinanceRentCostBadge", `${((current.breakdown.rent / current.revenue) * 100).toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`);
+    fillText("#mphFinanceMarketingCostValue", formatCompactCurrency(current.breakdown.marketing));
+    setFinanceBadge("mphFinanceMarketingCostBadge", `${((current.breakdown.marketing / current.revenue) * 100).toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`);
+    fillText("#mphFinanceSecurityCostValue", formatCompactCurrency(current.breakdown.security));
+    setFinanceBadge("mphFinanceSecurityCostBadge", `${((current.breakdown.security / current.revenue) * 100).toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`);
+
+    fillText("#mphFinanceAvgTicketValue", formatPreciseCurrency(current.avgTicket));
+    fillText("#mphFinanceRevPerSqmValue", formatPreciseCurrency(current.revPerSqm));
+    fillText("#mphFinanceRevPerSqmVsLabel", `vs ${formatPreciseCurrency(previous.revPerSqm)} previo`);
+    fillText("#mphFinanceNetMarginValue", `${displayMarginPct.toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`);
+    setMphTrendNode("#mphFinanceNetMarginTrend", formatSignedPoints(ebitdaDelta), ebitdaDelta, 0.2);
+
+    fillText("#mphFinanceBarsValue", formatCompactCurrency(barsValue));
+    fillText("#mphFinanceTaquillaValue", formatCompactCurrency(taquillaValue));
+    fillText("#mphFinanceProductCostValue", `-${formatCompactCurrency(displayProductCostValue)}`);
+    fillText("#mphFinanceStaffRowValue", `-${formatCompactCurrency(displayStaffCostValue)}`);
+    fillText("#mphFinanceStaffCostNote", `${Math.round(current.realCapacity / 125)} fichados · coste vivo ${formatCompactCurrency(displayStaffCostValue / Math.max(1, currentRange.days * 10))}/h`);
+    fillText("#mphFinanceFeesValue", `-${formatCompactCurrency(displayFeesValue)}`);
+    fillText("#mphFinanceOtherValue", `-${formatCompactCurrency(displayOtherValue)}`);
+
+    fillText("#mphFinanceCloseTpvValue", formatCompactCurrency(tpvRegisteredValue));
+    fillText("#mphFinanceCloseTpvNote", `${formatPreciseCurrency(tpvRegisteredValue)} · 4 barras`);
+    fillText("#mphFinanceCloseCashValue", formatCompactCurrency(cashCountedValue));
+    fillText("#mphFinanceCloseCashNote", `${formatPreciseCurrency(cashCountedValue)} · diferencia ${formatPreciseCurrency(mismatchValue)}`);
+    fillText("#mphFinanceCloseQrValue", formatCompactCurrency(qrSettledValue));
+    fillText("#mphFinanceCloseQrNote", `${formatPreciseCurrency(qrSettledValue)} · liquidado`);
+
+    fillText("#mphFinanceInvoiceOneValue", formatCompactCurrency(invoiceOneValue));
+    fillText("#mphFinanceInvoiceTwoValue", formatCompactCurrency(invoiceTwoValue));
+    fillText("#mphFinanceInvoiceThreeValue", formatCompactCurrency(invoiceThreeValue));
+
+    fillText("#mphFinanceRecoPct", `${reconciledPct}%`);
+    fillText("#mphFinanceRecoNote", `${reconciledMovements}/${movementTotal} movimientos`);
+    fillText("#mphFinancePendingMoveCount", pendingMovements.toLocaleString("es-ES"));
+    fillText("#mphFinancePendingMoveNote", "2 proveedores · 1 efectivo");
+    fillText("#mphFinanceMismatchValue", formatCompactCurrency(mismatchValue));
+    fillText("#mphFinanceMismatchNote", mismatchValue === 0 ? "Caja cerrada sin diferencia" : "Diferencia pendiente de revisar");
+
+    fillText("#mphFinanceVatOutValue", formatCompactCurrency(vatOutValue));
+    fillText("#mphFinanceVatInValue", `-${formatCompactCurrency(vatInValue)}`);
+    fillText("#mphFinanceVatDueValue", formatCompactCurrency(vatDueValue));
+  }
+
+  function openFinanceDatePicker() {
+    if (!(financeDateNative instanceof HTMLInputElement)) return;
+    if (typeof financeDateNative.showPicker === "function") {
+      financeDateNative.showPicker();
+      return;
+    }
+    financeDateNative.focus();
+    financeDateNative.click();
+  }
+
+  function createStockBottleArt(label, accent, fill = "#f3efe7") {
+    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 112 216">
+        <rect width="112" height="216" rx="16" fill="#ffffff"/>
+        <rect x="40" y="10" width="32" height="20" rx="6" fill="${accent}"/>
+        <rect x="45" y="26" width="22" height="30" rx="7" fill="${accent}"/>
+        <path d="M33 54h46l10 32v82c0 18-14 32-33 32H56c-19 0-33-14-33-32V86z" fill="${fill}" stroke="#d8d3ca" stroke-width="2"/>
+        <rect x="28" y="102" width="56" height="44" rx="10" fill="${accent}" opacity="0.92"/>
+        <rect x="36" y="150" width="40" height="18" rx="9" fill="#f5f5f5"/>
+        <text x="56" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="700" fill="#ffffff">${label}</text>
+        <text x="56" y="162" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="700" fill="#222222">STOCK</text>
+      </svg>
+    `)}`;
+  }
 
   const mphStockProducts = {
     "grey-goose": {
-      name: "Grey Goose", category: "Vodka", venue: "Kapital Madrid", status: "critical",
+      name: "Grey Goose", category: "Vodka", venue: "Kapital Madrid", venueKey: "kapital", status: "critical",
       img: "https://www.pngplay.com/wp-content/uploads/15/Grey-Goose-Vodka-Transparent-Images.png",
+      currentUnits: 8, minUnits: 20, optimalUnits: 36, avgConsumptionUnits: 12,
       current: "8 botellas", min: "20 botellas", optimal: "36 botellas", avgConsumption: "12 bot/noche",
       supplier: "Bacardi-Martini Spain", lastOrder: "18 may 2026", leadTime: "48 h", orderUnit: "Caja 6 uds",
-      costPrice: "€22.40", pvp: "€14.00/copa", margin: "€9.80/copa", marginPct: "69.8%", revenue7d: "€4,312",
+      costPrice: "€22.40", pvp: "€14.00/copa", margin: "€9.80/copa", marginPct: "69.8%", revenue7d: "€4,312", revenue7dValue: 4312,
     },
     "moet-chandon": {
-      name: "Moët & Chandon", category: "Champagne", venue: "Pacha Ibiza", status: "critical",
+      name: "Moët & Chandon", category: "Champagne", venue: "Pacha Ibiza", venueKey: "pacha", status: "critical",
       img: "https://www.pngplay.com/wp-content/uploads/15/Moet-Chandon-Brut-Imperial-PNG-Free-File-Download.png",
+      currentUnits: 6, minUnits: 15, optimalUnits: 30, avgConsumptionUnits: 8,
       current: "6 botellas", min: "15 botellas", optimal: "30 botellas", avgConsumption: "8 bot/noche",
       supplier: "LVMH Moët Hennessy", lastOrder: "15 may 2026", leadTime: "72 h", orderUnit: "Caja 6 uds",
-      costPrice: "€36.20", pvp: "€180.00/botella", margin: "€143.80/bot", marginPct: "79.9%", revenue7d: "€6,840",
+      costPrice: "€36.20", pvp: "€180.00/botella", margin: "€143.80/bot", marginPct: "79.9%", revenue7d: "€6,840", revenue7dValue: 6840,
     },
     "johnnie-walker": {
-      name: "Johnnie Walker", category: "Black Label", venue: "Opium Barcelona", status: "critical",
+      name: "Johnnie Walker", category: "Black Label", venue: "Opium Barcelona", venueKey: "opium", status: "critical",
       img: "https://upload.wikimedia.org/wikipedia/commons/2/21/Johnnie_Walker_Black_Label.jpg",
+      currentUnits: 10, minUnits: 25, optimalUnits: 40, avgConsumptionUnits: 9,
       current: "10 botellas", min: "25 botellas", optimal: "40 botellas", avgConsumption: "9 bot/noche",
       supplier: "Diageo España", lastOrder: "20 may 2026", leadTime: "24 h", orderUnit: "Caja 12 uds",
-      costPrice: "€18.60", pvp: "€12.00/copa", margin: "€8.10/copa", marginPct: "67.5%", revenue7d: "€3,960",
+      costPrice: "€18.60", pvp: "€12.00/copa", margin: "€8.10/copa", marginPct: "67.5%", revenue7d: "€3,960", revenue7dValue: 3960,
     },
     "bombay-sapphire": {
-      name: "Bombay Sapphire", category: "Gin", venue: "Kapital Madrid", status: "low",
+      name: "Bombay Sapphire", category: "Gin", venue: "Kapital Madrid", venueKey: "kapital", status: "low",
       img: "https://upload.wikimedia.org/wikipedia/commons/f/f2/Bombay-sapphire.jpg",
-      current: "28 botellas", min: "20 botellas", optimal: "45 botellas", avgConsumption: "7 bot/noche",
+      currentUnits: 22, minUnits: 20, optimalUnits: 45, avgConsumptionUnits: 7,
+      current: "22 botellas", min: "20 botellas", optimal: "45 botellas", avgConsumption: "7 bot/noche",
       supplier: "Bacardi-Martini Spain", lastOrder: "22 may 2026", leadTime: "48 h", orderUnit: "Caja 6 uds",
-      costPrice: "€14.80", pvp: "€11.00/copa", margin: "€7.20/copa", marginPct: "65.4%", revenue7d: "€2,750",
+      costPrice: "€14.80", pvp: "€11.00/copa", margin: "€7.20/copa", marginPct: "65.4%", revenue7d: "€2,750", revenue7dValue: 2750,
+    },
+    "patron-silver": {
+      name: "Patrón Silver", category: "Tequila", venue: "Pacha Ibiza", venueKey: "pacha", status: "low",
+      img: createStockBottleArt("PATRON", "#2d8a63", "#f4f0e4"),
+      currentUnits: 14, minUnits: 12, optimalUnits: 24, avgConsumptionUnits: 5,
+      current: "14 botellas", min: "12 botellas", optimal: "24 botellas", avgConsumption: "5 bot/noche",
+      supplier: "Bacardi España", lastOrder: "21 may 2026", leadTime: "48 h", orderUnit: "Caja 6 uds",
+      costPrice: "€28.90", pvp: "€16.00/copa", margin: "€11.20/copa", marginPct: "70.0%", revenue7d: "€3,180", revenue7dValue: 3180,
+    },
+    "veuve-clicquot": {
+      name: "Veuve Clicquot", category: "Champagne", venue: "Opium Barcelona", venueKey: "opium", status: "low",
+      img: createStockBottleArt("VEUVE", "#f5a623", "#f7edcf"),
+      currentUnits: 11, minUnits: 10, optimalUnits: 22, avgConsumptionUnits: 4,
+      current: "11 botellas", min: "10 botellas", optimal: "22 botellas", avgConsumption: "4 bot/noche",
+      supplier: "Moët Hennessy", lastOrder: "23 may 2026", leadTime: "72 h", orderUnit: "Caja 6 uds",
+      costPrice: "€39.50", pvp: "€190.00/botella", margin: "€150.50/bot", marginPct: "79.2%", revenue7d: "€4,560", revenue7dValue: 4560,
+    },
+    "hendricks": {
+      name: "Hendrick's", category: "Gin", venue: "Kapital Madrid", venueKey: "kapital", status: "low",
+      img: createStockBottleArt("HENDRIX", "#3c3c46", "#e7e7ea"),
+      currentUnits: 16, minUnits: 14, optimalUnits: 30, avgConsumptionUnits: 6,
+      current: "16 botellas", min: "14 botellas", optimal: "30 botellas", avgConsumption: "6 bot/noche",
+      supplier: "William Grant & Sons", lastOrder: "24 may 2026", leadTime: "48 h", orderUnit: "Caja 6 uds",
+      costPrice: "€19.20", pvp: "€13.50/copa", margin: "€8.90/copa", marginPct: "65.9%", revenue7d: "€2,940", revenue7dValue: 2940,
+    },
+    "don-julio": {
+      name: "Don Julio Reposado", category: "Tequila", venue: "Pacha Ibiza", venueKey: "pacha", status: "low",
+      img: createStockBottleArt("JULIO", "#c58a34", "#f4e2bf"),
+      currentUnits: 18, minUnits: 16, optimalUnits: 28, avgConsumptionUnits: 6,
+      current: "18 botellas", min: "16 botellas", optimal: "28 botellas", avgConsumption: "6 bot/noche",
+      supplier: "Diageo España", lastOrder: "23 may 2026", leadTime: "48 h", orderUnit: "Caja 6 uds",
+      costPrice: "€31.40", pvp: "€17.00/copa", margin: "€12.40/copa", marginPct: "72.9%", revenue7d: "€3,740", revenue7dValue: 3740,
+    },
+    "belvedere": {
+      name: "Belvedere", category: "Vodka", venue: "Opium Barcelona", venueKey: "opium", status: "low",
+      img: createStockBottleArt("BELVE", "#6d889f", "#eef3f7"),
+      currentUnits: 19, minUnits: 18, optimalUnits: 32, avgConsumptionUnits: 7,
+      current: "19 botellas", min: "18 botellas", optimal: "32 botellas", avgConsumption: "7 bot/noche",
+      supplier: "Moët Hennessy", lastOrder: "24 may 2026", leadTime: "48 h", orderUnit: "Caja 6 uds",
+      costPrice: "€24.70", pvp: "€15.00/copa", margin: "€10.10/copa", marginPct: "67.3%", revenue7d: "€3,220", revenue7dValue: 3220,
+    },
+    "absolut-elyx": {
+      name: "Absolut Elyx", category: "Vodka", venue: "Kapital Madrid", venueKey: "kapital", status: "low",
+      img: createStockBottleArt("ELYX", "#b07b3d", "#f2ead9"),
+      currentUnits: 13, minUnits: 12, optimalUnits: 24, avgConsumptionUnits: 5,
+      current: "13 botellas", min: "12 botellas", optimal: "24 botellas", avgConsumption: "5 bot/noche",
+      supplier: "Pernod Ricard", lastOrder: "25 may 2026", leadTime: "24 h", orderUnit: "Caja 6 uds",
+      costPrice: "€21.80", pvp: "€14.50/copa", margin: "€9.40/copa", marginPct: "64.8%", revenue7d: "€2,610", revenue7dValue: 2610,
     },
   };
+
+  const stockList = document.querySelector(".mph-stock-list");
+  const stockTabs = [...document.querySelectorAll(".mph-stock-tab")];
+  const stockState = {
+    activeFilter: "critical",
+    activeVenue: "todos",
+    query: "",
+  };
+
+  function getStockCoverage(product) {
+    return product.minUnits > 0 ? product.currentUnits / product.minUnits : product.currentUnits;
+  }
+
+  function getStockDaysCover(product) {
+    return product.avgConsumptionUnits > 0 ? product.currentUnits / product.avgConsumptionUnits : product.currentUnits;
+  }
+
+  function compareStockProducts(productA, productB) {
+    const statusOrder = { critical: 0, low: 1 };
+    const statusDiff = statusOrder[productA.status] - statusOrder[productB.status];
+    if (statusDiff !== 0) return statusDiff;
+
+    const coverageDiff = getStockCoverage(productA) - getStockCoverage(productB);
+    if (Math.abs(coverageDiff) > 0.0001) return coverageDiff;
+
+    const daysCoverDiff = getStockDaysCover(productA) - getStockDaysCover(productB);
+    if (Math.abs(daysCoverDiff) > 0.0001) return daysCoverDiff;
+
+    const shortfallDiff = (productB.minUnits - productB.currentUnits) - (productA.minUnits - productA.currentUnits);
+    if (shortfallDiff !== 0) return shortfallDiff;
+
+    return (productB.revenue7dValue || 0) - (productA.revenue7dValue || 0);
+  }
+
+  function getFilteredStockProducts() {
+    const search = stockState.query.trim().toLowerCase();
+
+    return Object.entries(mphStockProducts)
+      .filter(([, product]) => {
+        if (stockState.activeFilter !== "all" && product.status !== stockState.activeFilter) return false;
+        if (stockState.activeVenue !== "todos" && product.venueKey !== stockState.activeVenue) return false;
+        if (!search) return true;
+        const haystack = `${product.name} ${product.category} ${product.venue}`.toLowerCase();
+        return haystack.includes(search);
+      })
+      .sort(([, productA], [, productB]) => compareStockProducts(productA, productB));
+  }
+
+  function renderStockBadges() {
+    const scopedProducts = Object.values(mphStockProducts).filter((product) => {
+      return stockState.activeVenue === "todos" || product.venueKey === stockState.activeVenue;
+    });
+    const criticalCount = scopedProducts.filter((product) => product.status === "critical").length;
+    const lowCount = scopedProducts.filter((product) => product.status === "low").length;
+
+    stockTabs.forEach((tab) => {
+      const badge = tab.querySelector(".mph-badge");
+      if (!badge) return;
+      if (tab.dataset.stockFilter === "critical") badge.textContent = String(criticalCount);
+      if (tab.dataset.stockFilter === "low") badge.textContent = String(lowCount);
+    });
+  }
+
+  function renderStockList() {
+    if (!stockList || !stockEmpty) return;
+
+    const products = getFilteredStockProducts();
+    stockList.innerHTML = products.map(([productId, product]) => {
+      const isCritical = product.status === "critical";
+      return `
+        <div class="mph-stock-item ${product.status}" data-product-id="${productId}" style="cursor:pointer">
+          <div class="mph-product-accent"></div>
+          <div class="mph-product-img">
+            <img alt="${product.name} ${product.category}" src="${product.img}"/>
+          </div>
+          <div class="mph-product-info">
+            <div class="mph-product-header">
+              <div><strong>${product.name}</strong><small>${product.category} · ${product.venue}</small></div>
+              <span class="material-symbols-outlined mph-warning-icon${isCritical ? "" : " mph-warning-icon--amber"}">warning</span>
+            </div>
+            <div class="mph-product-stock">
+              <div><small>Stock actual</small><b${isCritical ? ' class="mph-critical-val"' : ""}>${product.current}</b></div>
+              <div><small>Mínimo</small><b>${product.min}</b></div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    stockEmpty.textContent = stockState.query.trim()
+      ? "Sin resultados para esa búsqueda."
+      : "No hay botellas en este estado para el local seleccionado.";
+    stockEmpty.classList.toggle("visible", products.length === 0);
+  }
+
+  function syncStockTabs() {
+    stockTabs.forEach((tab) => tab.classList.toggle("active", tab.dataset.stockFilter === stockState.activeFilter));
+  }
+
+  function refreshStockView() {
+    syncStockTabs();
+    renderStockBadges();
+    renderStockList();
+  }
 
   function openStockDetail(productId) {
     const p = mphStockProducts[productId];
@@ -1898,6 +2921,307 @@ const periodKeyMap = {
     if (navBtn) navBtn.classList.add("active");
   }
 
+  function getPanelTargetVenueId() {
+    return panelScopeVenueMap[activePanelVenue] || window.mphSupabase?.config?.appVenueId || "kapital-madrid";
+  }
+
+  function getRoleCatalogKey(role) {
+    return role === "bars" ? "barra" : role === "guardarropia" ? "guardarropia" : "taquilla";
+  }
+
+  function getRoleMeta(role) {
+    return {
+      bars: { title: "Vista Barra", subtitle: "TPV rápido para bebidas y cobro", heroLabel: "Barra activa", pill: "TPV" },
+      taquilla: { title: "Vista Taquilla", subtitle: "Entradas, RRPP e incidencias de puerta", heroLabel: "Taquilla activa", pill: "Acceso" },
+      guardarropia: { title: "Vista Guardarropía", subtitle: "Tickets, recogidas y extras", heroLabel: "Guardarropía activa", pill: "Tickets" },
+      vip: { title: "Vista VIP", subtitle: "Mesas, reservas y servicio de sala", heroLabel: "Sala VIP", pill: "Floor" },
+      aforo: { title: "Vista Pica", subtitle: "Control simple de acceso y aforo", heroLabel: "Control de aforo", pill: "Pica" },
+    }[role] || { title: "Vista operativa", subtitle: "Operativa en directo", heroLabel: "Operativa", pill: "Live" };
+  }
+
+  function renderRoleTpvView(role) {
+    const catalog = getRoleCatalogKey(role);
+    setTPVCatalog(catalog, false);
+    const products = getTpvCatalogProducts(catalog);
+    const itemCount = tpvState.ticket.reduce((sum, item) => sum + item.qty, 0);
+    const totalAmount = tpvState.ticket.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    const meta = getRoleMeta(role);
+    return `
+      <div class="mph-role-shell">
+        <section class="mph-role-hero-card">
+          <p class="mph-role-hero-label">${meta.heroLabel}</p>
+          <div class="mph-role-hero-main">
+            <div>
+              <strong>${formatMoney(totalAmount)}</strong>
+              <span>${role === "taquilla" ? "Venta acumulada del ticket activo." : role === "guardarropia" ? "Importe actual de tickets y extras." : "Cobro en tiempo real de la barra actual."}</span>
+            </div>
+            <span class="mph-role-pill">${meta.pill}</span>
+          </div>
+          <div class="mph-role-kpi-grid">
+            <article><small>Ítems</small><b>${itemCount}</b></article>
+            <article><small>Ticket medio</small><b>${formatMoney(Math.max(0, totalAmount / Math.max(itemCount, 1)))}</b></article>
+            <article><small>Catálogo</small><b>${catalog === "barra" ? "Barra" : catalog === "guardarropia" ? "Ropero" : "Entradas"}</b></article>
+          </div>
+        </section>
+        <section class="mph-role-ticket-card">
+          <div class="mph-role-ticket-head">
+            <div>
+              <strong>Ticket activo</strong>
+              <span>${itemCount} líneas operativas</span>
+            </div>
+            <button class="mph-role-btn mph-role-btn--ghost" type="button" data-mph-role-clear>Vaciar</button>
+          </div>
+          <div class="mph-role-ticket-list">
+            ${tpvState.ticket.length ? tpvState.ticket.map((item) => `
+              <article class="mph-role-ticket-item">
+                <div class="mph-role-ticket-row">
+                  <div>
+                    <strong>${item.name}</strong>
+                    <span>${item.category || item.tag || ""}</span>
+                  </div>
+                  <b>${formatMoney(item.price * item.qty)}</b>
+                </div>
+                <div class="mph-role-ticket-actions">
+                  <button class="mph-role-btn" type="button" data-mph-role-remove="${item.id}">- 1</button>
+                  <button class="mph-role-btn" type="button" data-mph-role-add="${item.id}">+ 1</button>
+                  <button class="mph-role-btn mph-role-btn--ghost" type="button" data-mph-role-delete="${item.id}">Quitar</button>
+                </div>
+              </article>
+            `).join("") : `<div class="mph-role-empty">Todavía no hay productos añadidos. Pulsa una opción del catálogo para construir el ticket.</div>`}
+          </div>
+          <div class="mph-role-ticket-total">
+            <div>
+              <span>Total</span>
+              <strong>${formatMoney(totalAmount)}</strong>
+            </div>
+            <div class="mph-role-inline-actions">
+              <button class="mph-role-btn mph-role-btn--ghost" type="button" data-mph-role-pay="cash">Efectivo</button>
+              <button class="mph-role-btn mph-role-btn--primary" type="button" data-mph-role-pay="card">Tarjeta</button>
+            </div>
+          </div>
+        </section>
+        <section class="mph-role-section-card">
+          <div class="mph-role-section-head">
+            <div>
+              <strong>${catalog === "taquilla" ? "Entradas disponibles" : catalog === "guardarropia" ? "Servicios disponibles" : "Catálogo rápido"}</strong>
+              <span>Pulsa para añadir al ticket</span>
+            </div>
+          </div>
+          <div class="mph-role-product-grid">
+            ${products.map((product) => `
+              <article class="mph-role-product-card">
+                <strong>${product.name}</strong>
+                <span>${product.tag || product.category || ""}</span>
+                <b>${formatMoney(product.price)}</b>
+                <button class="mph-role-btn mph-role-btn--primary" type="button" data-mph-role-add="${product.id}">Añadir</button>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+      </div>
+    `;
+  }
+
+  function renderRoleVipView(venueId) {
+    const meta = getRoleMeta("vip");
+    const tables = getMphLocalSectionItems(venueId, "vip");
+    const reservedCount = tables.filter((item) => item.status === "reserved").length;
+    const occupiedCount = tables.filter((item) => item.status === "occupied").length;
+    return `
+      <div class="mph-role-shell">
+        <section class="mph-role-hero-card">
+          <p class="mph-role-hero-label">${meta.heroLabel}</p>
+          <div class="mph-role-hero-main">
+            <div>
+              <strong>${occupiedCount + reservedCount}</strong>
+              <span>Mesas activas entre reservadas y sentadas.</span>
+            </div>
+            <span class="mph-role-pill">${meta.pill}</span>
+          </div>
+          <div class="mph-role-kpi-grid">
+            <article><small>Reservadas</small><b>${reservedCount}</b></article>
+            <article><small>Sentadas</small><b>${occupiedCount}</b></article>
+            <article><small>Libres</small><b>${tables.filter((item) => item.status === "available").length}</b></article>
+          </div>
+        </section>
+        <section class="mph-role-section-card">
+          <div class="mph-role-section-head">
+            <div>
+              <strong>Mesas y reservas</strong>
+              <span>Estado real de sala VIP</span>
+            </div>
+            <button class="mph-role-btn mph-role-btn--ghost" type="button" data-mph-role-open-local="vip">Mapa</button>
+          </div>
+          <div class="mph-role-stack">
+            ${tables.map((table) => `
+              <article>
+                <div class="mph-role-stack-top">
+                  <div>
+                    <strong>${table.label} · ${table.name}</strong>
+                    <span>${table.reservationClient || "Sin reserva activa"} · ${table.reservationGuests ? `${table.reservationGuests} pax` : "pax pendiente"}</span>
+                  </div>
+                  <div style="text-align:right">
+                    <span class="mph-role-table-status">${table.statusLabel || table.status}</span>
+                    <b style="display:block;margin-top:8px">${formatPreciseCurrency(table.reservationMinimum || table.minimumSpend || 0)}</b>
+                  </div>
+                </div>
+                <small>${table.reservationDeposit ? `Señal ${formatPreciseCurrency(table.reservationDeposit)} · ` : ""}${table.device || table.subtitle}</small>
+                <div class="mph-role-inline-actions">
+                  <button class="mph-role-btn mph-role-btn--primary" type="button" data-mph-role-vip-cycle="${table.id}">${table.status === "occupied" ? "Liberar" : table.status === "reserved" ? "Sentar" : table.status === "blocked" ? "Desbloquear" : "Reservar"}</button>
+                  <button class="mph-role-btn mph-role-btn--ghost" type="button" data-mph-role-open-vip-detail="${table.id}">Ficha</button>
+                </div>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+      </div>
+    `;
+  }
+
+  function renderRoleAforoView(venueId) {
+    const meta = getRoleMeta("aforo");
+    const counters = getMphLocalSectionItems(venueId, "aforo");
+    if (!mphRoleViewState.focusId || !counters.some((item) => item.id === mphRoleViewState.focusId)) {
+      mphRoleViewState.focusId = counters[0]?.id || null;
+    }
+    const activeCounter = counters.find((item) => item.id === mphRoleViewState.focusId) || counters[0];
+    const snapshot = computeMphVenueDayMetrics(venueId, mphLocalDetailState.selectedDate);
+    return `
+      <div class="mph-role-shell">
+        <section class="mph-role-hero-card">
+          <p class="mph-role-hero-label">${meta.heroLabel}</p>
+          <div class="mph-role-hero-main">
+            <div>
+              <strong>${snapshot.realCapacity.toLocaleString("es-ES")}</strong>
+              <span>Personas dentro según el cierre parcial actual.</span>
+            </div>
+            <span class="mph-role-pill">${snapshot.occupancyPct}%</span>
+          </div>
+          <div class="mph-role-kpi-grid">
+            <article><small>Legal</small><b>${snapshot.opsProfile.legalCapacity.toLocaleString("es-ES")}</b></article>
+            <article><small>Cola</small><b>${snapshot.queueMinutes} min</b></article>
+            <article><small>Activo</small><b>${activeCounter?.label || "E1"}</b></article>
+          </div>
+        </section>
+        <section class="mph-role-section-card">
+          <div class="mph-role-section-head">
+            <div>
+              <strong>Controladores</strong>
+              <span>Selecciona un acceso</span>
+            </div>
+          </div>
+          <div class="mph-role-counter-picker">
+            ${counters.map((counter) => `
+              <button class="${counter.id === mphRoleViewState.focusId ? "active" : ""}" type="button" data-mph-role-counter="${counter.id}">${counter.label}</button>
+            `).join("")}
+          </div>
+        </section>
+        <section class="mph-role-section-card">
+          <div class="mph-role-counter-value">
+            <div>
+              <strong>${Number(activeCounter?.counterValue || 0).toLocaleString("es-ES")}</strong>
+              <span>${activeCounter?.name || "Entrada principal"} · ${activeCounter?.mix || ""}</span>
+            </div>
+          </div>
+          <div class="mph-role-inline-actions" style="margin-top:12px">
+            <button class="mph-role-btn mph-role-btn--ghost" type="button" data-mph-role-capacity="-1">Salida -1</button>
+            <button class="mph-role-btn mph-role-btn--primary" type="button" data-mph-role-capacity="1">Entrada +1</button>
+            <button class="mph-role-btn" type="button" data-mph-role-open-local="aforo">Detalle</button>
+          </div>
+        </section>
+      </div>
+    `;
+  }
+
+  function renderRoleView() {
+    if (!roleViewContent) return;
+    const venueId = mphRoleViewState.venueId || getPanelTargetVenueId();
+    const venueProfile = getMphVenueProfileById(venueId);
+    const meta = getRoleMeta(mphRoleViewState.role);
+    if (roleTitle) roleTitle.textContent = meta.title;
+    if (roleVenueLabel) roleVenueLabel.textContent = venueProfile.name;
+    if (roleSubtitle) roleSubtitle.textContent = meta.subtitle;
+
+    roleViewContent.innerHTML = mphRoleViewState.role === "vip"
+      ? renderRoleVipView(venueId)
+      : mphRoleViewState.role === "aforo"
+        ? renderRoleAforoView(venueId)
+        : renderRoleTpvView(mphRoleViewState.role);
+  }
+
+  function openRoleView(role) {
+    mphRoleViewState.role = role;
+    mphRoleViewState.venueId = getPanelTargetVenueId();
+    mphRoleViewState.focusId = null;
+    renderRoleView();
+    switchMphScreen("role-view");
+    showToast(`Vista ${getRoleMeta(role).title} abierta.`);
+  }
+
+  function openPanelQuickAccess(target) {
+    const key = target || "bars";
+    if (key === "finanzas") {
+      switchMphScreen("finanzas");
+      showToast("Vista Finanzas abierta.");
+      return;
+    }
+    openRoleView(key);
+  }
+
+  function applyAuthenticatedMobileView(roleKey) {
+    const normalizedRole = String(roleKey || "").toLowerCase();
+    const isManager = normalizedRole === "manager";
+    const roleScreenMap = {
+      barra: "bars",
+      taquilla: "taquilla",
+      guardarropia: "guardarropia",
+      vip: "vip",
+      pica: "aforo",
+    };
+
+    quickAccessButtons.forEach((button) => {
+      button.hidden = !isManager;
+    });
+
+    bottomNavButtons.forEach((button) => {
+      const screen = button.dataset.mphScreen || "";
+      const shouldShow = isManager
+        ? true
+        : normalizedRole === "office"
+          ? screen === "finanzas"
+          : false;
+      button.hidden = !shouldShow;
+    });
+
+    if (roleBackBtn) roleBackBtn.hidden = !isManager;
+    if (roleAppsButton) roleAppsButton.hidden = !isManager;
+    if (closeBtn) closeBtn.hidden = !isManager;
+
+    if (isManager) {
+      closePreview();
+      switchMphScreen("panel");
+      return;
+    }
+
+    if (normalizedRole === "office") {
+      switchMphScreen("finanzas");
+      if (window.innerWidth > 1180) openPreview();
+      return;
+    }
+
+    const mappedRole = roleScreenMap[normalizedRole];
+    if (mappedRole) {
+      openRoleView(mappedRole);
+      if (window.innerWidth > 1180) openPreview();
+      return;
+    }
+
+    closePreview();
+    switchMphScreen("panel");
+  }
+
+  window.mphApplyAuthView = applyAuthenticatedMobileView;
+
   function applyVenuePeriod(periodKey, announce = false) {
     activeVenuePeriod = periodKey || "today";
     venueTabs.forEach((tab) => tab.classList.toggle("active", tab.dataset.mphPeriod === activeVenuePeriod));
@@ -1905,17 +3229,395 @@ const periodKeyMap = {
     if (announce) showToast(`Periodo ${venueTabs.find((tab) => tab.dataset.mphPeriod === activeVenuePeriod)?.textContent?.trim() || "Hoy"} aplicado.`);
   }
 
+  async function hydrateSupabaseVenue() {
+    const api = window.mphSupabase;
+    if (!api) return;
+
+    const venue = await api.loadVenue();
+    if (!venue) return;
+
+    const targetVenueId = api.config.appVenueId || "kapital-madrid";
+    const venueProfile = mphVenueProfiles.find((profile) => profile.id === targetVenueId);
+    const opsProfile = mphVenueOperations[targetVenueId];
+
+    if (venueProfile) {
+      venueProfile.name = venue.name || venueProfile.name;
+      venueProfile.baseOccupancy = venueProfile.baseOccupancy || 78;
+    }
+
+    if (opsProfile) {
+      opsProfile.city = venue.city || opsProfile.city;
+      opsProfile.legalCapacity = venue.legal_capacity || opsProfile.legalCapacity;
+    }
+
+    if (mphLocalDetailState.venueId === targetVenueId) renderMphLocalDetail();
+    applyVenuePeriod(activeVenuePeriod, false);
+  }
+
+  function mapSupabaseProductToTpvProduct(row) {
+    const meta = row.metadata || {};
+    return {
+      id: row.id,
+      name: row.name,
+      price: Number(row.price || 0),
+      tag: meta.tag || row.category || row.section_key,
+      tone: meta.tone || "slate",
+      icon: meta.icon || "point_of_sale",
+      category: row.category || row.section_key,
+      cost: Number(row.cost || 0),
+      sku: row.sku,
+    };
+  }
+
+  async function hydrateSupabaseOperationalData(selectedDate = mphLocalDetailState.selectedDate) {
+    const api = window.mphSupabase;
+    if (!api?.isConfigured?.()) return;
+    const reservationDate = formatMphInputDate(selectedDate);
+
+    const [barra, taquilla, guardarropia, vipProducts, vipTables, vipReservations, capacityCounters] = await Promise.all([
+      api.listProducts("barra"),
+      api.listProducts("taquilla"),
+      api.listProducts("guardarropia"),
+      api.listProducts("vip"),
+      api.listVipTables(),
+      api.listVipReservations(reservationDate),
+      api.listCapacityCounters(),
+    ]);
+
+    mphSupabaseRuntime.productsBySection.barra = barra.map(mapSupabaseProductToTpvProduct);
+    mphSupabaseRuntime.productsBySection.taquilla = taquilla.map(mapSupabaseProductToTpvProduct);
+    mphSupabaseRuntime.productsBySection.guardarropia = guardarropia.map(mapSupabaseProductToTpvProduct);
+    mphSupabaseRuntime.productsBySection.vip = vipProducts.map(mapSupabaseProductToTpvProduct);
+    mphSupabaseRuntime.vipTables = vipTables;
+    mphSupabaseRuntime.vipReservations = vipReservations;
+    mphSupabaseRuntime.capacityCounters = capacityCounters;
+
+    renderTPVCatalog();
+    renderMphLocalDetail();
+  }
+
+  async function persistTpvSale(paymentMethod) {
+    if (!tpvState.ticket.length) {
+      showToast("Añade productos al ticket.");
+      return;
+    }
+
+    const api = window.mphSupabase;
+    if (!api?.isConfigured?.()) {
+      showToast("Supabase no está listo.");
+      return;
+    }
+
+    const sectionKey = tpvState.catalog === "barra" ? "barra" : tpvState.catalog === "guardarropia" ? "guardarropia" : "taquilla";
+    const result = sectionKey === "guardarropia"
+      ? await api.createCloakroomTicket({
+          paymentMethod,
+          ticketItems: tpvState.ticket,
+          notes: "Creado desde TPV prototipo",
+        })
+      : await api.createPosSale({
+          sectionKey,
+          paymentMethod,
+          ticketItems: tpvState.ticket,
+        });
+
+    if (result.error) {
+      showToast(sectionKey === "guardarropia" ? "No se pudo guardar el ticket." : "No se pudo guardar la venta.");
+      return;
+    }
+
+    const total = tpvState.ticket.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    tpvState.ticket = [];
+    renderTPVTicket();
+    showToast(sectionKey === "guardarropia" ? `Ticket guardado ${formatMoney(total)}.` : `Venta guardada ${formatMoney(total)}.`);
+  }
+
+  async function applyCapacityDelta(counterId, delta) {
+    const api = window.mphSupabase;
+    if (!api?.isConfigured?.()) {
+      showToast("Supabase no está listo.");
+      return;
+    }
+
+    const counter = mphSupabaseRuntime.capacityCounters.find((item) => item.id === counterId);
+    if (!counter) return;
+    const nextValue = Math.max(0, Number(counter.counter_value || 0) + delta);
+    const result = await api.updateCapacityCounter(counterId, nextValue);
+    if (result.error) {
+      showToast("No se pudo actualizar el aforo.");
+      return;
+    }
+
+    counter.counter_value = nextValue;
+    renderMphLocalDetail();
+    showToast(`Aforo actualizado: ${nextValue}.`);
+  }
+
+  async function cycleVipTable(tableId) {
+    const api = window.mphSupabase;
+    if (!api?.isConfigured?.()) {
+      showToast("Supabase no está listo.");
+      return;
+    }
+
+    const table = mphSupabaseRuntime.vipTables.find((item) => item.id === tableId);
+    if (!table) return;
+    const activeReservation = getVipActiveReservation(tableId, mphLocalDetailState.selectedDate);
+    const nextStatus = table.status === "occupied"
+      ? "available"
+      : table.status === "reserved"
+        ? "occupied"
+        : table.status === "blocked"
+          ? "available"
+          : "reserved";
+
+    const tableResult = await api.updateVipTable(tableId, { status: nextStatus });
+    if (tableResult.error) {
+      showToast("No se pudo actualizar la mesa VIP.");
+      return;
+    }
+
+    table.status = nextStatus;
+    if (nextStatus === "reserved" && !activeReservation) {
+      const createReservationResult = await api.createVipReservation({
+        vip_table_id: tableId,
+        reservation_date: formatMphInputDate(mphLocalDetailState.selectedDate),
+        client_name: `Reserva ${table.code}`,
+        guests_count: table.capacity || 4,
+        minimum_spend: table.minimum_spend || 0,
+        deposit_amount: Number((Number(table.minimum_spend || 0) * 0.35).toFixed(2)),
+        status: "confirmed",
+        notes: "Creada desde mapa operativo",
+      });
+      if (!createReservationResult.error && createReservationResult.data) {
+        mphSupabaseRuntime.vipReservations = [createReservationResult.data, ...mphSupabaseRuntime.vipReservations];
+      }
+    }
+
+    if (nextStatus === "occupied" && activeReservation?.id) {
+      const seatedResult = await api.updateVipReservation(activeReservation.id, { status: "seated" });
+      if (!seatedResult.error && seatedResult.data) {
+        mphSupabaseRuntime.vipReservations = mphSupabaseRuntime.vipReservations.map((item) => item.id === seatedResult.data.id ? seatedResult.data : item);
+      }
+    }
+
+    if (nextStatus === "available" && activeReservation?.id) {
+      const completeResult = await api.updateVipReservation(activeReservation.id, { status: "completed" });
+      if (!completeResult.error && completeResult.data) {
+        mphSupabaseRuntime.vipReservations = mphSupabaseRuntime.vipReservations.map((item) => item.id === completeResult.data.id ? completeResult.data : item);
+      }
+    }
+
+    renderMphLocalDetail();
+    showToast(
+      nextStatus === "reserved"
+        ? `Mesa ${table.code} reservada.`
+        : nextStatus === "occupied"
+          ? `Mesa ${table.code} sentada.`
+          : `Mesa ${table.code} liberada.`
+    );
+  }
+
+  async function saveVipReservation(tableId, formData) {
+    const api = window.mphSupabase;
+    if (!api?.isConfigured?.()) {
+      showToast("Supabase no está listo.");
+      return;
+    }
+
+    const table = mphSupabaseRuntime.vipTables.find((item) => item.id === tableId);
+    if (!table) return;
+    if (table.status === "blocked") {
+      showToast("Desbloquea la mesa antes de guardar la reserva.");
+      return;
+    }
+
+    const clientName = String(formData.get("client_name") || "").trim();
+    if (!clientName) {
+      showToast("Añade el nombre del cliente.");
+      return;
+    }
+
+    const guestsCount = Math.max(1, Math.round(parseMphNumber(formData.get("guests_count"), table.capacity || 4)));
+    const minimumSpend = Math.max(0, Number(parseMphNumber(formData.get("minimum_spend"), table.minimum_spend || 0).toFixed(2)));
+    const depositAmount = Math.max(0, Number(parseMphNumber(formData.get("deposit_amount"), minimumSpend ? minimumSpend * 0.35 : 0).toFixed(2)));
+    const notes = String(formData.get("notes") || "").trim();
+    const activeReservation = getVipActiveReservation(tableId, mphLocalDetailState.selectedDate);
+    const reservationPayload = {
+      vip_table_id: tableId,
+      reservation_date: formatMphInputDate(mphLocalDetailState.selectedDate),
+      client_name: clientName,
+      guests_count: guestsCount,
+      minimum_spend: minimumSpend,
+      deposit_amount: depositAmount,
+      status: table.status === "occupied" ? "seated" : "confirmed",
+      notes: notes || null,
+    };
+
+    const result = activeReservation?.id
+      ? await api.updateVipReservation(activeReservation.id, reservationPayload)
+      : await api.createVipReservation(reservationPayload);
+
+    if (result.error || !result.data) {
+      showToast("No se pudo guardar la reserva VIP.");
+      return;
+    }
+
+    mphSupabaseRuntime.vipReservations = activeReservation?.id
+      ? mphSupabaseRuntime.vipReservations.map((item) => item.id === result.data.id ? result.data : item)
+      : [result.data, ...mphSupabaseRuntime.vipReservations];
+
+    if (table.status === "available") {
+      const tableResult = await api.updateVipTable(tableId, { status: "reserved" });
+      if (!tableResult.error) table.status = "reserved";
+    }
+
+    renderMphLocalDetail();
+    showToast(`Reserva guardada para ${clientName}.`);
+  }
+
+  async function cancelVipReservation(tableId) {
+    const api = window.mphSupabase;
+    if (!api?.isConfigured?.()) {
+      showToast("Supabase no está listo.");
+      return;
+    }
+
+    const table = mphSupabaseRuntime.vipTables.find((item) => item.id === tableId);
+    const activeReservation = getVipActiveReservation(tableId, mphLocalDetailState.selectedDate);
+    if (!table || !activeReservation?.id) return;
+
+    const reservationResult = await api.updateVipReservation(activeReservation.id, { status: "cancelled" });
+    if (reservationResult.error || !reservationResult.data) {
+      showToast("No se pudo cancelar la reserva.");
+      return;
+    }
+
+    mphSupabaseRuntime.vipReservations = mphSupabaseRuntime.vipReservations.map((item) =>
+      item.id === reservationResult.data.id ? reservationResult.data : item
+    );
+
+    if (table.status !== "blocked") {
+      const tableResult = await api.updateVipTable(tableId, { status: "available" });
+      if (!tableResult.error) table.status = "available";
+    }
+
+    renderMphLocalDetail();
+    showToast(`Reserva ${table.code} cancelada.`);
+  }
+
+  window.addEventListener("mph:supabase-status", (event) => {
+    const status = event.detail?.status;
+    if (status === "connected") showToast("Supabase conectado.");
+    if (status === "error") showToast("Supabase no ha podido conectar. Seguimos en modo demo.");
+    syncAuthUi().catch(() => {});
+  });
+
+  window.addEventListener("mph:supabase-ready", () => {
+    hydrateSupabaseVenue().catch(() => {});
+    hydrateFinanceSnapshotFromSupabase().catch(() => {});
+    hydrateSupabaseOperationalData().catch(() => {});
+    syncAuthUi().catch(() => {});
+  });
+
+  window.addEventListener("mph:supabase-auth", async (event) => {
+    const authEvent = event.detail?.event;
+    await syncAuthUi().catch(() => {});
+    if (authEvent === "SIGNED_IN") {
+      const roles = mphAuthState.roles.map((role) => getAuthRoleLabel(role.role_key)).join(", ");
+      showToast(roles ? `Sesión iniciada. Roles: ${roles}.` : "Sesión iniciada.");
+    }
+    if (authEvent === "SIGNED_OUT") showToast("Sesión cerrada.");
+  });
+
+  authForm?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const api = window.mphSupabase;
+    if (!api?.signInWithPassword) {
+      setAuthError("Supabase Auth no está disponible todavía.");
+      return;
+    }
+
+    mphAuthState.roles = [];
+    mphAuthState.userId = null;
+    mphAuthState.activeRoleKey = null;
+    mphAuthState.appliedSignature = "";
+    renderAuthRoles([]);
+    setAuthError("");
+    if (authStatus) authStatus.textContent = "Verificando credenciales y cargando tu rol...";
+    setAuthBusy(true, "Entrando...");
+
+    const result = await api.signInWithPassword({
+      email: authEmailInput?.value?.trim() || "",
+      password: authPasswordInput?.value || "",
+    });
+
+    if (result?.error) {
+      setAuthBusy(false, "Entrar");
+      setAuthError(result.error.message || "No se pudo iniciar sesión.");
+      return;
+    }
+
+    await syncAuthUi();
+  });
+
+  logoutLinks.forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      handleAuthLogout().catch(() => showToast("No se pudo cerrar la sesión."));
+    });
+  });
+
+  tpvPayCardButton?.addEventListener("click", () => {
+    persistTpvSale("card").catch(() => showToast("No se pudo guardar la venta."));
+  });
+
+  tpvPayCashButton?.addEventListener("click", () => {
+    persistTpvSale("cash").catch(() => showToast("No se pudo guardar la venta."));
+  });
+
+  localOpsDetail?.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return;
+    const capacityTrigger = event.target.closest("[data-mph-capacity-delta]");
+    if (capacityTrigger) {
+      const delta = Number(capacityTrigger.dataset.mphCapacityDelta || 0);
+      applyCapacityDelta(mphLocalDetailState.pointId, delta).catch(() => showToast("No se pudo actualizar el aforo."));
+      return;
+    }
+
+    const vipTrigger = event.target.closest("[data-mph-vip-cycle]");
+    if (vipTrigger) {
+      cycleVipTable(vipTrigger.dataset.mphVipCycle).catch(() => showToast("No se pudo actualizar la mesa VIP."));
+      return;
+    }
+
+    const vipCancelTrigger = event.target.closest("[data-mph-vip-cancel]");
+    if (vipCancelTrigger) {
+      cancelVipReservation(vipCancelTrigger.dataset.mphVipCancel).catch(() => showToast("No se pudo cancelar la reserva."));
+    }
+  });
+
+  localOpsDetail?.addEventListener("submit", (event) => {
+    const form = event.target;
+    if (!(form instanceof HTMLFormElement) || !form.matches("[data-mph-vip-form]")) return;
+    event.preventDefault();
+    saveVipReservation(form.dataset.mphVipForm, new FormData(form)).catch(() => showToast("No se pudo guardar la reserva VIP."));
+  });
+
   trigger?.addEventListener("click", openPreview);
   closeBtn?.addEventListener("click", closePreview);
   backBtn?.addEventListener("click", () => switchMphScreen("locales"));
+  roleBackBtn?.addEventListener("click", () => switchMphScreen("panel"));
   categoryBackBtn?.addEventListener("click", () => switchMphScreen("personal"));
   staffBackBtn?.addEventListener("click", () => switchMphScreen("category-detail"));
   stockDetailBackBtn?.addEventListener("click", () => switchMphScreen("stock"));
   localDateTrigger?.addEventListener("click", () => toggleInlineMenu(localDateMenu, localDateTrigger));
   localDatePickerBtn?.addEventListener("click", openLocalDatePicker);
+  financeDateTrigger?.addEventListener("click", openFinanceDatePicker);
+  financeDatePickerBtn?.addEventListener("click", openFinanceDatePicker);
   localCapacityInfoBtn?.addEventListener("click", () => {
     mphLocalDetailState.section = "aforo";
-    mphLocalDetailState.pointId = (mphVenueOperations[mphLocalDetailState.venueId]?.aforo || [])[0]?.id || null;
+    mphLocalDetailState.pointId = getMphLocalSectionItems(mphLocalDetailState.venueId, "aforo")[0]?.id || null;
     renderMphLocalDetail();
   });
 
@@ -1923,12 +3625,36 @@ const periodKeyMap = {
   const drawer = document.getElementById("mphDrawer");
   function openDrawer()  { if (drawerOverlay) drawerOverlay.hidden = false; }
   function closeDrawer() { if (drawerOverlay) drawerOverlay.hidden = true; }
+  window.mphCloseDrawer = closeDrawer;
   document.querySelectorAll(".mph-topbar .mph-icon-btn:first-child").forEach(btn => {
     if (btn.querySelector(".material-symbols-outlined")?.textContent?.trim() === "menu") {
       btn.addEventListener("click", openDrawer);
     }
   });
   drawerOverlay?.addEventListener("click", (e) => { if (!drawer?.contains(e.target)) closeDrawer(); });
+  drawer?.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return;
+    const actionRow = event.target.closest("[data-mph-drawer-action]");
+    if (!actionRow) return;
+
+    const action = actionRow.dataset.mphDrawerAction || "";
+    if (action === "appearance") {
+      closeDrawer();
+      openSettings();
+      return;
+    }
+
+    const labels = {
+      venue: "Cambio de local: próximamente.",
+      language: "Cambio de idioma: próximamente.",
+      currency: "Cambio de moneda: próximamente.",
+      password: "Cambio de contraseña: próximamente.",
+      sessions: "Sesiones activas: próximamente.",
+    };
+
+    closeDrawer();
+    showToast(labels[action] || "Ajuste disponible próximamente.");
+  });
 
   const notifOverlay = document.getElementById("mphNotifOverlay");
   const notifClose   = document.getElementById("mphNotifClose");
@@ -1949,6 +3675,93 @@ const periodKeyMap = {
 
   document.querySelectorAll(".mph-bottom-nav button[data-mph-screen]").forEach((btn) => {
     btn.addEventListener("click", () => switchMphScreen(btn.dataset.mphScreen));
+  });
+
+  document.querySelectorAll("[data-mph-panel-access]").forEach((button) => {
+    button.addEventListener("click", () => openPanelQuickAccess(button.dataset.mphPanelAccess));
+  });
+
+  roleViewContent?.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return;
+
+    const addTrigger = event.target.closest("[data-mph-role-add]");
+    if (addTrigger) {
+      addTPVItem(addTrigger.dataset.mphRoleAdd);
+      renderRoleView();
+      return;
+    }
+
+    const removeTrigger = event.target.closest("[data-mph-role-remove]");
+    if (removeTrigger) {
+      removeTPVItem(removeTrigger.dataset.mphRoleRemove);
+      renderRoleView();
+      return;
+    }
+
+    const deleteTrigger = event.target.closest("[data-mph-role-delete]");
+    if (deleteTrigger) {
+      tpvState.ticket = tpvState.ticket.filter((item) => item.id !== deleteTrigger.dataset.mphRoleDelete);
+      renderTPVTicket();
+      renderRoleView();
+      return;
+    }
+
+    const clearTrigger = event.target.closest("[data-mph-role-clear]");
+    if (clearTrigger) {
+      tpvState.ticket = [];
+      renderTPVTicket();
+      renderRoleView();
+      showToast("Ticket vaciado.");
+      return;
+    }
+
+    const payTrigger = event.target.closest("[data-mph-role-pay]");
+    if (payTrigger) {
+      persistTpvSale(payTrigger.dataset.mphRolePay).then(() => renderRoleView()).catch(() => showToast("No se pudo guardar la venta."));
+      return;
+    }
+
+    const vipCycleTrigger = event.target.closest("[data-mph-role-vip-cycle]");
+    if (vipCycleTrigger) {
+      cycleVipTable(vipCycleTrigger.dataset.mphRoleVipCycle).then(() => renderRoleView()).catch(() => showToast("No se pudo actualizar la mesa VIP."));
+      return;
+    }
+
+    const openVipDetailTrigger = event.target.closest("[data-mph-role-open-vip-detail]");
+    if (openVipDetailTrigger) {
+      const venueId = mphRoleViewState.venueId || getPanelTargetVenueId();
+      openMphLocalDetail(venueId, mphLocalDetailState.selectedDate);
+      mphLocalDetailState.section = "vip";
+      mphLocalDetailState.pointId = openVipDetailTrigger.dataset.mphRoleOpenVipDetail;
+      renderMphLocalDetail();
+      switchMphScreen("local-detail");
+      return;
+    }
+
+    const counterTrigger = event.target.closest("[data-mph-role-counter]");
+    if (counterTrigger) {
+      mphRoleViewState.focusId = counterTrigger.dataset.mphRoleCounter;
+      renderRoleView();
+      return;
+    }
+
+    const capacityTrigger = event.target.closest("[data-mph-role-capacity]");
+    if (capacityTrigger && mphRoleViewState.focusId) {
+      const delta = Number(capacityTrigger.dataset.mphRoleCapacity || 0);
+      applyCapacityDelta(mphRoleViewState.focusId, delta).then(() => renderRoleView()).catch(() => showToast("No se pudo actualizar el aforo."));
+      return;
+    }
+
+    const openLocalTrigger = event.target.closest("[data-mph-role-open-local]");
+    if (openLocalTrigger) {
+      const sectionKey = openLocalTrigger.dataset.mphRoleOpenLocal || "bars";
+      const venueId = mphRoleViewState.venueId || getPanelTargetVenueId();
+      openMphLocalDetail(venueId, mphLocalDetailState.selectedDate);
+      mphLocalDetailState.section = sectionKey;
+      mphLocalDetailState.pointId = getMphLocalSectionItems(venueId, sectionKey)[0]?.id || null;
+      renderMphLocalDetail();
+      switchMphScreen("local-detail");
+    }
   });
 
   document.querySelectorAll("[data-mph-goto]").forEach((el) => {
@@ -1992,7 +3805,7 @@ const periodKeyMap = {
   localSectionTabs.forEach((tab) => {
     tab.addEventListener("click", () => {
       mphLocalDetailState.section = tab.dataset.mphLocalSection || "bars";
-      mphLocalDetailState.pointId = (mphVenueOperations[mphLocalDetailState.venueId]?.[mphLocalDetailState.section] || [])[0]?.id || null;
+      mphLocalDetailState.pointId = getMphLocalSectionItems(mphLocalDetailState.venueId, mphLocalDetailState.section)[0]?.id || null;
       renderMphLocalDetail();
     });
   });
@@ -2012,6 +3825,7 @@ const periodKeyMap = {
     mphLocalDetailState.selectedDate = normalizeMphDate(trigger.dataset.mphLocalDate);
     closeInlineMenus();
     renderMphLocalDetail();
+    hydrateSupabaseOperationalData(mphLocalDetailState.selectedDate).catch(() => {});
     showToast(`Fecha aplicada: ${formatMphShortDate(mphLocalDetailState.selectedDate)}.`);
   });
 
@@ -2019,13 +3833,31 @@ const periodKeyMap = {
     if (!(localDateNative instanceof HTMLInputElement) || !localDateNative.value) return;
     mphLocalDetailState.selectedDate = normalizeMphDate(`${localDateNative.value}T12:00:00`);
     renderMphLocalDetail();
+    hydrateSupabaseOperationalData(mphLocalDetailState.selectedDate).catch(() => {});
     showToast(`Fecha aplicada: ${formatMphShortDate(mphLocalDetailState.selectedDate)}.`);
   });
 
-  document.querySelectorAll(".mph-stock-tab").forEach((tab) => {
+  financeDateNative?.addEventListener("change", () => {
+    if (!(financeDateNative instanceof HTMLInputElement) || !financeDateNative.value) return;
+    mphFinanceState.selectedDate = normalizeMphDate(`${financeDateNative.value}T12:00:00`);
+    renderMphFinanceScreen();
+    hydrateFinanceSnapshotFromSupabase().catch(() => {});
+    showToast(`Finanzas actualizadas a ${formatMphShortDate(mphFinanceState.selectedDate)}.`);
+  });
+
+  financePeriodTabs.forEach((tab) => {
     tab.addEventListener("click", () => {
-      tab.closest(".mph-stock-tabs")?.querySelectorAll(".mph-stock-tab").forEach((t) => t.classList.remove("active"));
-      tab.classList.add("active");
+      mphFinanceState.period = tab.dataset.mphFinancePeriod || "today";
+      renderMphFinanceScreen();
+      hydrateFinanceSnapshotFromSupabase().catch(() => {});
+      showToast(`Periodo ${tab.textContent?.trim() || "Hoy"} aplicado en Finanzas.`);
+    });
+  });
+
+  stockTabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      stockState.activeFilter = tab.dataset.stockFilter || "all";
+      refreshStockView();
     });
   });
 
@@ -2045,8 +3877,10 @@ const periodKeyMap = {
       stockVenueMenu.querySelectorAll("[data-stock-venue]").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       if (stockVenueLabel) stockVenueLabel.textContent = btn.textContent.trim();
+      stockState.activeVenue = btn.dataset.stockVenue || "todos";
       stockVenueMenu.hidden = true;
       stockVenueTrigger?.setAttribute("aria-expanded", "false");
+      refreshStockView();
     });
   });
 
@@ -2065,17 +3899,8 @@ const periodKeyMap = {
   const stockEmpty        = document.getElementById("mphStockEmpty");
 
   function filterStock(query) {
-    const q = query.trim().toLowerCase();
-    const items = document.querySelectorAll(".mph-stock-list .mph-stock-item");
-    let visible = 0;
-    items.forEach(item => {
-      const name = item.querySelector("strong")?.textContent?.toLowerCase() || "";
-      const cat  = item.querySelector("small")?.textContent?.toLowerCase()  || "";
-      const match = !q || name.includes(q) || cat.includes(q);
-      item.classList.toggle("mph-stock-item--hidden", !match);
-      if (match) visible++;
-    });
-    if (stockEmpty) stockEmpty.classList.toggle("visible", visible === 0 && q.length > 0);
+    stockState.query = query;
+    renderStockList();
   }
 
   stockSearchBtn?.addEventListener("click", () => {
@@ -2100,6 +3925,8 @@ const periodKeyMap = {
     openStockDetail(item.dataset.productId);
     switchMphScreen("stock-detail");
   });
+
+  refreshStockView();
 
   scopeMenu?.querySelectorAll("[data-mph-scope]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -2142,8 +3969,13 @@ const periodKeyMap = {
   applyVenuePeriod(activeVenuePeriod, false);
   updatePanelData("global", "today");
   openMphLocalDetail("kapital-madrid");
+  renderMphFinanceScreen();
+  hydrateFinanceSnapshotFromSupabase().catch(() => {});
   renderMphCategoryTable();
   openMphCategoryDetail("barra", false);
   renderMphStaffSheet("carlos");
   switchMphStaffTab("summary", false);
+  hydrateSupabaseVenue().catch(() => {});
+  hydrateSupabaseOperationalData().catch(() => {});
+  syncAuthUi().catch(() => {});
 })();
